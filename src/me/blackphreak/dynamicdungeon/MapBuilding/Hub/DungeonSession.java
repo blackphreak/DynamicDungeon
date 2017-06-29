@@ -125,6 +125,7 @@ public class DungeonSession {
 				}
 			});
 		whoPlaying.clear();
+		gb.dungeons.remove(sessionID);
 		this.session.undo(this.session);
 	}
 	

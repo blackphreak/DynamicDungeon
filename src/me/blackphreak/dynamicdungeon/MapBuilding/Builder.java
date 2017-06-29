@@ -1,156 +1,202 @@
 package me.blackphreak.dynamicdungeon.MapBuilding;
 
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.mask.Mask;
+import com.sk89q.worldedit.function.mask.Mask2D;
 import com.sk89q.worldedit.schematic.SchematicFormat;
-import io.lumine.xikage.mythicmobs.MythicMobs;
-import io.lumine.xikage.mythicmobs.spawning.spawners.SpawnerManager;
+import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.util.io.Closer;
+import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.registry.WorldData;
+import me.blackphreak.dynamicdungeon.DynamicDungeon;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.SessionCreationDoneEvent;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.gb;
-import org.bukkit.Chunk;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.primesoft.asyncworldedit.AsyncWorldEditBukkit;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.primesoft.asyncworldedit.AsyncWorldEditMain;
 import org.primesoft.asyncworldedit.api.blockPlacer.IBlockPlacer;
+import org.primesoft.asyncworldedit.api.blockPlacer.IBlockPlacerListener;
 import org.primesoft.asyncworldedit.api.blockPlacer.IJobEntryListener;
+import org.primesoft.asyncworldedit.api.blockPlacer.entries.IJobEntry;
 import org.primesoft.asyncworldedit.api.playerManager.IPlayerEntry;
+import org.primesoft.asyncworldedit.api.utils.IAsyncCommand;
+import org.primesoft.asyncworldedit.api.utils.IFuncParamEx;
+import org.primesoft.asyncworldedit.api.worldedit.ICancelabeEditSession;
+import org.primesoft.asyncworldedit.api.worldedit.IThreadSafeEditSession;
 import org.primesoft.asyncworldedit.blockPlacer.entries.JobEntry;
+import org.primesoft.asyncworldedit.worldedit.AsyncEditSessionFactory;
 import org.primesoft.asyncworldedit.worldedit.ClipboardAsyncTask;
 
+import javax.annotation.Nullable;
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
+import java.io.FileInputStream;
 
-public class Builder {
-	public Builder() {
+import static net.minecraft.server.v1_12_R1.NetworkManager.f;
+
+public class Builder
+{
+	public Builder()
+	{
 	}
 	
 	public static DungeonSession build(Player sessionOwner, String fileNameWithoutExtension)
 	{
-		File schematic = new File("plugins/DynamicDungeon/savedDungeons/" + fileNameWithoutExtension + ".schematic");
+		/*
+		 * reference: https://www.spigotmc.org/threads/asyncworldedit-premium-paid.79081/page-10#post-961711
+		 */
+		CuboidClipboard ccb = null;
+		World world = BukkitUtil.getLocalWorld(Bukkit.getWorld("dungeonWorld"));
+		AsyncWorldEditMain awe = AsyncWorldEditMain.getInstance();
+		IPlayerEntry ipe = awe.getPlayerManager().getConsolePlayer();
 		
 		try
 		{
-			CuboidClipboard ccb = SchematicFormat.MCEDIT.load(schematic);
+			File schematic = new File("plugins/DynamicDungeon/savedDungeons/" + fileNameWithoutExtension + ".schematic");
+			ccb = SchematicFormat.MCEDIT.load(schematic);
 			
-			Location loc = gb.lastDungeonMaxLocation.add(ccb.getWidth() + 20, 0, ccb.getLength() + 20);
-//			db.log("ccb: " + ccb.getWidth() + " | " + ccb.getLength() + " | " + ccb.getHeight());
-//			db.log("loc: " + loc.getX() + " | " + loc.getY() + " | " + loc.getZ());
-			Location max = loc.clone().add((double)ccb.getWidth(), 0, (double)ccb.getLength());
-//			db.log("loc: " + loc.getX() + " | " + loc.getY() + " | " + loc.getZ());
-//			db.log("max: " + max.getX() + " | " + max.getY() + " | " + max.getZ());
-			CuboidSelection region = new CuboidSelection(loc.getWorld(), loc, max);
-			
-			EditSession session = new EditSession(new BukkitWorld(loc.getWorld()), -1);
-			session.enableQueue();
-			
-			IBlockPlacer placer = AsyncWorldEditBukkit.getInstance().getBlockPlacer();
-			IPlayerEntry iPlayer = AsyncWorldEditBukkit.getInstance().getPlayerManager().getConsolePlayer();
-			JobEntry job = new JobEntry(iPlayer, placer.getJobId(iPlayer), "DungeonCreation");
-			DungeonSession dg = new DungeonSession(sessionOwner, region, session, loc, max);
-			
-			//creating a BlockPlacing task.
-			new ClipboardAsyncTask(ccb, session, iPlayer, "DungeonCreation", placer, job)
-			{
-				@Override
-				public void task(CuboidClipboard cuboidClipboard) throws MaxChangedBlocksException
-				{
-					ccb.place(session, BukkitUtil.toVector(loc), true);
-				}
-			}.run();
-			
-			//add listener for the session owner
-			msg.send(sessionOwner, "Preparing a DungeonSession for you...");
-			IJobEntryListener jobListener = iJobEntry -> {
-				switch (iJobEntry.getStatus().getSeqNumber())
-				{
-					case 3: //placing
-						msg.send(sessionOwner, "Creating a DungeonSession with sessionID: " + dg.getSessionID());
-						break;
-					case 4: //done
-						msg.send(sessionOwner, "DungeonSession Preparation Finished.");
-						msg.send(sessionOwner, "Teleporting to your DungeonSession...");
-						SessionCreationDoneEvent de = () ->
-						{
-							dg.join(sessionOwner);
-						};
-						de.done(); //make it works
-						break;
-					default:
-						msg.send(sessionOwner, "Your DungeonSession will be created soon. Please wait...");
-						break;
-				}
-			};
-			job.addStateChangedListener(jobListener);
-			
-			session.flushQueue();
-			
-			boolean spawnPointSign = false;
-			
-			//get all the chunk inside the area.
-			World world = loc.getWorld();
-			int minX = loc.getChunk().getX();
-			int mixZ = loc.getChunk().getZ();
-			int maxX = max.getWorld().getChunkAt(max).getX();
-			int maxZ = max.getWorld().getChunkAt(max).getZ();
-			
-			Collection<Chunk> chunks = new HashSet<>();
-//			db.log(">x: " + (minX > maxX ? maxX : minX) + " | " + (minX > maxX ? minX : maxX));
-			for(int x = (minX > maxX ? maxX : minX); x <= (minX > maxX ? minX : maxX); x++)
-			{
-//				db.log(">z: " + (mixZ > maxZ ? maxZ : mixZ) + " | " + (mixZ > maxZ ? mixZ : maxZ));
-				for(int z = (mixZ > maxZ ? maxZ : mixZ); z <= (mixZ > maxZ ? mixZ : maxZ); z++)
-				{
-					Chunk chunk = world.getChunkAt(x, z);
-					chunks.add(chunk);
-				}
-			}
-			
-			for (Chunk chunk : chunks)
-			{
-				for (BlockState blockState : chunk.getTileEntities())
-				{
-					db.log("BlockState: " + blockState.getType().name() + " | " + blockState.getLocation().toString());
-					if (blockState instanceof Sign)
-					{
-//						db.log("sign found.: " + blockState.getLocation().toString());
-						Sign sign = (Sign) blockState;
-						if (sign.getLine(0).toLowerCase().equals("[dg_spawner]")) {
-							dg.addSpawnerOnChunk(sign.getChunk(), sign.getLocation(), (new SpawnerManager(MythicMobs.inst())).getSpawnerByName(sign.getLine(1)));
-							blockState.getBlock().setType(Material.AIR);
-						}
-						else if (!spawnPointSign && sign.getLine(0).toLowerCase().equals("[dg_spawnpoint]"))
-						{
-							dg.setSpawnLocation(sign.getLocation());
-							spawnPointSign = true;
-							blockState.getBlock().setType(Material.AIR);
-						}
-					}
-				}
-				
-			}
-			
-			if(!spawnPointSign)
-			{
-				msg.send(sessionOwner, "Please contact administrator to fix this [Error: Builder->SLNF]");
-				throw new Exception("Dungeon creation error, Spawn Location not found!");
-			}
-			
-			return dg;
-		} catch (Exception ex) {
+//			ClipboardFormat format = ClipboardFormat.findByAlias("schematic");
+//			Closer closer = Closer.create();
+//			FileInputStream fis = closer.register(new FileInputStream(schematic));
+//			BufferedInputStream bis = closer.register(new BufferedInputStream(fis));
+//			ClipboardReader reader = format.getReader(bis);
+//			
+//			ccb = reader.read(world.getWorldData());
+		}
+		catch (Exception ex)
+		{
+			db.log("Error while loading schematic");
 			ex.printStackTrace();
 		}
+		
+		if (ccb == null)
+		{
+			db.log("CuboidClipboard is null!");
+			return null;
+		}
+		
+//		Location loc = gb.lastDungeonMaxLocation.add(ccb.getRegion().getWidth() + 20, 0, ccb.getRegion().getLength() + 20);
+		Location loc = gb.lastDungeonMaxLocation.add(ccb.getWidth() + 20, 0, ccb.getLength() + 20);
+//		Location max = loc.clone().add((double)ccb.getRegion().getWidth(), 0, (double)ccb.getRegion().getLength());
+		loc.setWorld(Bukkit.getWorld("dungeonWorld"));
+		Location max = loc.clone().add((double)ccb.getWidth(), 0, (double)ccb.getLength());
+		CuboidSelection region = new CuboidSelection(loc.getWorld(), loc, max);
+		
+		AsyncEditSessionFactory factory = (AsyncEditSessionFactory) WorldEdit.getInstance().getEditSessionFactory();
+		
+		IThreadSafeEditSession tses = factory.getThreadSafeEditSession(
+				world, //casting bukkitWorld -> com.sk89q.worldedit.world.World
+				-1
+		);
+		IBlockPlacer placer = awe.getBlockPlacer(); //iawe
+		/**
+		 * prams: IThreadSafeEditSession, IPlayerEntry, String, IFuncParamEx<Integer, ICancelabeEditSession, MaxChangedBlocksException>);
+		 * prams: IThreadSafeEditSession, IAsyncCommand
+		 */
+//		EditSession session = new EditSession(new BukkitWorld(loc.getWorld()), -1);
+//		session.enableQueue();
+//		session.setFastMode(true);
+		
+//		WorldEdit we = ((WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit")).getWorldEdit();
+		
+		/*IAsyncCommand asyncCommand = awe.getOperations().getChunkOperations().createPaste(ipe,
+				new com.sk89q.worldedit.util.Location(session,
+						loc.getBlockX(),
+						loc.getBlockY(),
+						loc.getBlockZ()
+				),
+				world,
+				new Mask() {
+					@Override
+					public boolean test(Vector vector) {
+						return true;
+					}
+					
+					@Nullable
+					@Override
+					public Mask2D toMask2D() {
+						return null;
+					}
+				},
+				new ClipboardHolder(ccb, world.getWorldData()),
+				false,
+				true);
+		placer.performAsAsyncJob(tses, asyncCommand);*/
+		JobEntry job = new JobEntry(ipe, placer.getJobId(ipe), "DungeonCreation");
+		IJobEntryListener lst2 = (iJobEntry -> {
+			switch (iJobEntry.getStatus().getSeqNumber())
+			{
+				case 3:
+					msg.send(sessionOwner, "processing...");
+					break;
+				case 4:
+//					new BukkitRunnable() {
+//						@Override
+//						public void run() {
+////				sessionOwner.teleport(loc);
+////				session.flushQueue();
+//							tses.flushQueue();
+//							tses.doUndo();
+//						}
+//					}.runTaskLater(DynamicDungeon.plugin, 20L);
+					
+					msg.send(sessionOwner, "done.");
+					break;
+				default:
+					msg.send(sessionOwner, "default...");
+					break;
+			}
+		});
+		
+		tses.addAsync(job);
+		tses.setFastMode(true);
+		
+		
+		final IBlockPlacerListener listener = new IBlockPlacerListener() {
+			@Override
+			public void jobAdded(IJobEntry iJobEntry) {
+				db.log("job added " + iJobEntry.getStatusString() + " | name: " + iJobEntry.getName());
+				iJobEntry.addStateChangedListener(lst2);
+			}
+			
+			@Override
+			public void jobRemoved(IJobEntry iJobEntry) {
+			
+			}
+		};
+		
+		placer.addListener(listener);
+		
+		final CuboidClipboard f_ccb = ccb;
+		placer.performAsAsyncJob(tses, ipe,
+				"ABC",
+				iCancelabeEditSession -> {
+//					f_ccb.place((EditSession) tses, BukkitUtil.toVector(loc), false);
+//					iCancelabeEditSession.getJobId();
+//					f_ccb.place(tses, BukkitUtil.toVector(loc), true);
+					new ClipboardAsyncTask(f_ccb, (EditSession) tses, ipe, "DungeonCreation", placer, job)
+					{
+						@Override
+						public void task(CuboidClipboard cuboidClipboard) throws MaxChangedBlocksException
+						{
+							f_ccb.place((EditSession) tses, BukkitUtil.toVector(loc), false);
+						}
+					}.run();
+					
+					return tses.getBlockChangeCount();
+				}
+		);
 		
 		return null;
 	}
