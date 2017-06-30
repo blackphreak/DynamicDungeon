@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Needed">
+    <CLASSES>
+      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/plugins/AsyncWorldEdit.jar!/" />
+      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/plugins/mm420.jar!/" />
+      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/plugins/worldedit-bukkit-6.1.8-SNAPSHOT-dist.jar!/" />
+      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/cache/patched_1.12.jar!/" />
+      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/plugins/AsyncWorldEditInjector.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/2.5/commons-io-2.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/cache/patched_1.12.jar!/" />
+    </SOURCES>
+  </library>
+</component>
