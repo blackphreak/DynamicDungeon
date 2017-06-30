@@ -21,7 +21,7 @@ When all players leave/offline, the DungeonSession will be killed by itself and 
 
 # Requirements
 Plugin only tested on this environment:
-* PaperSpigot #1139
+* Spigot 1.12 / PaperSpigot #1139
 * WorldEdit #3690
 * MythicMobs 4.1.1 or higher
 * AsyncWorldEdit 3.4.10
