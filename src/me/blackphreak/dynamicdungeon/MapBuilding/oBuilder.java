@@ -102,17 +102,27 @@ public class oBuilder {
                 int maxX = max.getWorld().getChunkAt(max).getX();
                 int maxZ = max.getWorld().getChunkAt(max).getZ();
 
+                int unloaded = 0;
+                //unload unused chunk
+                for (Chunk loadedChunk : world.getLoadedChunks()) {
+                    if (loadedChunk.unload(false)) {
+                        unloaded++;
+                    }
+                }
+                db.log("unloaded " + unloaded + " chunks");
+
                 Collection<Chunk> chunks = new HashSet<>();
 //			db.log(">x: " + (minX > maxX ? maxX : minX) + " | " + (minX > maxX ? minX : maxX));
-                for (int x = (minX > maxX ? maxX : minX); x <= (minX > maxX ? minX : maxX); x++) {
+                for (int x = (minX > maxX ? maxX : minX); x <= (minX > maxX ? minX : maxX); x = x + 8) {
 //				db.log(">z: " + (mixZ > maxZ ? maxZ : mixZ) + " | " + (mixZ > maxZ ? mixZ : maxZ));
-                    for (int z = (mixZ > maxZ ? maxZ : mixZ); z <= (mixZ > maxZ ? mixZ : maxZ); z++) {
+                    for (int z = (mixZ > maxZ ? maxZ : mixZ); z <= (mixZ > maxZ ? mixZ : maxZ); z = z + 8) {
                         Chunk chunk = world.getChunkAt(x, z);
                         chunks.add(chunk);
                     }
                 }
 
                 for (Chunk chunk : chunks) {
+                    chunk.load(false);
                     for (BlockState blockState : chunk.getTileEntities()) {
                         db.log("BlockState: " + blockState.getType().name() + " | " + blockState.getLocation().toString());
                         if (blockState instanceof Sign) {
@@ -167,14 +177,14 @@ public class oBuilder {
             IBlockPlacerListener listener = new IBlockPlacerListener() {
                 public void jobAdded(IJobEntry job) {
                     if (job.getPlayer().getUUID() == iPlayer.getUUID()) {
-                    //if (job.getPlayer().isConsole()) {
+                        //if (job.getPlayer().isConsole()) {
                         job.addStateChangedListener(jobListener);
                     }
                 }
 
                 public void jobRemoved(IJobEntry job) {
                     if (job.getPlayer().getUUID() == iPlayer.getUUID()) {
-                    //if (job.getPlayer().isConsole()) {
+                        //if (job.getPlayer().isConsole()) {
                         job.removeStateChangedListener(jobListener);
                     }
                 }
