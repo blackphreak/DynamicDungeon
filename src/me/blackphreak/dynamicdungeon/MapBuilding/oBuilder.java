@@ -3,6 +3,7 @@ package me.blackphreak.dynamicdungeon.MapBuilding;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import com.sk89q.worldedit.bukkit.selections.RegionSelection;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Region;
@@ -57,6 +58,18 @@ public class oBuilder {
             inputStream.close();
 
             ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorldData);
+
+
+
+            /*
+
+            FileInputStream inputStream = FileUtils.openInputStream(schematic);
+            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(inputStream).read(weWorldData);
+            inputStream.close();
+
+            ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorldData);
+
+             */
 
             Location loc = gb.lastDungeonMaxLocation.add(clipboard.getRegion().getWidth() + 20, 0, clipboard.getRegion().getLength() + 20);
 
