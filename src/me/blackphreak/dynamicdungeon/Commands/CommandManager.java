@@ -1,7 +1,7 @@
 package me.blackphreak.dynamicdungeon.Commands;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.oBuilder;
+import me.blackphreak.dynamicdungeon.MapBuilding.Builder;
 import me.blackphreak.dynamicdungeon.gb;
 import me.blackphreak.dynamicdungeon.mapcreator.MapCreateSession;
 import org.bukkit.command.Command;
@@ -29,7 +29,7 @@ public class CommandManager implements CommandExecutor {
                 case "admin": {
                     switch (args[1].toLowerCase()) {
                         case "build":
-                            oBuilder.build((Player) sender, args[2]);
+                            Builder.build((Player) sender, args[2]);
                             sender.sendMessage("building DungeonSession: " + args[2]);
                             break;
                         case "listsessions":
