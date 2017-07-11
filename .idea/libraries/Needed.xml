@@ -1,16 +1,14 @@
 <component name="libraryTable">
   <library name="Needed">
     <CLASSES>
-      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/plugins/AsyncWorldEdit.jar!/" />
-      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/plugins/mm420.jar!/" />
-      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/plugins/worldedit-bukkit-6.1.8-SNAPSHOT-dist.jar!/" />
-      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/cache/patched_1.12.jar!/" />
-      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/plugins/AsyncWorldEditInjector.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/2.5/commons-io-2.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../pubLib/AsyncWorldEdit.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../pubLib/MythicMobs-4.2.0-SNAPSHOT_A.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../pubLib/spigot-1.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../pubLib/worldedit-bukkit-6.1.7.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://F:/System_Data/SystemDesktop/Minecraft/112upgradetest/cache/patched_1.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../pubLib/spigot-1.12.jar!/" />
     </SOURCES>
   </library>
 </component>

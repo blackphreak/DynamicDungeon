@@ -72,7 +72,11 @@ public class PlayerInteractEventListener implements Listener {
 		}
 		else //not inside the world of dungeon
 		{
-			if(e.getHand().equals(EquipmentSlot.HAND)
+			if(
+					(
+							e.getHand() != null
+							&& e.getHand().equals(EquipmentSlot.HAND)
+					)
 					&& e.getAction().equals(Action.RIGHT_CLICK_BLOCK)
 					&&
 					(e.getClickedBlock().getType().equals(Material.WALL_SIGN)
