@@ -14,7 +14,7 @@ public class gb {
 	public static ConcurrentHashMap<Integer, DungeonSession> dungeons = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Player, Integer> dungeonPlaying = new ConcurrentHashMap<>();
 	public static List</*SessionID*/ Integer> dungeonCreating = new ArrayList<>();
-	public static Location lastDungeonMaxLocation = new Location(Bukkit.getWorld("dungeonWorld"), 0, 90, 0);
+	public static Location nextDungeonLocation = new Location(Bukkit.getWorld("dungeonWorld"), 50, 90, 50);
 	
 	public gb() {
 	}

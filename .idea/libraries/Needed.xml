@@ -1,10 +1,9 @@
 <component name="libraryTable">
   <library name="Needed">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../pubLib/AsyncWorldEdit.jar!/" />
       <root url="jar://$PROJECT_DIR$/../pubLib/MythicMobs-4.2.0-SNAPSHOT_A.jar!/" />
       <root url="jar://$PROJECT_DIR$/../pubLib/spigot-1.12.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../pubLib/worldedit-bukkit-6.1.7.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../pubLib/FastAsyncWorldEdit-bukkit-18.01.07-189e818-954-18.0.11.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

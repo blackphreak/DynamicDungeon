@@ -1,9 +1,8 @@
 package me.blackphreak.dynamicdungeon.Commands;
 
+import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV2;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Builder;
 import me.blackphreak.dynamicdungeon.gb;
-import me.blackphreak.dynamicdungeon.mapcreator.MapCreateSession;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,12 +23,17 @@ public class CommandManager implements CommandExecutor {
             if (!sender.hasPermission("dynamicdungeon.admin") && !sender.isOp()) {
                 return false;
             }
+            
+            if (args.length < 1)
+            {
+                return false;
+            }
 
             switch (args[0].toLowerCase()) {
                 case "admin": {
                     switch (args[1].toLowerCase()) {
                         case "build":
-                            Builder.build((Player) sender, args[2]);
+                            BuilderV2.build((Player) sender, args[2]);
                             sender.sendMessage("building DungeonSession: " + args[2]);
                             break;
                         case "listsessions":
@@ -52,9 +56,6 @@ public class CommandManager implements CommandExecutor {
                                 sender.sendMessage("Dungeon Session not found.");
                             else
                                 s1.killSession((Player) sender);
-                            break;
-                        case "createdungeon":
-                            new MapCreateSession((Player) sender, args[2]).create();
                             break;
                         default:
                             sender.sendMessage("Unknown command.");

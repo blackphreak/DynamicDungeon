@@ -1,8 +1,8 @@
 package me.blackphreak.dynamicdungeon.Listeners;
 
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
+import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV2;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Builder;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.gb;
 import me.blackphreak.dynamicdungeon.math;
@@ -99,7 +99,7 @@ public class PlayerInteractEventListener implements Listener {
 							if (sessionID == -1)
 							{
 								//no playing dungeon session. create a new session
-								session = Builder.build(e.getPlayer(), "dg_" + sign.getLine(1).substring(6));
+								session = BuilderV2.build(e.getPlayer(), "dg_" + sign.getLine(1).substring(6));
 								if (session == null)
 								{
 									e.getPlayer().sendMessage("Dungeon Creation Failure.");

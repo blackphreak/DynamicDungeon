@@ -1,17 +1,18 @@
 package me.blackphreak.dynamicdungeon.MapBuilding.Hub;
 
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.regions.Region;
 import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.adapters.AbstractWorld;
 import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
 import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
+import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.primesoft.asyncworldedit.api.worldedit.IThreadSafeEditSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class DungeonSession {
     private int maxPlayers = 5;
 
     private Player sessionOwner = null;
-    private IThreadSafeEditSession session = null;
+    private EditSession session = null;
     private Region region = null;
     private Location latestCheckPoint = null,
             spawnLocation = null;
@@ -35,7 +36,7 @@ public class DungeonSession {
     private List<ActiveMob> spawnedMobs = new ArrayList<>();
     private UUID uuid = UUID.randomUUID();
 
-    public DungeonSession(Player p_caller, Region p_region, IThreadSafeEditSession p_session, Location playerSpawnLocation, Location min, Location max) {
+    public DungeonSession(Player p_caller, Region p_region, EditSession p_session, Location playerSpawnLocation, Location min, Location max) {
         this.sessionOwner = p_caller;
         this.session = p_session;
         this.region = p_region;
@@ -46,7 +47,7 @@ public class DungeonSession {
         this.dungeonLocation[1] = max;
     }
 
-    public DungeonSession(Player p_caller, Region p_region, IThreadSafeEditSession p_session, Location min, Location max) {
+    public DungeonSession(Player p_caller, Region p_region, EditSession p_session, Location min, Location max) {
         this.sessionOwner = p_caller;
         this.session = p_session;
         this.region = p_region;
@@ -82,7 +83,7 @@ public class DungeonSession {
         this.sessionOwner = p;
     }
 
-    public IThreadSafeEditSession getSession() {
+    public EditSession getSession() {
         return this.session;
     }
 
@@ -121,7 +122,7 @@ public class DungeonSession {
             });
         whoPlaying.clear();
         gb.dungeons.remove(sessionID);
-        this.session.doUndo();
+        this.session.undo(this.session);
     }
 
     public void killSession() {
@@ -132,7 +133,9 @@ public class DungeonSession {
                     v.teleport(enterLocation.get(v));
             });
         whoPlaying.clear();
-        this.session.doUndo();
+        this.session.undo(this.session);
+    
+        db.log("Dungeon Session["+uuid+"] with owner: "+this.sessionOwner.getName()+" has been killed.");
     }
 
     public void updateCheckPoint(Location location) {
@@ -194,7 +197,7 @@ public class DungeonSession {
                 gb.dungeonPlaying.put(p, sessionID);
 
                 if (gb.dungeonCreating.contains(sessionID))
-                    gb.dungeonCreating.remove((Object) session);
+                    gb.dungeonCreating.remove(session);
             }
         }.runTaskLater(DynamicDungeon.plugin, 40L);
     }

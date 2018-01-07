@@ -1,14 +1,11 @@
 package me.blackphreak.dynamicdungeon;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-
 import me.blackphreak.dynamicdungeon.Commands.CommandManager;
 import me.blackphreak.dynamicdungeon.Listeners.PlayerInteractEventListener;
 import me.blackphreak.dynamicdungeon.Messages.db;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class DynamicDungeon extends JavaPlugin {
 	public static DynamicDungeon plugin = null;
@@ -41,9 +38,7 @@ public class DynamicDungeon extends JavaPlugin {
 	public void onDisable()
 	{
 		//unload all dungeons
-		gb.dungeons.forEach((k, v) -> {
-			v.killSession();
-		});
+		gb.dungeons.forEach((k, v) -> v.killSession());
 		plugin = null;
 		db.log("Dynamic Dungeon has been disabled");
 	}
