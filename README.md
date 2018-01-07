@@ -15,13 +15,13 @@ When all players leave/offline, the DungeonSession will be killed by itself and 
 # Features
 * load dungeon by import WorldEdit Schematic file
 * create dungeon independently for each party/player
-* set Check Point, Spawn Point and End Point
+* set Mob Spawner, Check Point, Spawn Point and End Point
 * no more queueing for dungeon
-* using AsyncWorldEdit to create DungeonSession
+* using FastAsyncWorldEdit to create DungeonSession
 
 # Requirements
 Plugin only tested on this environment:
-* Spigot 1.12 / PaperSpigot #1139
-* WorldEdit #3690
-* MythicMobs 4.1.1 or higher
-* AsyncWorldEdit 3.4.10
+* Spigot 1.12 #1139
+* WorldEdit #3690 or higher
+* MythicMobs 4.1.2 or higher
+* FastAsyncWorldEdit-bukkit-18.01.07-189e818-954-18.0.11
