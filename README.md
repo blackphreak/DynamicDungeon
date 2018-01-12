@@ -24,4 +24,4 @@ Plugin only tested on this environment:
 * Spigot 1.12 #1139
 * WorldEdit #3690 or higher
 * MythicMobs 4.1.2 or higher
-* FastAsyncWorldEdit-bukkit-18.01.07-189e818-954-18.0.11
+* FastAsyncWorldEdit-bukkit-18.01.11-0a127df-967-18.1.8
