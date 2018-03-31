@@ -2,8 +2,9 @@ package me.blackphreak.dynamicdungeon.MapBuilding.Hub;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.regions.Region;
+import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
-import io.lumine.xikage.mythicmobs.adapters.AbstractWorld;
+import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitWorld;
 import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
 import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
@@ -133,6 +134,12 @@ public class DungeonSession {
                     v.teleport(enterLocation.get(v));
             });
         whoPlaying.clear();
+        spawnedMobs.forEach(mob ->
+        {
+            mob.setDead();
+            mob.setDespawned();
+        });
+        spawnerTable.values().forEach(list -> list.forEach(MythicSpawner::unloadSpawner));
         this.session.undo(this.session);
     
         db.log("Dungeon Session["+uuid+"] with owner: "+this.sessionOwner.getName()+" has been killed.");
@@ -152,12 +159,45 @@ public class DungeonSession {
         this.spawnerTable.put(targetChunk, tLst);
     }
 
-    public void addSpawnerOnChunk(Chunk targetChunk, Location spawnLocation, MythicSpawner spawner) {
+    public void addSpawnerOnChunk(Chunk targetChunk, Location spawnLocation, String spawnerName)
+    {
+        MythicSpawner spawner = MythicMobs.inst().getSpawnerManager()
+                .getSpawnerByName(spawnerName);
+        
+        if (spawner == null)
+        {
+            db.log("Failed to add spawner on chunk.");
+            db.log("-+-- Error: Spawner not found! Please check!");
+            db.log(" + Debug: ");
+            db.log(" +-- Sign Location: [" + spawnLocation.getX() + ", " + spawnLocation.getY() + ", " + spawnLocation.getZ() + "]");
+            db.log(" +-- Spawner Name : [" + spawnerName + "]");
+            return;
+        }
+        
         List<MythicSpawner> tLst = this.spawnerTable.getOrDefault(targetChunk, new ArrayList<>());
-        AbstractLocation loc = new AbstractLocation((AbstractWorld) spawnLocation.getWorld(), spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
+        
+        AbstractLocation loc = new AbstractLocation(
+                new BukkitWorld(spawnLocation.getWorld()),
+                spawnLocation.getX(),
+                spawnLocation.getY(),
+                spawnLocation.getZ()
+        );
+        db.tlog("Adding spawner[" + spawner.getName() + "] on Chunk @ [" + targetChunk.getX() + "," + targetChunk.getZ() + "]");
         spawner.setLocation(loc);
         tLst.add(spawner);
         this.spawnerTable.put(targetChunk, tLst);
+    }
+    
+    // testing
+    public static DungeonSession getSessionByChunk(Chunk chunk)
+    {
+        for (DungeonSession session : gb.dungeons.values())
+        {
+            if (session.spawnerTable.containsKey(chunk))
+                return session;
+        }
+        
+        return null;
     }
 
     public void removeSpawnersByChunk(Chunk targetChunk) {
@@ -168,7 +208,15 @@ public class DungeonSession {
         return this.spawnerTable.getOrDefault(targetChunk, new ArrayList<>());
     }
 
-    public void addSpawnedMobs() {
+    public void addSpawnedMobs(List<ActiveMob> mobs)
+    {
+        spawnedMobs.addAll(mobs);
+    }
+    
+    public void listSpawnedMobs(Player target)
+    {
+        for (int i = 0; i < spawnedMobs.size(); i++)
+            target.sendMessage("Mobs ["+i+"]: Loc[" + spawnedMobs.get(i).getLocation().toString() + "]");
     }
 
     public int maxPlayers() {

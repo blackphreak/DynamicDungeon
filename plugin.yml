@@ -2,7 +2,7 @@ name: DynamicDungeon
 main: me.blackphreak.dynamicdungeon.DynamicDungeon
 version: 1.0.0.1-0041
 author: BlackPhreak
-depend: [MythicMobs,FastAsyncWorldEdit, WorldEdit]
+depend: [MythicMobs, FastAsyncWorldEdit, WorldEdit]
 commands:
   dynamicdungeon:
     description: Plugin commands + Admin commands

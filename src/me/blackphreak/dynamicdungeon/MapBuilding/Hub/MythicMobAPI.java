@@ -2,13 +2,13 @@ package me.blackphreak.dynamicdungeon.MapBuilding.Hub;
 
 import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
+import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.math;
+import org.bukkit.Chunk;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import me.blackphreak.dynamicdungeon.math;
-import me.blackphreak.dynamicdungeon.Messages.db;
-import org.bukkit.Chunk;
 
 public class MythicMobAPI {
 	public MythicMobAPI() {
@@ -27,6 +27,7 @@ public class MythicMobAPI {
 				mobs.addAll(spawned);
 				db.log("ActiveMob spawned in Location(" + math.round(location.getX()) + ", " + math.round(location.getY()) + ", " + math.round(location.getZ()) + "). CurrentSpawned: " + spawned.size() + " | TotalSpawned: " + mobs.size());
 			});
+			session.addSpawnedMobs(mobs);
 			return mobs;
 		}
 	}

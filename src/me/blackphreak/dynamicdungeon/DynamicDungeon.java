@@ -1,8 +1,10 @@
 package me.blackphreak.dynamicdungeon;
 
 import me.blackphreak.dynamicdungeon.Commands.CommandManager;
+import me.blackphreak.dynamicdungeon.Listeners.ChunkLoadEventListener;
 import me.blackphreak.dynamicdungeon.Listeners.PlayerInteractEventListener;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -16,23 +18,27 @@ public class DynamicDungeon extends JavaPlugin {
 	public void onEnable() {
 		plugin = this;
 		this.getCommand("dynamicdungeon").setExecutor(new CommandManager());
-		this.getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(), this);
 		
-		File p = new File("plugins/DynamicDungeon");
-		if (!p.exists())
-			p.mkdir();
+		File dir = new File("plugins/DynamicDungeon");
+		if (!dir.exists())
+			dir.mkdir();
 		
-		p = new File("plugins/DynamicDungeon/savedDungeons");
-		if (!p.exists())
-			p.mkdir();
+		dir = new File("plugins/DynamicDungeon/savedDungeons");
+		if (!dir.exists())
+			dir.mkdir();
 		
-//		File dgs = new File("plugins/DynamicDungeon/savedDungeons.yml");
-//		if(!dgs.exists()) {
-//			plugin.saveResource("savedDungeons.yml", false);
-//		}
+		db.log("Registering Player Interact Event Listener...");
+		Bukkit.getPluginManager().registerEvents(new PlayerInteractEventListener(), this);
 		
-//		gb.savedDungeons = YamlConfiguration.loadConfiguration(dgs);
+		db.log("Registering Chunk Load Event Listener...");
+		Bukkit.getPluginManager().registerEvents(new ChunkLoadEventListener(), this);
+		
 		db.log("Dynamic Dungeon has been enabled");
+		
+		// teleport all player to spawn
+		Bukkit.getWorld("dungeonworld").getPlayers().forEach(
+				p -> p.teleport(p.getBedSpawnLocation())
+		);
 	}
 	
 	public void onDisable()

@@ -19,6 +19,8 @@ public class CommandManager implements CommandExecutor {
                 sender.sendMessage("You must using this command in-game");
                 return false;
             }
+            
+            Player p = (Player) sender;
 
             if (!sender.hasPermission("dynamicdungeon.admin") && !sender.isOp()) {
                 return false;
@@ -31,31 +33,72 @@ public class CommandManager implements CommandExecutor {
 
             switch (args[0].toLowerCase()) {
                 case "admin": {
+                    if (args.length < 2)
+                    {
+                        p.sendMessage("================ [Dynamic Dungeon - Admin CMD] ================");
+                        p.sendMessage(" +-> build <Dungeon Session Name> ||| start creating a new session.");
+                        p.sendMessage(" +-> listsessions ||| list all sessions.");
+                        p.sendMessage(" +-> lss ||| list all the existing sessions.");
+                        p.sendMessage(" +-> join <Session ID> ||| join the existing session.");
+                        p.sendMessage(" +-> destroy ||| destroy an existing session.");
+                        p.sendMessage(" +-> killsession <Session ID> ||| kill an existing session.");
+                        p.sendMessage(" +-> lsm <Session ID> ||| list all spawned mobs on that session.");
+                        p.sendMessage("================ [            END            ] ================");
+                        return true;
+                    }
                     switch (args[1].toLowerCase()) {
                         case "build":
-                            BuilderV2.build((Player) sender, args[2]);
+                            if (args.length < 3)
+                            {
+                                p.sendMessage("Please provide Dungeon Name.");
+                                return false;
+                            }
+                            BuilderV2.build(p, args[2]);
                             sender.sendMessage("building DungeonSession: " + args[2]);
                             break;
                         case "listsessions":
                             break;
                         case "lss":
-                            gb.listOutSessions((Player) sender);
+                            gb.listOutSessions(p);
                             break;
                         case "join":
+                            if (args.length < 3)
+                            {
+                                p.sendMessage("Please provide Session ID.");
+                                return false;
+                            }
                             DungeonSession s = gb.dungeons.get(Integer.valueOf(args[2]));
                             if (s == null)
                                 sender.sendMessage("Dungeon Session not found.");
                             else
-                                s.join((Player) sender);
+                                s.join(p);
                             break;
-                        case "destory":
+                        case "destroy":
                             break;
                         case "killsession":
+                            if (args.length < 3)
+                            {
+                                p.sendMessage("Please provide Session ID.");
+                                return false;
+                            }
                             DungeonSession s1 = gb.dungeons.get(Integer.valueOf(args[2]));
                             if (s1 == null)
                                 sender.sendMessage("Dungeon Session not found.");
                             else
-                                s1.killSession((Player) sender);
+                                s1.killSession(p);
+                            break;
+                        case "lsm":
+                            if (args.length < 3)
+                            {
+                                p.sendMessage("Please provide Session ID.");
+                                return false;
+                            }
+                            DungeonSession s2 = gb.dungeons.get(Integer.valueOf(args[2]));
+                            if (s2 == null)
+                                sender.sendMessage("Dungeon Session not found.");
+                            else
+                                s2.listSpawnedMobs(p);
+                            
                             break;
                         default:
                             sender.sendMessage("Unknown command.");

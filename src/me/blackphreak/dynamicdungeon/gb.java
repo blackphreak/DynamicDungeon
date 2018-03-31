@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class gb {
-	public static boolean isDebugging = false;
+	public static boolean isDebugging = true;
 	public static ConcurrentHashMap<Integer, DungeonSession> dungeons = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Player, Integer> dungeonPlaying = new ConcurrentHashMap<>();
 	public static List</*SessionID*/ Integer> dungeonCreating = new ArrayList<>();

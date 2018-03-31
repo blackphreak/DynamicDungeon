@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Needed">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../pubLib/MythicMobs-4.2.0-SNAPSHOT_A.jar!/" />
       <root url="jar://$PROJECT_DIR$/../pubLib/spigot-1.12.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../pubLib/FastAsyncWorldEdit-bukkit-18.01.07-189e818-954-18.0.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../pubLib/FastAsyncWorldEdit-bukkit-18.01.11-0a127df-967-18.1.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../pubLib/MythicMobs-4.3.2-SNAPSHOT.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
