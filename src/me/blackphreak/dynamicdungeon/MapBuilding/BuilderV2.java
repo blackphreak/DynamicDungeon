@@ -73,9 +73,6 @@ public class BuilderV2 {
                 int minZ = loc.getChunk().getZ();
                 int maxX = max.getChunk().getX();
                 int maxZ = max.getChunk().getZ();
-                
-                world.getBlockAt(loc).setType(Material.COAL_BLOCK);
-                world.getBlockAt(max).setType(Material.COBBLESTONE);
     
                 Collection<Chunk> chunks = new HashSet<>();
                 db.tlog("min: [" + loc.toString() + "]");
@@ -97,9 +94,9 @@ public class BuilderV2 {
                 }
                 
                 // adding chunk to chunks list.
-                for (int x = minX; x < maxX; x++)
+                for (int x = minX; x <= maxX; x++)
                 {
-                    for (int z = minZ; z < maxZ; z++)
+                    for (int z = minZ; z <= maxZ; z++)
                     {
                         chunks.add(world.getChunkAt(x, z));
                     }
