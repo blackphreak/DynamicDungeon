@@ -12,6 +12,7 @@ import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -158,22 +159,27 @@ public class DungeonSession {
         tLst.addAll(spawners);
         this.spawnerTable.put(targetChunk, tLst);
     }
-
-    public void addSpawnerOnChunk(Chunk targetChunk, Location spawnLocation, String spawnerName)
+    
+    public void addSpawnerOnChunk(Sign sign)
     {
         MythicSpawner spawner = MythicMobs.inst().getSpawnerManager()
-                .getSpawnerByName(spawnerName);
-        
+                .getSpawnerByName(sign.getLine(1));
+    
         if (spawner == null)
         {
             db.log("Failed to add spawner on chunk.");
             db.log("-+-- Error: Spawner not found! Please check!");
-            db.log(" + Debug: ");
+            db.log(" + Debug:");
             db.log(" +-- Sign Location: [" + spawnLocation.getX() + ", " + spawnLocation.getY() + ", " + spawnLocation.getZ() + "]");
-            db.log(" +-- Spawner Name : [" + spawnerName + "]");
+            db.log(" +-- Spawner Name : [" + sign.getLine(1) + "]");
+            db.logArr(" +-- Lines: ", sign.getLines());
             return;
         }
         
+        addSpawnerOnChunk(sign.getChunk(), sign.getLocation(), spawner);
+    }
+    public void addSpawnerOnChunk(Chunk targetChunk, Location spawnLocation, MythicSpawner spawner)
+    {
         List<MythicSpawner> tLst = this.spawnerTable.getOrDefault(targetChunk, new ArrayList<>());
         
         AbstractLocation loc = new AbstractLocation(
@@ -188,18 +194,11 @@ public class DungeonSession {
         this.spawnerTable.put(targetChunk, tLst);
     }
     
-    // testing
-    public static DungeonSession getSessionByChunk(Chunk chunk)
+    public void addExitPoint(Location signLoc, String targetLocation)
     {
-        for (DungeonSession session : gb.dungeons.values())
-        {
-            if (session.spawnerTable.containsKey(chunk))
-                return session;
-        }
-        
-        return null;
+        // checking
     }
-
+    
     public void removeSpawnersByChunk(Chunk targetChunk) {
         this.spawnerTable.remove(targetChunk);
     }

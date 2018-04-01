@@ -2,6 +2,7 @@ package me.blackphreak.dynamicdungeon.Commands;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV2;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.MapBuilding.Hub.SaveDungeon;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,7 +47,19 @@ public class CommandManager implements CommandExecutor {
                         p.sendMessage("================ [            END            ] ================");
                         return true;
                     }
-                    switch (args[1].toLowerCase()) {
+                    switch (args[1].toLowerCase())
+                    {
+                        case "save":
+                            if (args.length < 3)
+                            {
+                                p.sendMessage("Please provide Dungeon Name.");
+                                return false;
+                            }
+    
+                            sender.sendMessage("Saving DungeonSchematic[" + args[2] + "] ...");
+                            SaveDungeon.saveDungeon(p, args[2]);
+                            sender.sendMessage("Saved!");
+                            break;
                         case "build":
                             if (args.length < 3)
                             {

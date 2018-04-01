@@ -10,7 +10,10 @@ import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
+import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
+import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologramManager;
 import me.blackphreak.dynamicdungeon.gb;
+import me.blackphreak.dynamicdungeon.math;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,6 +23,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,26 +35,26 @@ public class BuilderV2 {
     }
 
     public static DungeonSession build(Player sessionOwner, String fileNameWithoutExtension) {
-        File schematic = new File("plugins/DynamicDungeon/savedDungeons/" + fileNameWithoutExtension + ".schematic");
-
-        try {
+        try
+        {
+            File schematic = new File("plugins/DynamicDungeon/savedDungeons/" + fileNameWithoutExtension + ".schematic");
             Clipboard cp = FaweAPI.load(schematic).getClipboard();
             
             Location loc = gb.nextDungeonLocation.clone();
-            db.log("Building Session at Loc: [" + loc.toString() + "]");
+            db.log("Building Session at Loc[" + loc.toString() + "] Owner[" + sessionOwner.getName() + "]");
             
             final Vector maxVt = cp.getDimensions();
     
-            Location max = loc.clone().subtract(maxVt.getBlockX(), 0, maxVt.getBlockZ());
-            db.log("maxLoc: ["+max.toString() + "]");
-            Region region = new CuboidSelection(loc.getWorld(), max, loc).getRegionSelector().getRegion();
+            Location max = loc.clone().add(maxVt.getBlockX(), 0, maxVt.getBlockZ());
+            db.tlog("maxLoc: ["+max.toString() + "]");
+            Region region = new CuboidSelection(gb.dgWorld, loc, max).getRegionSelector().getRegion();
     
             EditSession session = ClipboardFormat.SCHEMATIC.load(schematic).paste(region.getWorld(), new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), true, true, null);
             session.enableQueue();
             
             //update the next loc.
-            gb.nextDungeonLocation = loc.clone().add(100, 0 ,0);
-            db.log("nextLoc: [" + gb.nextDungeonLocation.toString() + "]");
+            gb.nextDungeonLocation = loc.clone().add(maxVt.getBlockX() + gb.gap, 0 ,0);
+            db.tlog("nextLoc: [" + gb.nextDungeonLocation.toString() + "]");
             
             DungeonSession dg = new DungeonSession(sessionOwner, region, session, loc, max);
             
@@ -69,6 +73,9 @@ public class BuilderV2 {
                 int minZ = loc.getChunk().getZ();
                 int maxX = max.getChunk().getX();
                 int maxZ = max.getChunk().getZ();
+                
+                world.getBlockAt(loc).setType(Material.COAL_BLOCK);
+                world.getBlockAt(max).setType(Material.COBBLESTONE);
     
                 Collection<Chunk> chunks = new HashSet<>();
                 db.tlog("min: [" + loc.toString() + "]");
@@ -98,9 +105,11 @@ public class BuilderV2 {
                     }
                 }
                 
-                db.tlog("Loading chunks for session...");
+                db.log("Loading chunks for session...");
                 for (Chunk chunk : chunks)
                 {
+                    chunk.load();
+                    
                     db.tlog("Checking Chunk @ [x:" + chunk.getX() + ", z:" + chunk.getZ() + "]");
 
                     List<BlockState> signs = Arrays.stream(chunk.getTileEntities())
@@ -109,21 +118,112 @@ public class BuilderV2 {
                     
                     for (BlockState blockState : signs)
                     {
-                        db.log(blockState.getType().name());
-                        db.tlog("BlockState: " + blockState.getType().name() + " | " + blockState.getLocation().toString());
-
                         Sign sign = (Sign) blockState;
+                        db.tlog("BlockState: " + blockState.getType().name() + " | " + blockState.getLocation().toString() + " | Line0[" + sign.getLine(0) + "]");
 
-                        if (sign.getLine(0).toLowerCase().equals("[dgmob]")) //DunGeon MOB spawner
+                        switch (sign.getLine(0).toLowerCase())
                         {
-                            dg.addSpawnerOnChunk(sign.getChunk(),
-                                    sign.getLocation(),
-                                    sign.getLine(1)
-                            );
-
-                            blockState.getBlock().setType(Material.AIR);
+                            case "[dgmob]": //DunGeon MOB spawner
+                                if (sign.getLine(1).isEmpty())
+                                {
+                                    db.log("-+-- Error: Invalid Dungeon Mob Spawner Sign! Please Check!");
+                                    db.log(" + Debug:");
+                                    db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
+                                    db.log(" +-- Spawner Type : [dgmob]");
+                                    db.log(" +-- Debug Message: " + "line 2 (Spawner Name) is missing.");
+                                    db.logArr(" +-- Lines: ", sign.getLines());
+                                }
+                                else
+                                    dg.addSpawnerOnChunk(sign);
+    
+                                blockState.getBlock().setType(Material.AIR);
+                                break;
+                            case "[dgexit]": //DunGeon EXIT
+                                if (sign.getLine(1).isEmpty())
+                                {
+                                    db.log("-+-- Error: Invalid Dungeon Exit Sign! Please Check!");
+                                    db.log(" + Debug:");
+                                    db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
+                                    db.log(" +-- Spawner Type : [dgexit]");
+                                    db.log(" +-- Debug Message: " + "line 2 (Exit Location) is missing.");
+                                    db.logArr(" +-- Lines: ", sign.getLines());
+                                }
+                                else
+                                {
+                                    dg.addExitPoint(
+                                            sign.getLocation(), //sign location
+                                            sign.getLine(1) //target location format:[world,x,y,z]
+                                    );
+                                }
+    
+                                blockState.getBlock().setType(Material.AIR);
+                                break;
+                            case "[dgdec]": //DunGeon DECoration
+                                if (sign.getLine(1).isEmpty())
+                                {
+                                    db.log("-+-- Error: Invalid Dungeon Decoration Sign! Please Check!");
+                                    db.log(" + Debug:");
+                                    db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
+                                    db.log(" +-- Spawner Type : [dgexit]");
+                                    db.log(" +-- Debug Message: " + "line 2 (Decoration Type) is missing.");
+                                    db.logArr(" +-- Lines: ", sign.getLines());
+                                }
+                                else
+                                {
+                                    //use what decoration? format:[decType]
+                                    switch (sign.getLine(1).toLowerCase())
+                                    {
+                                        case "hd":
+                                            // Holographic Display
+                                            if (gb.hd == null)
+                                                continue;
+    
+                                            String hdName = sign.getLine(2); //holographic name
+    
+                                            if (hdName.isEmpty())
+                                            {
+                                                db.log("-+-- Error: Invalid Dungeon Decoration Sign! Please Check!");
+                                                db.log(" + Debug:");
+                                                db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
+                                                db.log(" +-- Spawner Type : [dgdec]");
+                                                db.log(" +-- Debug Message: " + "line 3 (Holographic Name) is missing.");
+                                                db.logArr(" +-- Lines: ", sign.getLines());
+                                                
+                                                continue;
+                                            }
+                                            if (!math.isDouble(sign.getLine(3)))
+                                            {
+                                                db.log("-+-- Error: Invalid Dungeon Decoration Sign! Please Check!");
+                                                db.log(" + Debug:");
+                                                db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
+                                                db.log(" +-- Spawner Type : [dgdec]");
+                                                db.log(" +-- Debug Message: " + "line 4 (offset) is invalid, it should be a double.");
+                                                db.logArr(" +-- Lines: ", sign.getLines());
+        
+                                                continue;
+                                            }
+                                            double offset = Double.parseDouble(sign.getLine(3)); // offset value -- (double) offset of decoration y axis
+                                            cHologram chg = cHologramManager.getOrRegister(hdName).clone();
+                                            if (chg == null)
+                                            {
+                                                db.log("-+-- Error: Invalid Dungeon Decoration Sign! Please Check!");
+                                                db.log(" + Debug:");
+                                                db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
+                                                db.log(" +-- Spawner Type : [dgdec]");
+                                                db.log(" +-- Debug Message: " + "Hologram["+hdName+"] not found!");
+                                                db.logArr(" +-- Lines: ", sign.getLines());
+    
+                                                continue;
+                                            }
+                                            chg.teleport(sign.getLocation().add(0, offset, 0));
+                                            break;
+                                    }
+                                    blockState.getBlock().setType(Material.AIR);
+                                }
+                                
+                                break;
                         }
-                        else if (!spawnPointSign
+                        if (!spawnPointSign
                                 && sign.getLine(0).toLowerCase().equals("[dgsp]")) //DunGeon Spawn Point
                         {
                             dg.setSpawnLocation(sign.getLocation());
@@ -131,6 +231,8 @@ public class BuilderV2 {
                             blockState.getBlock().setType(Material.AIR);
                         }
                     }
+                    
+                    chunk.unload();
                 }
     
                 if (!spawnPointSign)
@@ -144,20 +246,31 @@ public class BuilderV2 {
                 }
                 else
                 {
+                    db.log("Dungeon Session created.");
                     msg.send(sessionOwner, "Teleporting to your DungeonSession...");
                     dg.join(sessionOwner);
                 }
-    
-                chunks.clear();
             });
     
             return dg;
         }
+        catch (FileNotFoundException ex)
+        {
+            db.log("Dungeon File Not Found! [Name: "+fileNameWithoutExtension+".schematic]");
+            msg.send(sessionOwner, "Please contact admin to fix this. [DFNFE]"); //dungeon file not found exception
+        }
         catch (Exception ex)
         {
+            db.log("Unexpected Error Occurred, please post the message below to https://github.com/blackphreak/DynamicDungeon/issues");
             ex.printStackTrace();
+            msg.send(sessionOwner, "Please contact admin to fix this. [UEEO]");
+            DungeonSession dg = gb.getDungeonSessionByPlayer(sessionOwner);
+            if (dg != null)
+            {
+                msg.send(sessionOwner, "Killing Dungeon Session...");
+                dg.killSession();
+            }
         }
-
         return null;
     }
 }

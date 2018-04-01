@@ -1,7 +1,6 @@
 package me.blackphreak.dynamicdungeon;
 
 import me.blackphreak.dynamicdungeon.Commands.CommandManager;
-import me.blackphreak.dynamicdungeon.Listeners.ChunkLoadEventListener;
 import me.blackphreak.dynamicdungeon.Listeners.PlayerInteractEventListener;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import org.bukkit.Bukkit;
@@ -30,8 +29,8 @@ public class DynamicDungeon extends JavaPlugin {
 		db.log("Registering Player Interact Event Listener...");
 		Bukkit.getPluginManager().registerEvents(new PlayerInteractEventListener(), this);
 		
-		db.log("Registering Chunk Load Event Listener...");
-		Bukkit.getPluginManager().registerEvents(new ChunkLoadEventListener(), this);
+//		db.log("Registering Chunk Load Event Listener...");
+//		Bukkit.getPluginManager().registerEvents(new ChunkLoadEventListener(), this);
 		
 		db.log("Dynamic Dungeon has been enabled");
 		
@@ -39,6 +38,8 @@ public class DynamicDungeon extends JavaPlugin {
 		Bukkit.getWorld("dungeonworld").getPlayers().forEach(
 				p -> p.teleport(p.getBedSpawnLocation())
 		);
+		
+		new gb();
 	}
 	
 	public void onDisable()
