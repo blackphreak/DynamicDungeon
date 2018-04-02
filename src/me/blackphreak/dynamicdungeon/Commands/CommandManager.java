@@ -1,13 +1,28 @@
 package me.blackphreak.dynamicdungeon.Commands;
 
+import com.boydti.fawe.object.FawePlayer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sk89q.worldedit.regions.Region;
+import me.blackphreak.dynamicdungeon.DynamicDungeon;
 import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV2;
+import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSessionManager;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.SaveDungeon;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObject;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObjectDeserializer;
+import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.gb;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class CommandManager implements CommandExecutor {
     public CommandManager() {
@@ -20,22 +35,20 @@ public class CommandManager implements CommandExecutor {
                 sender.sendMessage("You must using this command in-game");
                 return false;
             }
-            
+
             Player p = (Player) sender;
 
             if (!sender.hasPermission("dynamicdungeon.admin") && !sender.isOp()) {
                 return false;
             }
-            
-            if (args.length < 1)
-            {
+
+            if (args.length < 1) {
                 return false;
             }
 
             switch (args[0].toLowerCase()) {
                 case "admin": {
-                    if (args.length < 2)
-                    {
+                    if (args.length < 2) {
                         p.sendMessage("================ [Dynamic Dungeon - Admin CMD] ================");
                         p.sendMessage(" +-> build <Dungeon Session Name> ||| start creating a new session.");
                         p.sendMessage(" +-> listsessions ||| list all sessions.");
@@ -47,22 +60,40 @@ public class CommandManager implements CommandExecutor {
                         p.sendMessage("================ [            END            ] ================");
                         return true;
                     }
-                    switch (args[1].toLowerCase())
-                    {
+                    switch (args[1].toLowerCase()) {
+                        case "sessiontest":
+                            Region r = FawePlayer.wrap(p).getSelection();
+                            DungeonEditSessionManager.getInstance().newSession(p, args[2], r);
+                            break;
+                        case "sessionsave":
+                            DungeonEditSessionManager.getInstance().getPlayerSession(p).save();
+                            break;
+                        case "loadele":
+                            Gson gson = new GsonBuilder().registerTypeAdapter(DungeonObject.class, new DungeonObjectDeserializer()).create();
+                            File dungeonFile = new File(DynamicDungeon.plugin.getDataFolder(), "savedDungeons/" + args[2] + ".json");
+                            try {
+                                String content = FileUtils.readFileToString(dungeonFile, Charset.defaultCharset());
+                                DungeonObject[] objs = gson.fromJson(content, DungeonObject[].class);
+                                for (DungeonObject dungeonObject : objs) {
+                                    p.sendMessage(dungeonObject.toString());
+                                }
+                            } catch (IOException e) {
+                                db.log("Error on reading Dungeon Object File");
+                                e.printStackTrace();
+                            }
+                            break;
                         case "save":
-                            if (args.length < 3)
-                            {
+                            if (args.length < 3) {
                                 p.sendMessage("Please provide Dungeon Name.");
                                 return false;
                             }
-    
+
                             sender.sendMessage("Saving DungeonSchematic[" + args[2] + "] ...");
                             SaveDungeon.saveDungeon(p, args[2]);
                             sender.sendMessage("Saved!");
                             break;
                         case "build":
-                            if (args.length < 3)
-                            {
+                            if (args.length < 3) {
                                 p.sendMessage("Please provide Dungeon Name.");
                                 return false;
                             }
@@ -75,8 +106,7 @@ public class CommandManager implements CommandExecutor {
                             gb.listOutSessions(p);
                             break;
                         case "join":
-                            if (args.length < 3)
-                            {
+                            if (args.length < 3) {
                                 p.sendMessage("Please provide Session ID.");
                                 return false;
                             }
@@ -89,8 +119,7 @@ public class CommandManager implements CommandExecutor {
                         case "destroy":
                             break;
                         case "killsession":
-                            if (args.length < 3)
-                            {
+                            if (args.length < 3) {
                                 p.sendMessage("Please provide Session ID.");
                                 return false;
                             }
@@ -101,8 +130,7 @@ public class CommandManager implements CommandExecutor {
                                 s1.killSession(p);
                             break;
                         case "lsm":
-                            if (args.length < 3)
-                            {
+                            if (args.length < 3) {
                                 p.sendMessage("Please provide Session ID.");
                                 return false;
                             }
@@ -111,7 +139,7 @@ public class CommandManager implements CommandExecutor {
                                 sender.sendMessage("Dungeon Session not found.");
                             else
                                 s2.listSpawnedMobs(p);
-                            
+
                             break;
                         default:
                             sender.sendMessage("Unknown command.");

@@ -4,13 +4,12 @@ import com.boydti.fawe.FaweAPI;
 import com.google.gson.Gson;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.SignLocation;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.TeleportLocation;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
@@ -18,11 +17,9 @@ import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologramManag
 import me.blackphreak.dynamicdungeon.gb;
 import me.blackphreak.dynamicdungeon.math;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
@@ -30,8 +27,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,7 +58,7 @@ public class BuilderV2 {
 
 
             File signListFile = new File("plugins/DynamicDungeon/savedDungeons/" + fileNameWithoutExtension + ".json");
-            SignLocation[] signs = new Gson().fromJson(FileUtils.readFileToString(signListFile, Charset.defaultCharset()), SignLocation[].class);
+            TeleportLocation[] signs = new Gson().fromJson(FileUtils.readFileToString(signListFile, Charset.defaultCharset()), TeleportLocation[].class);
             //pasting task done listener WTF????
             session.addNotifyTask(() ->
             {

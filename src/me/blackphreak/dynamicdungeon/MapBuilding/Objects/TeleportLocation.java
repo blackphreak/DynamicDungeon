@@ -1,11 +1,13 @@
-package me.blackphreak.dynamicdungeon.MapBuilding.Hub;
+package me.blackphreak.dynamicdungeon.MapBuilding.Objects;
 
-public class SignLocation {
+public class TeleportLocation {
+    private String world;
     private int x;
     private int y;
     private int z;
 
-    public SignLocation(int x, int y, int z) {
+    public TeleportLocation(String world, int x, int y, int z) {
+        this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
