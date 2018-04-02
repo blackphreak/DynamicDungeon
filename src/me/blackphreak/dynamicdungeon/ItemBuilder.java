@@ -8,19 +8,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemBuilder
-{
-	public static ItemStack setItemNameAndLore(ItemStack item, String name, String... lore) {
-		ItemMeta im = item.getItemMeta();
-		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		im.setDisplayName(name);
-		
-		List<String> loreList = new ArrayList<>();
-		for (String line : lore)
-			loreList.add(ChatColor.translateAlternateColorCodes('&', line));
-		
-		im.setLore(loreList);
-		item.setItemMeta(im);
-		return item;
-	}
+public class ItemBuilder {
+    public static ItemStack setItemNameAndLore(ItemStack item, String name, String... lore) {
+        ItemMeta im = item.getItemMeta();
+        im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+
+        List<String> loreList = new ArrayList<>();
+        for (String line : lore)
+            loreList.add(ChatColor.translateAlternateColorCodes('&', line));
+
+        im.setLore(loreList);
+        item.setItemMeta(im);
+        return item;
+    }
 }

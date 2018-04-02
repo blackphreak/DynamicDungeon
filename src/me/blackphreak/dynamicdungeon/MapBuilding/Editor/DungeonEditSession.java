@@ -7,6 +7,7 @@ import me.blackphreak.dynamicdungeon.MapBuilding.Objects.*;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.gb;
 import org.apache.commons.io.FileUtils;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,14 +21,16 @@ public class DungeonEditSession {
     private List<DungeonObject> dungeonObjectList = new ArrayList<>();
     private DungeonObject lastEdit;
     private AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> valueOperation;
+    private Player player;
     private String dungeonName;
     private Region region;
     private final Vector minPoint;
 
-    public DungeonEditSession(String dungeonName, Region region) {
+    public DungeonEditSession(Player player, String dungeonName, Region region) {
+        this.player = player;
         this.dungeonName = dungeonName;
         this.region = region;
-        this.minPoint = region.getMaximumPoint();
+        this.minPoint = region.getMinimumPoint();
     }
 
     public void save() {
@@ -62,21 +65,40 @@ public class DungeonEditSession {
         lastEdit = new DungeonMobSpawner(x, y, z);
         updateOperation();
     }
-    
+
+
     public void createDungeonDecoration(int x, int y, int z) {
+        lastEdit = new DungeonPlaceholderObject();
+        valueOperation = new AbstractMap.SimpleEntry<>("Decoration Type", (dobj, type) -> {
+            String strType = (String) type;
+            switch (strType.toLowerCase()) {
+                case "hd":
+                    createDungeonHDDecoration(x, y, z);
+                    break;
+            }
+        });
+        player.sendMessage("Required: Decoration Type");
+    }
+
+    public void createDungeonHDDecoration(int x, int y, int z) {
         x -= minPoint.getBlockX();
         y -= minPoint.getBlockY();
         z -= minPoint.getBlockZ();
-        lastEdit = new DungeonDecorate(x, y, z);
-        updateOperation();
+        lastEdit = new DungeonHDDecorate(x, y, z);
+        //updateOperation();
     }
 
 
     public void updateOperation() {
         valueOperation = lastEdit.getOperation();
         if (valueOperation == null) {
-            dungeonObjectList.add(lastEdit);
+            player.sendMessage("Finished setup for this.");
+            if (!(lastEdit instanceof DungeonPlaceholderObject)) {
+                dungeonObjectList.add(lastEdit);
+            }
             lastEdit = null;
+        } else {
+            player.sendMessage("Required: " + valueOperation.getKey());
         }
     }
 
@@ -96,7 +118,7 @@ public class DungeonEditSession {
             db.log("ERROR IN INPUT");
         }
     }
-    
+
     public String getDungeonName() {
         return dungeonName;
     }

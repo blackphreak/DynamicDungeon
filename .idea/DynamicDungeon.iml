@@ -14,5 +14,6 @@
     <orderEntry type="library" name="spigot" level="project" />
     <orderEntry type="library" name="z_FastAsyncWorldEdit-bukkit-18.01.11-0a127df-967-18.1.8" level="project" />
     <orderEntry type="library" name="worldedit-bukkit-6.1.7.2" level="project" />
+    <orderEntry type="library" name="MythicMobs-4.3.2-SNAPSHOT (2)" level="project" />
   </component>
 </module>

@@ -32,6 +32,10 @@ public class DungeonMobSpawner extends DungeonObject {
         r += "SpawnerName: " + spawner + "\n";
         return r;
     }
+
+    public String getSpawner() {
+        return spawner;
+    }
 }
 
 /*

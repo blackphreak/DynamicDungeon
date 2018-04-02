@@ -2,6 +2,7 @@ package me.blackphreak.dynamicdungeon.MapBuilding;
 
 import com.boydti.fawe.FaweAPI;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
@@ -9,7 +10,7 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.cLocation;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.*;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
@@ -25,6 +26,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -58,141 +60,58 @@ public class BuilderV3 {
 
 
             File signListFile = new File(gb.dataPath + fileNameWithoutExtension + ".json");
-            cLocation[] signs = new Gson().fromJson(FileUtils.readFileToString(signListFile, Charset.defaultCharset()), cLocation[].class);
+            //cLocation[] signs = new Gson().fromJson(FileUtils.readFileToString(signListFile, Charset.defaultCharset()), cLocation[].class);
+
             //pasting task done listener
             session.addNotifyTask(() ->
             {
                 //flushing the queue
                 session.flushQueue();
 
-                //getting location of spawn point & mob spawner
-                boolean spawnPointSign = false;
 
-                //get all the chunk inside the area.
+                Gson gson = new GsonBuilder().registerTypeAdapter(DungeonObject.class, new DungeonObjectDeserializer()).create();
+                File dungeonFile = new File(gb.dataPath + fileNameWithoutExtension + ".json");
 
+                DungeonObject[] objs;
+                try {
+                    String content = FileUtils.readFileToString(dungeonFile, Charset.defaultCharset());
+                    objs = gson.fromJson(content, DungeonObject[].class);
+                    db.log(Arrays.toString(objs));
+                } catch (IOException e) {
+                    db.log("Error on reading Dungeon Object File");
+                    e.printStackTrace();
+                    return;
+                }
 
                 db.log("Loading chunks for session...");
                 World world = loc.getWorld();
-                List<Sign> signList = Arrays.stream(signs).map(s -> {
-                    Location sloc = loc.clone();
-                    sloc.add(s.getX(), s.getY(), s.getZ());
-                    return (Sign) world.getBlockAt(sloc).getState();
-                }).collect(Collectors.toList());
 
-                for (Sign sign : signList) {
-                    db.tlog("BlockState: " + sign.getType().name() + " | " + sign.getLocation().toString() + " | Line0[" + sign.getLine(0) + "]");
-
-                    switch (sign.getLine(0).toLowerCase()) {
-                        case "[dgmob]": //DunGeon MOB spawner
-                            if (sign.getLine(1).isEmpty()) {
-                                db.log("-+-- Error: Invalid Dungeon Mob Spawner Sign! Please Check!");
-                                db.log(" + Debug:");
-                                db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
-                                db.log(" +-- Spawner Type : [dgmob]");
-                                db.log(" +-- Debug Message: " + "line 2 (Spawner Name) is missing.");
-                                db.logArr(" +-- Lines: ", sign.getLines());
-                            } else
-                                dg.addSpawnerOnChunk(sign);
-
-                            sign.getBlock().setType(Material.AIR);
+                for (DungeonObject dungeonObject : objs) {
+                    db.log(dungeonObject.toString());
+                    switch (dungeonObject.getType()) {
+                        case "exit":
+                            //Unimplemented
                             break;
-                        case "[dgexit]": //DunGeon EXIT
-                            if (sign.getLine(1).isEmpty()) {
-                                db.log("-+-- Error: Invalid Dungeon Exit Sign! Please Check!");
-                                db.log(" + Debug:");
-                                db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
-                                db.log(" +-- Spawner Type : [dgexit]");
-                                db.log(" +-- Debug Message: " + "line 2 (Exit Location) is missing.");
-                                db.logArr(" +-- Lines: ", sign.getLines());
-                            } else {
-                                dg.addExitPoint(
-                                        sign.getLocation(), //sign location
-                                        sign.getLine(1) //target location format:[world,x,y,z]
-                                );
-                            }
-
-                            sign.getBlock().setType(Material.AIR);
+                        case "spawn":
+                            DungeonSpawn dgsp = ((DungeonSpawn) dungeonObject);
+                            dg.setSpawnLocation(new Location(world, dgsp.getX(), dgsp.getY(), dgsp.getZ()).add(loc));
                             break;
-                        case "[dgdec]": //DunGeon DECoration
-                            if (sign.getLine(1).isEmpty()) {
-                                db.log("-+-- Error: Invalid Dungeon Decoration Sign! Please Check!");
-                                db.log(" + Debug:");
-                                db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
-                                db.log(" +-- Spawner Type : [dgexit]");
-                                db.log(" +-- Debug Message: " + "line 2 (Decoration Type) is missing.");
-                                db.logArr(" +-- Lines: ", sign.getLines());
-                            } else {
-                                //use what decoration? format:[decType]
-                                switch (sign.getLine(1).toLowerCase()) {
-                                    case "hd":
-                                        // Holographic Display
-                                        if (gb.hd == null)
-                                            continue;
-
-                                        String hdName = sign.getLine(2); //holographic name
-
-                                        if (hdName.isEmpty()) {
-                                            db.log("-+-- Error: Invalid Dungeon Decoration Sign! Please Check!");
-                                            db.log(" + Debug:");
-                                            db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
-                                            db.log(" +-- Spawner Type : [dgdec]");
-                                            db.log(" +-- Debug Message: " + "line 3 (Holographic Name) is missing.");
-                                            db.logArr(" +-- Lines: ", sign.getLines());
-
-                                            continue;
-                                        }
-                                        if (!math.isDouble(sign.getLine(3))) {
-                                            db.log("-+-- Error: Invalid Dungeon Decoration Sign! Please Check!");
-                                            db.log(" + Debug:");
-                                            db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
-                                            db.log(" +-- Spawner Type : [dgdec]");
-                                            db.log(" +-- Debug Message: " + "line 4 (offset) is invalid, it should be a double.");
-                                            db.logArr(" +-- Lines: ", sign.getLines());
-
-                                            continue;
-                                        }
-                                        double offset = Double.parseDouble(sign.getLine(3)); // offset value -- (double) offset of decoration y axis
-                                        cHologram chg = cHologramManager.getOrRegister(hdName).clone();
-                                        if (chg == null) {
-                                            db.log("-+-- Error: Invalid Dungeon Decoration Sign! Please Check!");
-                                            db.log(" + Debug:");
-                                            db.log(" +-- Sign Location: [" + sign.getX() + ", " + sign.getY() + ", " + sign.getZ() + "]");
-                                            db.log(" +-- Spawner Type : [dgdec]");
-                                            db.log(" +-- Debug Message: " + "Hologram[" + hdName + "] not found!");
-                                            db.logArr(" +-- Lines: ", sign.getLines());
-
-                                            continue;
-                                        }
-                                        chg.teleport(sign.getLocation().add(0, offset, 0));
-                                        break;
-                                }
-                                sign.getBlock().setType(Material.AIR);
-                            }
-
+                        case "mobspawner":
+                            DungeonMobSpawner dgmobspawner = ((DungeonMobSpawner) dungeonObject);
+                            dg.addSpawnerOnChunk(dgmobspawner.getSpawner(), new Location(world, dgmobspawner.getX(), dgmobspawner.getY(), dgmobspawner.getZ()).add(loc));
                             break;
-                    }
-                    if (!spawnPointSign
-                            && sign.getLine(0).toLowerCase().equals("[dgsp]")) //DunGeon Spawn Point
-                    {
-                        dg.setSpawnLocation(sign.getLocation());
-                        spawnPointSign = true;
-                        sign.getBlock().setType(Material.AIR);
+                        case "hddecorate":
+                            DungeonHDDecorate dghd = (DungeonHDDecorate) dungeonObject;
+                            cHologram chg = cHologramManager.getOrRegister(dghd.getName()).clone();
+                            chg.teleport(new Location(world, dghd.getX(), dghd.getY(), dghd.getZ()).add(loc).add(0, dghd.getOffset(), 0));
+                            break;
                     }
                 }
 
+                db.log("Dungeon Session created.");
+                msg.send(sessionOwner, "Teleporting to your DungeonSession...");
+                dg.join(sessionOwner);
 
-                if (!spawnPointSign) {
-                    msg.send(sessionOwner, "Please contact administrator to fix this [Error: Builder->SLNF]");
-                    db.log("Dungeon creation error, Spawn Location not found!");
-
-                    //undo the dungeon session and mark as un-buildable dungeon
-                    db.log("Killing Dungeon Session...");
-                    dg.killSession();
-                } else {
-                    db.log("Dungeon Session created.");
-                    msg.send(sessionOwner, "Teleporting to your DungeonSession...");
-                    dg.join(sessionOwner);
-                }
             });
 
             return dg;

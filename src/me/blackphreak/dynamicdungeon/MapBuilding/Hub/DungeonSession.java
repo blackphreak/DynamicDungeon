@@ -142,8 +142,8 @@ public class DungeonSession {
         });
         spawnerTable.values().forEach(list -> list.forEach(MythicSpawner::unloadSpawner));
         this.session.undo(this.session);
-    
-        db.log("Dungeon Session["+uuid+"] with owner: "+this.sessionOwner.getName()+" has been killed.");
+
+        db.log("Dungeon Session[" + uuid + "] with owner: " + this.sessionOwner.getName() + " has been killed.");
     }
 
     public void updateCheckPoint(Location location) {
@@ -159,12 +159,13 @@ public class DungeonSession {
         tLst.addAll(spawners);
         this.spawnerTable.put(targetChunk, tLst);
     }
-    
+
+    /*
     public void addSpawnerOnChunk(Sign sign)
     {
         MythicSpawner spawner = MythicMobs.inst().getSpawnerManager()
                 .getSpawnerByName(sign.getLine(1));
-    
+
         if (spawner == null)
         {
             db.log("Failed to add spawner on chunk.");
@@ -175,13 +176,29 @@ public class DungeonSession {
             db.logArr(" +-- Lines: ", sign.getLines());
             return;
         }
-        
+
         addSpawnerOnChunk(sign.getChunk(), sign.getLocation(), spawner);
     }
-    public void addSpawnerOnChunk(Chunk targetChunk, Location spawnLocation, MythicSpawner spawner)
-    {
+    */
+
+    public void addSpawnerOnChunk(String spawnerName, Location loc) {
+        MythicSpawner spawner = MythicMobs.inst().getSpawnerManager().getSpawnerByName(spawnerName);
+
+        if (spawner == null) {
+            db.log("Failed to add spawner on chunk.");
+            db.log("-+-- Error: Spawner not found! Please check!");
+            db.log(" + Debug:");
+            //db.log(" +-- Sign Location: [" + spawnLocation.getX() + ", " + spawnLocation.getY() + ", " + spawnLocation.getZ() + "]");
+            db.log(" +-- Spawner Name : [" + spawnerName + "]");
+            return;
+        }
+        addSpawnerOnChunk(loc.getChunk(), loc, spawner);
+    }
+
+
+    public void addSpawnerOnChunk(Chunk targetChunk, Location spawnLocation, MythicSpawner spawner) {
         List<MythicSpawner> tLst = this.spawnerTable.getOrDefault(targetChunk, new ArrayList<>());
-        
+
         AbstractLocation loc = new AbstractLocation(
                 new BukkitWorld(spawnLocation.getWorld()),
                 spawnLocation.getX(),
@@ -193,12 +210,11 @@ public class DungeonSession {
         tLst.add(spawner);
         this.spawnerTable.put(targetChunk, tLst);
     }
-    
-    public void addExitPoint(Location signLoc, String targetLocation)
-    {
+
+    public void addExitPoint(Location signLoc, String targetLocation) {
         // checking
     }
-    
+
     public void removeSpawnersByChunk(Chunk targetChunk) {
         this.spawnerTable.remove(targetChunk);
     }
@@ -207,15 +223,13 @@ public class DungeonSession {
         return this.spawnerTable.getOrDefault(targetChunk, new ArrayList<>());
     }
 
-    public void addSpawnedMobs(List<ActiveMob> mobs)
-    {
+    public void addSpawnedMobs(List<ActiveMob> mobs) {
         spawnedMobs.addAll(mobs);
     }
-    
-    public void listSpawnedMobs(Player target)
-    {
+
+    public void listSpawnedMobs(Player target) {
         for (int i = 0; i < spawnedMobs.size(); i++)
-            target.sendMessage("Mobs ["+i+"]: Loc[" + spawnedMobs.get(i).getLocation().toString() + "]");
+            target.sendMessage("Mobs [" + i + "]: Loc[" + spawnedMobs.get(i).getLocation().toString() + "]");
     }
 
     public int maxPlayers() {

@@ -42,6 +42,10 @@ public abstract class DungeonObject {
         return z;
     }
 
+    public String getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         String r = "";
