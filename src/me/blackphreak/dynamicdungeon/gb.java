@@ -15,13 +15,18 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class gb {
-    public static boolean isDebugging = true;
+    public static final String dgWorldName = "dungeonWorld"; // TODO: change in config.yml
+    public static final World dgWorld = Bukkit.getWorld(dgWorldName);
+    public static final int gap = 100; // indicates the gap between different dungeons. // TODO: change in config.yml
+    public static final String dataPath = "plugins/DynamicDungeon/savedDungeons/";
+    
+    
+    public static boolean isDebugging = true; // TODO: change in config.yml
     public static ConcurrentHashMap<Integer, DungeonSession> dungeons = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<Player, Integer> dungeonPlaying = new ConcurrentHashMap<>();
     public static List</*SessionID*/ Integer> dungeonCreating = new ArrayList<>();
-    public static Location nextDungeonLocation = new Location(Bukkit.getWorld("dungeonWorld"), 50, 90, 50);
-    public static final World dgWorld = Bukkit.getWorld("dungeonWorld");
-    public static final int gap = 100; // indicates the gap between different dungeons.
+    public static Location nextDungeonLocation = new Location(dgWorld, 50, 90, 50);
+    
 
     public static Plugin hd = null;
 

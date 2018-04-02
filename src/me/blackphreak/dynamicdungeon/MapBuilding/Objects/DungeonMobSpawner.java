@@ -10,11 +10,11 @@ public class DungeonMobSpawner extends DungeonObject {
         super("mobspawner", x, y, z);
     }
 
-
-    private static AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, String>> spawnerInput = new AbstractMap.SimpleEntry<>("spawnerName", (dobj, input) -> ((DungeonMobSpawner) dobj).spawner = input);
+    
+    private static AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> spawnerInput = new AbstractMap.SimpleEntry<>("spawnerName", (dobj, input) -> ((DungeonMobSpawner) dobj).spawner = (String) input);
     private transient boolean received = false;
 
-    public AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, String>> getOperation() {
+    public AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation() {
         if (!received) {
             received = true;
             return spawnerInput;

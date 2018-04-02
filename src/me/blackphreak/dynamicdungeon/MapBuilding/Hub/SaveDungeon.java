@@ -9,6 +9,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
+import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class SaveDungeon {
             Region r = FawePlayer.wrap(p).getSelection();
 
             if (r == null) {
-                msg.send(p, "You must select an area using AXE!!");
+                msg.send(p, "You must select an area with AXE!!");
                 return;
             }
 
@@ -29,14 +30,14 @@ public class SaveDungeon {
             Vector min = r.getMinimumPoint();
             Vector max = r.getMaximumPoint();
 
-            File file = new File("plugins/DynamicDungeon/savedDungeons/" + dungeonName + ".schematic");
+            File file = new File(gb.dataPath + dungeonName + ".schematic");
             CuboidRegion region = new CuboidRegion(world, min, max);
 
 
             //SIGN ITERATOR
             /*
             Iterator<BlockVector> iter = region.iterator();
-            List<TeleportLocation> signPlace = new ArrayList<>();
+            List<cLocation> signPlace = new ArrayList<>();
 
             BlockVector blockLoc;
 
@@ -44,7 +45,7 @@ public class SaveDungeon {
                 blockLoc = iter.next();
                 BaseBlock block = world.getBlock(blockLoc);
                 if (block.getType() == BlockID.WALL_SIGN || block.getType() == BlockID.SIGN_POST) {
-                    signPlace.add(new TeleportLocation(blockLoc.getBlockX() - min.getBlockX(), blockLoc.getBlockY() - min.getBlockY(), blockLoc.getBlockZ() - min.getBlockZ()));
+                    signPlace.add(new cLocation(blockLoc.getBlockX() - min.getBlockX(), blockLoc.getBlockY() - min.getBlockY(), blockLoc.getBlockZ() - min.getBlockZ()));
                 }
             }
            FileUtils.writeStringToFile(new File("plugins/DynamicDungeon/savedDungeons/" + dungeonName + ".json"), new Gson().toJson(signPlace), Charset.defaultCharset());

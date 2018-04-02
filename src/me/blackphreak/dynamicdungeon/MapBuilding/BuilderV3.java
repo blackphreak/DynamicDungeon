@@ -9,7 +9,7 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.TeleportLocation;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.cLocation;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
@@ -30,13 +30,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BuilderV2 {
-    public BuilderV2() {
+public class BuilderV3 {
+    public BuilderV3() {
     }
 
     public static DungeonSession build(Player sessionOwner, String fileNameWithoutExtension) {
         try {
-            File schematic = new File("plugins/DynamicDungeon/savedDungeons/" + fileNameWithoutExtension + ".schematic");
+            File schematic = new File(gb.dataPath + fileNameWithoutExtension + ".schematic");
             Clipboard cp = FaweAPI.load(schematic).getClipboard();
 
             Location loc = gb.nextDungeonLocation.clone();
@@ -57,9 +57,9 @@ public class BuilderV2 {
             DungeonSession dg = new DungeonSession(sessionOwner, region, session, loc, max);
 
 
-            File signListFile = new File("plugins/DynamicDungeon/savedDungeons/" + fileNameWithoutExtension + ".json");
-            TeleportLocation[] signs = new Gson().fromJson(FileUtils.readFileToString(signListFile, Charset.defaultCharset()), TeleportLocation[].class);
-            //pasting task done listener WTF????
+            File signListFile = new File(gb.dataPath + fileNameWithoutExtension + ".json");
+            cLocation[] signs = new Gson().fromJson(FileUtils.readFileToString(signListFile, Charset.defaultCharset()), cLocation[].class);
+            //pasting task done listener
             session.addNotifyTask(() ->
             {
                 //flushing the queue

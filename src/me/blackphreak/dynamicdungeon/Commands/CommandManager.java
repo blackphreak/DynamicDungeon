@@ -4,17 +4,16 @@ import com.boydti.fawe.object.FawePlayer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sk89q.worldedit.regions.Region;
-import me.blackphreak.dynamicdungeon.DynamicDungeon;
-import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV2;
+import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV3;
 import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSessionManager;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.SaveDungeon;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObject;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObjectDeserializer;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.gb;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -50,6 +49,7 @@ public class CommandManager implements CommandExecutor {
                 case "admin": {
                     if (args.length < 2) {
                         p.sendMessage("================ [Dynamic Dungeon - Admin CMD] ================");
+                        p.sendMessage(" +-> save <Dungeon Session Name> ||| saving a new dungeon.");
                         p.sendMessage(" +-> build <Dungeon Session Name> ||| start creating a new session.");
                         p.sendMessage(" +-> listsessions ||| list all sessions.");
                         p.sendMessage(" +-> lss ||| list all the existing sessions.");
@@ -63,14 +63,36 @@ public class CommandManager implements CommandExecutor {
                     switch (args[1].toLowerCase()) {
                         case "sessiontest":
                             Region r = FawePlayer.wrap(p).getSelection();
+    
+                            if (r == null) {
+                                msg.send(p, "You must select an area with AXE!!");
+                                return true;
+                            }
+                            
+                            if (args.length < 3)
+                            {
+                                msg.send(p, "DungeonName is missing in your command.");
+                                msg.send(p, "&cUsage: /dd admin sessiontest <dungeonName>");
+                                return true;
+                            }
+                            
                             DungeonEditSessionManager.getInstance().newSession(p, args[2], r);
                             break;
                         case "sessionsave":
+                            if (args.length < 3)
+                            {
+                                msg.send(p, "DungeonName is missing in your command.");
+                                msg.send(p, "&cUsage: /dd admin sessionsave <dungeonName>");
+                                return true;
+                            }
+                            
                             DungeonEditSessionManager.getInstance().getPlayerSession(p).save();
+                            SaveDungeon.saveDungeon(p, args[2]);
+                            msg.send(p, "Saved Dungeon["+DungeonEditSessionManager.getInstance().getPlayerSession(p).getDungeonName()+"]");
                             break;
                         case "loadele":
                             Gson gson = new GsonBuilder().registerTypeAdapter(DungeonObject.class, new DungeonObjectDeserializer()).create();
-                            File dungeonFile = new File(DynamicDungeon.plugin.getDataFolder(), "savedDungeons/" + args[2] + ".json");
+                            File dungeonFile = new File(gb.dataPath + args[2] + ".json");
                             try {
                                 String content = FileUtils.readFileToString(dungeonFile, Charset.defaultCharset());
                                 DungeonObject[] objs = gson.fromJson(content, DungeonObject[].class);
@@ -97,7 +119,8 @@ public class CommandManager implements CommandExecutor {
                                 p.sendMessage("Please provide Dungeon Name.");
                                 return false;
                             }
-                            BuilderV2.build(p, args[2]);
+                            
+                            BuilderV3.build(p, args[2]);
                             sender.sendMessage("building DungeonSession: " + args[2]);
                             break;
                         case "listsessions":

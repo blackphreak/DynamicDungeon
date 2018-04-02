@@ -1,18 +1,22 @@
 package me.blackphreak.dynamicdungeon.MapBuilding.Objects;
 
-public class TeleportLocation {
+public class cLocation {
     private String world;
     private int x;
     private int y;
     private int z;
 
-    public TeleportLocation(String world, int x, int y, int z) {
+    public cLocation(String world, int x, int y, int z) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
     }
-
+    
+    public String getWorld() {
+        return world;
+    }
+    
     public int getX() {
         return x;
     }

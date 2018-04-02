@@ -28,7 +28,7 @@ public class DungeonObjectDeserializer implements JsonDeserializer<DungeonObject
                 return gson.fromJson(jsonElement, DungeonSpawn.class);
             case "exit":
                 DungeonExit r = gson.fromJson(jsonElement, DungeonExit.class);
-                r.setLoc(gson.fromJson(jsonObject.get("loc"), TeleportLocation.class));
+                r.setLoc(gson.fromJson(jsonObject.get("loc"), cLocation.class));
                 return r;
             case "decorate":
                 return gson.fromJson(jsonElement, DungeonDecorate.class);

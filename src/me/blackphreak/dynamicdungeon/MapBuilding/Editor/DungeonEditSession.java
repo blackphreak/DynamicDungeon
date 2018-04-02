@@ -3,18 +3,15 @@ package me.blackphreak.dynamicdungeon.MapBuilding.Editor;
 import com.google.gson.Gson;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonExit;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonMobSpawner;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObject;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonSpawn;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.*;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.gb;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.AbstractMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -22,7 +19,7 @@ import java.util.function.BiConsumer;
 public class DungeonEditSession {
     private List<DungeonObject> dungeonObjectList = new ArrayList<>();
     private DungeonObject lastEdit;
-    private AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, String>> valueOperation;
+    private AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> valueOperation;
     private String dungeonName;
     private Region region;
     private final Vector minPoint;
@@ -35,7 +32,7 @@ public class DungeonEditSession {
 
     public void save() {
         try {
-            FileUtils.writeStringToFile(new File("plugins/DynamicDungeon/savedDungeons/" + dungeonName + ".json"), new Gson().toJson(dungeonObjectList), Charset.defaultCharset());
+            FileUtils.writeStringToFile(new File(gb.dataPath + dungeonName + ".json"), new Gson().toJson(dungeonObjectList), Charset.defaultCharset());
         } catch (IOException e) {
             db.log("error on saving dungeon " + dungeonName + "'s objects");
             e.printStackTrace();
@@ -65,6 +62,14 @@ public class DungeonEditSession {
         lastEdit = new DungeonMobSpawner(x, y, z);
         updateOperation();
     }
+    
+    public void createDungeonDecoration(int x, int y, int z) {
+        x -= minPoint.getBlockX();
+        y -= minPoint.getBlockY();
+        z -= minPoint.getBlockZ();
+        lastEdit = new DungeonDecorate(x, y, z);
+        updateOperation();
+    }
 
 
     public void updateOperation() {
@@ -83,14 +88,16 @@ public class DungeonEditSession {
         return valueOperation.getKey();
     }
 
-    public void inputValue(String value) {
+    public void inputValue(Object value) {
         try {
             valueOperation.getValue().accept(lastEdit, value);
             updateOperation();
         } catch (Exception e) {
-            db.log("ERROR IN IINPUT");
+            db.log("ERROR IN INPUT");
         }
     }
-
-
+    
+    public String getDungeonName() {
+        return dungeonName;
+    }
 }

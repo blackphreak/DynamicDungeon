@@ -16,7 +16,7 @@ public abstract class DungeonObject {
         this.z = z;
     }
 
-    public abstract AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, String>> getOperation();
+    public abstract AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation();
 
     public void setX(int x) {
         this.x = x;
