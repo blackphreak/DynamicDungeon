@@ -5,14 +5,13 @@ import com.sk89q.worldedit.regions.Region;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitWorld;
-import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
 import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -35,9 +34,10 @@ public class DungeonSession {
     private ConcurrentHashMap<Player, Location> enterLocation = new ConcurrentHashMap<>();
     private List<Player> whoPlaying = new ArrayList<>();
     private ConcurrentHashMap<Chunk, List<MythicSpawner>> spawnerTable = new ConcurrentHashMap<>();
-    private List<ActiveMob> spawnedMobs = new ArrayList<>();
     private UUID uuid = UUID.randomUUID();
-
+    private List<cHologram> holograms = new ArrayList<>(); // store all the cHologram for later remove.
+    private List<EditSession> schematics = new ArrayList<>(); // decoration -> schematic, store the editsession for later remove.
+    
     public DungeonSession(Player p_caller, Region p_region, EditSession p_session, Location playerSpawnLocation, Location min, Location max) {
         this.sessionOwner = p_caller;
         this.session = p_session;
@@ -124,6 +124,11 @@ public class DungeonSession {
             });
         whoPlaying.clear();
         gb.dungeons.remove(sessionID);
+        
+        //remove holograms
+        if (gb.hd != null)
+            holograms.forEach(cHologram::delete);
+        
         this.session.undo(this.session);
     }
 
@@ -135,11 +140,11 @@ public class DungeonSession {
                     v.teleport(enterLocation.get(v));
             });
         whoPlaying.clear();
-        spawnedMobs.forEach(mob ->
+        /*spawnedMobs.forEach(mob ->
         {
             mob.setDead();
             mob.setDespawned();
-        });
+        });*/
         spawnerTable.values().forEach(list -> list.forEach(MythicSpawner::unloadSpawner));
         this.session.undo(this.session);
 
@@ -153,7 +158,18 @@ public class DungeonSession {
     public Location getLatestCheckPoint() {
         return this.latestCheckPoint;
     }
-
+    
+    // adder.
+    public void addHologram(cHologram hg)
+    {
+        this.holograms.add(hg);
+    }
+    
+    public void addDecorationSchematic(EditSession es)
+    {
+        schematics.add(es);
+    }
+    
     public void addSpawnersOnChunk(Chunk targetChunk, Location spawnLocation, List<MythicSpawner> spawners) {
         List<MythicSpawner> tLst = this.spawnerTable.getOrDefault(targetChunk, new ArrayList<>());
         tLst.addAll(spawners);
@@ -221,15 +237,6 @@ public class DungeonSession {
 
     public List<MythicSpawner> getSpawnersByChunk(Chunk targetChunk) {
         return this.spawnerTable.getOrDefault(targetChunk, new ArrayList<>());
-    }
-
-    public void addSpawnedMobs(List<ActiveMob> mobs) {
-        spawnedMobs.addAll(mobs);
-    }
-
-    public void listSpawnedMobs(Player target) {
-        for (int i = 0; i < spawnedMobs.size(); i++)
-            target.sendMessage("Mobs [" + i + "]: Loc[" + spawnedMobs.get(i).getLocation().toString() + "]");
     }
 
     public int maxPlayers() {

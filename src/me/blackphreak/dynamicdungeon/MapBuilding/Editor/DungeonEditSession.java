@@ -5,6 +5,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.*;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.gb;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
@@ -37,7 +38,7 @@ public class DungeonEditSession {
         try {
             FileUtils.writeStringToFile(new File(gb.dataPath + dungeonName + ".json"), new Gson().toJson(dungeonObjectList), Charset.defaultCharset());
         } catch (IOException e) {
-            db.log("error on saving dungeon " + dungeonName + "'s objects");
+            db.log("error on saving Dungeon[" + dungeonName + "]'s objects");
             e.printStackTrace();
         }
     }
@@ -77,7 +78,7 @@ public class DungeonEditSession {
                     break;
             }
         });
-        player.sendMessage("Required: Decoration Type");
+        msg.send(player,"&6Required&7: &aDecoration Type &7[&ehd &7| &eschematic&7]");
     }
 
     public void createDungeonHDDecoration(int x, int y, int z) {
@@ -92,13 +93,13 @@ public class DungeonEditSession {
     public void updateOperation() {
         valueOperation = lastEdit.getOperation();
         if (valueOperation == null) {
-            player.sendMessage("Finished setup for this.");
+            msg.send(player, "&eFinished setup for this.");
             if (!(lastEdit instanceof DungeonPlaceholderObject)) {
                 dungeonObjectList.add(lastEdit);
             }
             lastEdit = null;
         } else {
-            player.sendMessage("Required: " + valueOperation.getKey());
+            msg.send(player, "&6Required&7: &a" + valueOperation.getKey());
         }
     }
 
@@ -116,6 +117,7 @@ public class DungeonEditSession {
             updateOperation();
         } catch (Exception e) {
             db.log("ERROR IN INPUT");
+            e.printStackTrace();
         }
     }
 

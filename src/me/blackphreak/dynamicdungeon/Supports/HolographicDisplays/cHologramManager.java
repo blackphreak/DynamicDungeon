@@ -22,6 +22,6 @@ public class cHologramManager
 	
 	public static cHologram getOrRegister(String hgName)
 	{
-		return _holograms.getOrDefault(hgName, new cHologram(hgName, new Location(gb.dgWorld, 0, 0, 0)));
+		return _holograms.getOrDefault(hgName, new cHologram(hgName, new Location(gb.dgWorld, 0, -20, 0)));
 	}
 }

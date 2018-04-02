@@ -1,27 +1,17 @@
 package me.blackphreak.dynamicdungeon.Commands;
 
 import com.boydti.fawe.object.FawePlayer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV3;
 import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSessionManager;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.SaveDungeon;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObject;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObjectDeserializer;
-import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.gb;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 public class CommandManager implements CommandExecutor {
     public CommandManager() {
@@ -49,6 +39,7 @@ public class CommandManager implements CommandExecutor {
                 case "admin": {
                     if (args.length < 2) {
                         p.sendMessage("================ [Dynamic Dungeon - Admin CMD] ================");
+                        p.sendMessage(" +-> edit <Dungeon Session Name> ||| create & edit a new dungeon.");
                         p.sendMessage(" +-> save <Dungeon Session Name> ||| saving a new dungeon.");
                         p.sendMessage(" +-> build <Dungeon Session Name> ||| start creating a new session.");
                         p.sendMessage(" +-> listsessions ||| list all sessions.");
@@ -56,41 +47,28 @@ public class CommandManager implements CommandExecutor {
                         p.sendMessage(" +-> join <Session ID> ||| join the existing session.");
                         p.sendMessage(" +-> destroy ||| destroy an existing session.");
                         p.sendMessage(" +-> killsession <Session ID> ||| kill an existing session.");
-                        p.sendMessage(" +-> lsm <Session ID> ||| list all spawned mobs on that session.");
                         p.sendMessage("================ [            END            ] ================");
                         return true;
                     }
                     switch (args[1].toLowerCase()) {
-                        case "sessiontest":
+                        case "edit":
                             Region r = FawePlayer.wrap(p).getSelection();
     
                             if (r == null) {
-                                msg.send(p, "You must select an area with AXE!!");
+                                msg.send(p, "You must select an area with AXE first!!");
                                 return true;
                             }
                             
                             if (args.length < 3)
                             {
                                 msg.send(p, "DungeonName is missing in your command.");
-                                msg.send(p, "&cUsage: /dd admin sessiontest <dungeonName>");
+                                msg.send(p, "&cUsage: /dd admin edit <dungeonName>");
                                 return true;
                             }
                             
                             DungeonEditSessionManager.getInstance().newSession(p, args[2], r);
                             break;
-                        case "sessionsave":
-                            if (args.length < 3)
-                            {
-                                msg.send(p, "DungeonName is missing in your command.");
-                                msg.send(p, "&cUsage: /dd admin sessionsave <dungeonName>");
-                                return true;
-                            }
-                            
-                            DungeonEditSessionManager.getInstance().getPlayerSession(p).save();
-                            SaveDungeon.saveDungeon(p, args[2]);
-                            msg.send(p, "Saved Dungeon["+DungeonEditSessionManager.getInstance().getPlayerSession(p).getDungeonName()+"]");
-                            break;
-                        case "loadele":
+                        /*case "loadele":
                             Gson gson = new GsonBuilder().registerTypeAdapter(DungeonObject.class, new DungeonObjectDeserializer()).create();
                             File dungeonFile = new File(gb.dataPath + args[2] + ".json");
                             try {
@@ -103,7 +81,7 @@ public class CommandManager implements CommandExecutor {
                                 db.log("Error on reading Dungeon Object File");
                                 e.printStackTrace();
                             }
-                            break;
+                            break;*/
                         case "save":
                             if (args.length < 3) {
                                 p.sendMessage("Please provide Dungeon Name.");
@@ -151,18 +129,6 @@ public class CommandManager implements CommandExecutor {
                                 sender.sendMessage("Dungeon Session not found.");
                             else
                                 s1.killSession(p);
-                            break;
-                        case "lsm":
-                            if (args.length < 3) {
-                                p.sendMessage("Please provide Session ID.");
-                                return false;
-                            }
-                            DungeonSession s2 = gb.dungeons.get(Integer.valueOf(args[2]));
-                            if (s2 == null)
-                                sender.sendMessage("Dungeon Session not found.");
-                            else
-                                s2.listSpawnedMobs(p);
-
                             break;
                         default:
                             sender.sendMessage("Unknown command.");

@@ -5,22 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class DungeonHDDecorate extends DungeonObject {
+public class DungeonSchematicDecorate extends DungeonObject {
 
-    public DungeonHDDecorate(int x, int y, int z) {
-        super("hddec", x, y, z);
+    public DungeonSchematicDecorate(int x, int y, int z) {
+        // this x, y, z is the centre point of schematic!!
+        super("schemdec", x, y, z);
     }
 
     private String name;
-    private double offset;
 
     private static List<AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>>> operationList = new ArrayList<>();
 
     static {
-        operationList.add(new AbstractMap.SimpleEntry<>("Hologram Name", (dobj, input) -> ((DungeonHDDecorate) dobj).name = (String) input));
-        operationList.add(new AbstractMap.SimpleEntry<>("Offset Y axis [Double]", (dobj, input) -> ((DungeonHDDecorate) dobj).offset = Double.parseDouble((String) input)));
+        operationList.add(new AbstractMap.SimpleEntry<>("Schematic Name (Without file extension)", (dobj, input) -> ((DungeonSchematicDecorate) dobj).name = (String) input));
     }
-    
+
     private transient int operationIndex = 0;
 
     public AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation() {
@@ -34,15 +33,10 @@ public class DungeonHDDecorate extends DungeonObject {
         return name;
     }
 
-    public double getOffset() {
-        return offset;
-    }
-
     @Override
     public String toString() {
-        String r = "DungeonHDDecorate:\n" + super.toString();
-        r += "Hologram: " + name + "\n";
-        r += "Y Offset: " + offset + "\n";
+        String r = "DungeonSchematicDecorate:\n" + super.toString();
+        r += "Schematic: " + name + "\n";
         return r;
     }
 

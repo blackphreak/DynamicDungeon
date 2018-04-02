@@ -16,21 +16,15 @@ import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologramManager;
 import me.blackphreak.dynamicdungeon.gb;
-import me.blackphreak.dynamicdungeon.math;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class BuilderV3 {
     public BuilderV3() {
@@ -59,7 +53,7 @@ public class BuilderV3 {
             DungeonSession dg = new DungeonSession(sessionOwner, region, session, loc, max);
 
 
-            File signListFile = new File(gb.dataPath + fileNameWithoutExtension + ".json");
+//            File signListFile = new File(gb.dataPath + fileNameWithoutExtension + ".json");
             //cLocation[] signs = new Gson().fromJson(FileUtils.readFileToString(signListFile, Charset.defaultCharset()), cLocation[].class);
 
             //pasting task done listener
@@ -76,7 +70,7 @@ public class BuilderV3 {
                 try {
                     String content = FileUtils.readFileToString(dungeonFile, Charset.defaultCharset());
                     objs = gson.fromJson(content, DungeonObject[].class);
-                    db.log(Arrays.toString(objs));
+//                    db.log(Arrays.toString(objs));
                 } catch (IOException e) {
                     db.log("Error on reading Dungeon Object File");
                     e.printStackTrace();
@@ -87,7 +81,7 @@ public class BuilderV3 {
                 World world = loc.getWorld();
 
                 for (DungeonObject dungeonObject : objs) {
-                    db.log(dungeonObject.toString());
+//                    db.log(dungeonObject.toString());
                     switch (dungeonObject.getType()) {
                         case "exit":
                             //Unimplemented
@@ -100,16 +94,23 @@ public class BuilderV3 {
                             DungeonMobSpawner dgmobspawner = ((DungeonMobSpawner) dungeonObject);
                             dg.addSpawnerOnChunk(dgmobspawner.getSpawner(), new Location(world, dgmobspawner.getX(), dgmobspawner.getY(), dgmobspawner.getZ()).add(loc));
                             break;
-                        case "hddecorate":
-                            DungeonHDDecorate dghd = (DungeonHDDecorate) dungeonObject;
-                            cHologram chg = cHologramManager.getOrRegister(dghd.getName()).clone();
-                            chg.teleport(new Location(world, dghd.getX(), dghd.getY(), dghd.getZ()).add(loc).add(0, dghd.getOffset(), 0));
+                        case "hddec":
+                            if (gb.hd != null)
+                            {
+                                DungeonHDDecorate dghd = (DungeonHDDecorate) dungeonObject;
+                                cHologram chg = cHologramManager.getOrRegister(dghd.getName()).clone();
+                                dg.addHologram(chg);
+                                chg.teleport(new Location(world, dghd.getX(), dghd.getY(), dghd.getZ()).add(loc).add(0, dghd.getOffset(), 0));
+                            }
+                            break;
+                        case "schemdec":
+                            db.log("schematic decoration here.");
                             break;
                     }
                 }
 
                 db.log("Dungeon Session created.");
-                msg.send(sessionOwner, "Teleporting to your DungeonSession...");
+                msg.send(sessionOwner, "&eTeleporting to your DungeonSession...");
                 dg.join(sessionOwner);
 
             });

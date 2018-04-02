@@ -98,11 +98,12 @@ public class PlayerInteractEventListener implements Listener {
 							
 							if (sessionID == -1)
 							{
-								//no playing dungeon session. create a new session
-								session = BuilderV3.build(e.getPlayer(), "dg_" + sign.getLine(1).substring(6));
+								//that player has no playing dungeon session. create a new session
+								msg.send(e.getPlayer(), "&aPreparing a Dungeon Session for you. It might take a while, please be patient.");
+								session = BuilderV3.build(e.getPlayer(), sign.getLine(1).substring(6));
 								if (session == null)
 								{
-									e.getPlayer().sendMessage("Dungeon Creation Failure.");
+									msg.send(e.getPlayer(), "&cDungeon Creation Failure.");
 									return;
 								}
 								gb.dungeonCreating.add(session.getSessionID());
@@ -112,7 +113,7 @@ public class PlayerInteractEventListener implements Listener {
 							{
 								if (gb.dungeonCreating.contains(sessionID))
 								{
-									msg.send(e.getPlayer(), "Your Dungeon Session is preparing...Please wait...");
+									msg.send(e.getPlayer(), "Your Dungeon Session is still preparing, please wait.");
 									return;
 								}
 								

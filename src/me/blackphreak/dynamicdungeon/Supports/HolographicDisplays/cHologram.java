@@ -60,6 +60,14 @@ public class cHologram implements Cloneable
 		_loc = new Location(bukkitWorld, x, y, z);
 	}
 	
+	public void delete()
+	{
+		_hg.delete();
+		_hg = null;
+		_nh = null;
+		_loc = null;
+	}
+	
 	public Location getLocation()
 	{
 		return _loc;

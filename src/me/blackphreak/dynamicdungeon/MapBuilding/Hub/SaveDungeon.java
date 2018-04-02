@@ -22,7 +22,7 @@ public class SaveDungeon {
             Region r = FawePlayer.wrap(p).getSelection();
 
             if (r == null) {
-                msg.send(p, "You must select an area with AXE!!");
+                msg.send(p, "You must select an area with AXE first!!");
                 return;
             }
 
