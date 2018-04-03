@@ -1,6 +1,7 @@
 package me.blackphreak.dynamicdungeon.MapBuilding.Objects;
 
 import com.google.gson.*;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Trigger.DungeonTrigger;
 
 import java.lang.reflect.Type;
 
@@ -34,6 +35,8 @@ public class DungeonObjectDeserializer implements JsonDeserializer<DungeonObject
                 return gson.fromJson(jsonElement, DungeonHDDecorate.class);
             case "schemdec":
                 return gson.fromJson(jsonElement, DungeonSchematicDecorate.class);
+            case "trigger":
+                return gson.fromJson(jsonElement, DungeonTrigger.class);
         }
         return null;
     }

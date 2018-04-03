@@ -2,7 +2,6 @@ package me.blackphreak.dynamicdungeon.MapBuilding.Editor;
 
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.ItemBuilder;
-import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,9 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class DungeonEditSessionManager implements Listener {
     private static DungeonEditSessionManager instance;
@@ -46,6 +43,12 @@ public class DungeonEditSessionManager implements Listener {
                 new ItemStack(Material.PAINTING, 1),
                 "&bSet Decoration",
                 "&6Right-Click a block to set the Decoration"
+                )
+        );
+        put(5, ItemBuilder.setItemNameAndLore(
+                new ItemStack(Material.REDSTONE_TORCH_ON, 1),
+                "&bSet Trigger",
+                "&6Right-Click to set the Trigger."
                 )
         );
         put(8, ItemBuilder.setItemNameAndLore(
@@ -125,7 +128,6 @@ public class DungeonEditSessionManager implements Listener {
                 DungeonEditSession session = sessionMap.get(e.getPlayer());
                 Block loc = e.getClickedBlock();
                 session.createDungeonMob(loc.getX(), loc.getY() + 1, loc.getZ());
-                String next = session.getInputValue();
             }
 
             //SPAWN
@@ -142,7 +144,13 @@ public class DungeonEditSessionManager implements Listener {
                 DungeonEditSession session = sessionMap.get(e.getPlayer());
                 Block loc = e.getClickedBlock();
                 session.createDungeonDecoration(loc.getX(), loc.getY() + 1, loc.getZ());
-                String next = session.getInputValue();
+            }
+
+            //TRIGGER
+            else if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.REDSTONE_TORCH_ON) {
+                e.setCancelled(true);
+                DungeonEditSession session = sessionMap.get(e.getPlayer());
+//                session.createTrigger(); //TODO: continue -> create a trigger object
             }
 
             //Exit Editing Mode

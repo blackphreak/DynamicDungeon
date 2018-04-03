@@ -1,11 +1,11 @@
 package me.blackphreak.dynamicdungeon.MapBuilding.Objects;
 
-
 import org.bukkit.Location;
 
 import java.util.AbstractMap;
 import java.util.function.BiConsumer;
 
+@Deprecated
 public class DungeonExit extends DungeonObject {
     private cLocation loc; //target location
 

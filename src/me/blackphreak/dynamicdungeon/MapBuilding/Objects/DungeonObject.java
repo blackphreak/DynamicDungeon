@@ -5,19 +5,29 @@ import java.util.function.BiConsumer;
 
 public abstract class DungeonObject {
     private String type;
+    private String name; // custom name of this object
     private int x;
     private int y;
     private int z;
 
     public DungeonObject(String type, int x, int y, int z) {
         this.type = type;
+        this.name = "";
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    
+    public DungeonObject(String type, String name, int x, int y, int z) {
+        this.type = type;
+        this.name = name;
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
     public abstract AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation();
-
+    
     public void setX(int x) {
         this.x = x;
     }
@@ -25,7 +35,7 @@ public abstract class DungeonObject {
     public void setY(int y) {
         this.y = y;
     }
-
+    
     public void setZ(int z) {
         this.z = z;
     }
@@ -44,6 +54,11 @@ public abstract class DungeonObject {
 
     public String getType() {
         return type;
+    }
+    
+    public String getName()
+    {
+        return name;
     }
 
     @Override

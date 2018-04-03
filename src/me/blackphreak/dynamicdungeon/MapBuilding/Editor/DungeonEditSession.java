@@ -82,7 +82,7 @@ public class DungeonEditSession {
                     break;
             }
         });
-        msg.send(player,"&7+------ &6Decoration Setup &7-------");
+        msg.send(player,"&6Decoration Setup");
         msg.send(player,"&7+-> &aDecoration Type &7[&ehd &7| &eschematic&7]");
     }
 
@@ -104,7 +104,7 @@ public class DungeonEditSession {
     public void updateOperation() {
         valueOperation = lastEdit.getOperation();
         if (valueOperation == null) {
-            msg.send(player, "&7+--&cFinished setup for this.");
+            msg.send(player, "&7-- &cFinished setup for this.");
             if (!(lastEdit instanceof DungeonPlaceholderObject)) {
                 dungeonObjectList.add(lastEdit);
             }
