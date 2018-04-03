@@ -4,6 +4,8 @@ import me.blackphreak.dynamicdungeon.Commands.CommandManager;
 import me.blackphreak.dynamicdungeon.Listeners.PlayerInteractEventListener;
 import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSessionManager;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Command.CommandHandler;
+import me.blackphreak.dynamicdungeon.Command.Core.DefaultCoreCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,7 +19,9 @@ public class DynamicDungeon extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
-        this.getCommand("dynamicdungeon").setExecutor(new CommandManager());
+        //this.getCommand("dynamicdungeon").setExecutor(new CommandManager());
+        CommandHandler commandHandler = new CommandHandler(this);
+        commandHandler.registerCommand("dd", new DefaultCoreCommand());
 
         File dir = new File("plugins/DynamicDungeon");
         if (!dir.exists())

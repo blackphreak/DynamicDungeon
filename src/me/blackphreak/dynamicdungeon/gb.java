@@ -6,6 +6,7 @@ import me.blackphreak.dynamicdungeon.Messages.db;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -42,7 +43,7 @@ public class gb {
         }.runTaskLater(DynamicDungeon.plugin, 40L);
     }
 
-    public static void listOutSessions(Player p) {
+    public static void listOutSessions(CommandSender p) {
         p.sendMessage("Here's the existing DungeonSessions:");
         p.sendMessage(" ");
         dungeons.forEach((k, v) -> {

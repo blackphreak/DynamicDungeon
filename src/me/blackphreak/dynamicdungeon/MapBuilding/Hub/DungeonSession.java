@@ -12,6 +12,7 @@ import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -37,7 +38,7 @@ public class DungeonSession {
     private UUID uuid = UUID.randomUUID();
     private List<cHologram> holograms = new ArrayList<>(); // store all the cHologram for later remove.
     private List<EditSession> schematics = new ArrayList<>(); // decoration -> schematic, store the editsession for later remove.
-    
+
     public DungeonSession(Player p_caller, Region p_region, EditSession p_session, Location playerSpawnLocation, Location min, Location max) {
         this.sessionOwner = p_caller;
         this.session = p_session;
@@ -113,7 +114,7 @@ public class DungeonSession {
         this.whoPlaying.remove(p);
     }
 
-    public void killSession(Player p) {
+    public void killSession(CommandSender p) {
         if (enterLocation.size() > 0)
             whoPlaying.forEach(v -> {
                 gb.dungeonPlaying.remove(v);
@@ -124,11 +125,11 @@ public class DungeonSession {
             });
         whoPlaying.clear();
         gb.dungeons.remove(sessionID);
-        
+
         //remove holograms
         if (gb.hd != null)
             holograms.forEach(cHologram::delete);
-        
+
         this.session.undo(this.session);
     }
 
@@ -158,18 +159,16 @@ public class DungeonSession {
     public Location getLatestCheckPoint() {
         return this.latestCheckPoint;
     }
-    
+
     // adder.
-    public void addHologram(cHologram hg)
-    {
+    public void addHologram(cHologram hg) {
         this.holograms.add(hg);
     }
-    
-    public void addDecorationSchematic(EditSession es)
-    {
+
+    public void addDecorationSchematic(EditSession es) {
         schematics.add(es);
     }
-    
+
     public void addSpawnersOnChunk(Chunk targetChunk, Location spawnLocation, List<MythicSpawner> spawners) {
         List<MythicSpawner> tLst = this.spawnerTable.getOrDefault(targetChunk, new ArrayList<>());
         tLst.addAll(spawners);
