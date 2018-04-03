@@ -1,6 +1,5 @@
 package me.blackphreak.dynamicdungeon;
 
-import me.blackphreak.dynamicdungeon.Commands.CommandManager;
 import me.blackphreak.dynamicdungeon.Listeners.PlayerInteractEventListener;
 import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSessionManager;
 import me.blackphreak.dynamicdungeon.Messages.db;

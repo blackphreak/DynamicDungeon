@@ -34,9 +34,11 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 }
             }
         } catch (CommandPermissionException e) {
-            sender.sendMessage("perm: " + e.getMessage());
+            sender.sendMessage("Permission Insufficient");
         } catch (CommandArgumentException e) {
-            sender.sendMessage("aug: " + e.getMessage());
+            sender.sendMessage("Command Argument Error: " + e.getMessage());
+        } catch (CommandSenderException e) {
+            sender.sendMessage("Command Sender Error, Require: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             sender.sendMessage(ChatColor.RED + "Error occur, send this to plugin developer");
