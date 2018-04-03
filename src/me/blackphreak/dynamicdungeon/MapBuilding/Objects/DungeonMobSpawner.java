@@ -11,8 +11,7 @@ public class DungeonMobSpawner extends DungeonObject {
     }
 
     
-    private static AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> spawnerInput = new AbstractMap.SimpleEntry<>("spawnerName", (dobj, input) -> ((DungeonMobSpawner) dobj).spawner = (String) input);
-    private transient boolean received = false;
+    private static AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> spawnerInput = new AbstractMap.SimpleEntry<>("SpawnerName", (dobj, input) -> ((DungeonMobSpawner) dobj).spawner = (String) input);    private transient boolean received = false;
 
     @Override
     public AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation() {

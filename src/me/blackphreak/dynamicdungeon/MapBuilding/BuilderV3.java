@@ -104,6 +104,8 @@ public class BuilderV3 {
                             }
                             break;
                         case "schemdec":
+                            /*DungeonSchematicDecorate dgsd = (DungeonSchematicDecorate) dungeonObject;
+                            dgsd.loadSchematic();*/
                             db.log("schematic decoration here.");
                             break;
                     }

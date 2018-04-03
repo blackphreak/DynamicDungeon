@@ -38,7 +38,7 @@ public class DungeonEditSession {
         try {
             FileUtils.writeStringToFile(new File(gb.dataPath + dungeonName + ".json"), new Gson().toJson(dungeonObjectList), Charset.defaultCharset());
         } catch (IOException e) {
-            db.log("error on saving Dungeon[" + dungeonName + "]'s objects");
+            db.log("Error on saving Dungeon[" + dungeonName + "]'s objects");
             e.printStackTrace();
         }
     }
@@ -76,9 +76,14 @@ public class DungeonEditSession {
                 case "hd":
                     createDungeonHDDecoration(x, y, z);
                     break;
+                case "schematic":
+                case "schem":
+                    createDungeonSchematicDecoration(x, y, z);
+                    break;
             }
         });
-        msg.send(player,"&6Required&7: &aDecoration Type &7[&ehd &7| &eschematic&7]");
+        msg.send(player,"&7+------ &6Decoration Setup &7-------");
+        msg.send(player,"&7+-> &aDecoration Type &7[&ehd &7| &eschematic&7]");
     }
 
     public void createDungeonHDDecoration(int x, int y, int z) {
@@ -86,20 +91,26 @@ public class DungeonEditSession {
         y -= minPoint.getBlockY();
         z -= minPoint.getBlockZ();
         lastEdit = new DungeonHDDecorate(x, y, z);
-        //updateOperation();
+    }
+    
+    public void createDungeonSchematicDecoration(int x, int y, int z) {
+        x -= minPoint.getBlockX();
+        y -= minPoint.getBlockY();
+        z -= minPoint.getBlockZ();
+        lastEdit = new DungeonSchematicDecorate(x, y, z);
     }
 
 
     public void updateOperation() {
         valueOperation = lastEdit.getOperation();
         if (valueOperation == null) {
-            msg.send(player, "&eFinished setup for this.");
+            msg.send(player, "&7+--&cFinished setup for this.");
             if (!(lastEdit instanceof DungeonPlaceholderObject)) {
                 dungeonObjectList.add(lastEdit);
             }
             lastEdit = null;
         } else {
-            msg.send(player, "&6Required&7: &a" + valueOperation.getKey());
+            msg.send(player, "&7+-> &a" + valueOperation.getKey());
         }
     }
 
@@ -116,7 +127,8 @@ public class DungeonEditSession {
             valueOperation.getValue().accept(lastEdit, value);
             updateOperation();
         } catch (Exception e) {
-            db.log("ERROR IN INPUT");
+            msg.send(player, "ERROR while setting ["+lastEdit.getOperation().getKey()+"]!");
+            db.log("ERROR IN INPUT -- Who[" + player.getName()+"]");
             e.printStackTrace();
         }
     }

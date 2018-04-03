@@ -18,7 +18,7 @@ public class DungeonHDDecorate extends DungeonObject {
 
     static {
         operationList.add(new AbstractMap.SimpleEntry<>("Hologram Name", (dobj, input) -> ((DungeonHDDecorate) dobj).name = (String) input));
-        operationList.add(new AbstractMap.SimpleEntry<>("Offset Y axis [Double]", (dobj, input) -> ((DungeonHDDecorate) dobj).offset = Double.parseDouble((String) input)));
+        operationList.add(new AbstractMap.SimpleEntry<>("Height Offset [Double]", (dobj, input) -> ((DungeonHDDecorate) dobj).offset = Double.parseDouble((String) input)));
     }
     
     private transient int operationIndex = 0;
@@ -42,7 +42,7 @@ public class DungeonHDDecorate extends DungeonObject {
     public String toString() {
         String r = "DungeonHDDecorate:\n" + super.toString();
         r += "Hologram: " + name + "\n";
-        r += "Y Offset: " + offset + "\n";
+        r += "Height Offset: " + offset + "\n";
         return r;
     }
 
