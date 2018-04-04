@@ -12,12 +12,12 @@ public class DungeonSchematicDecorate extends DungeonObject {
         super("schemdec", x, y, z);
     }
 
-    private String name;
+    private String schematicName;
 
     private static List<AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>>> operationList = new ArrayList<>();
 
     static {
-        operationList.add(new AbstractMap.SimpleEntry<>("Schematic Name (Without file extension)", (dobj, input) -> ((DungeonSchematicDecorate) dobj).name = (String) input));
+        operationList.add(new AbstractMap.SimpleEntry<>("Schematic Name (Without file extension)", (dobj, input) -> ((DungeonSchematicDecorate) dobj).schematicName = (String) input));
     }
 
     private transient int operationIndex = 0;
@@ -29,14 +29,14 @@ public class DungeonSchematicDecorate extends DungeonObject {
         return null;
     }
 
-    public String getName() {
-        return name;
+    public String getSchematicName() {
+        return schematicName;
     }
 
     @Override
     public String toString() {
         String r = "DungeonSchematicDecorate:\n" + super.toString();
-        r += "Schematic: " + name + "\n";
+        r += "Schematic: " + schematicName + "\n";
         return r;
     }
 

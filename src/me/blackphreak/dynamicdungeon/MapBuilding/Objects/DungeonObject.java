@@ -39,6 +39,16 @@ public abstract class DungeonObject {
     public void setZ(int z) {
         this.z = z;
     }
+    
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+    
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
     public int getX() {
         return x;

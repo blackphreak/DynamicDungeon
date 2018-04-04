@@ -5,19 +5,18 @@ import org.bukkit.Location;
 import java.util.AbstractMap;
 import java.util.function.BiConsumer;
 
-@Deprecated
-public class DungeonExit extends DungeonObject {
+public class DungeonLocation extends DungeonObject {
     private cLocation loc; //target location
 
-    public DungeonExit(int x, int y, int z) {
-        super("exit", x, y, z);
+    public DungeonLocation(int x, int y, int z) {
+        super("loc", x, y, z);
     }
 
 
     private boolean received = false;
-    private static AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> operation = new AbstractMap.SimpleEntry<>("Exit Location", (dobj, input) -> {
+    private static AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> operation = new AbstractMap.SimpleEntry<>("Location", (dobj, input) -> {
         if (input instanceof Location) {
-            DungeonExit obj = (DungeonExit) dobj;
+            DungeonLocation obj = (DungeonLocation) dobj;
             obj.setLoc(
                     new cLocation(
                             ((Location) input).getWorld().getName(),
@@ -43,7 +42,7 @@ public class DungeonExit extends DungeonObject {
 
     @Override
     public String toString() {
-        String r = "DungeonExit:\n" + super.toString();
+        String r = "DungeonLocation:\n" + super.toString();
         r += "Teleport To: \n";
         r += "World:" + loc.getWorld() + " \n";
         r += "X:" + loc.getX() + " \n";

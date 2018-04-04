@@ -11,6 +11,7 @@ public abstract class CommandNode {
 
     @Getter
     private String description;
+    
     @Getter
     private String usage;
 

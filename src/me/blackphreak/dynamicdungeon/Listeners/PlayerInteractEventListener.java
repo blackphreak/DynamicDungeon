@@ -1,8 +1,8 @@
 package me.blackphreak.dynamicdungeon.Listeners;
 
-import me.blackphreak.dynamicdungeon.DynamicDungeon;
 import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV3;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.gb;
 import me.blackphreak.dynamicdungeon.math;
@@ -15,19 +15,26 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-public class PlayerInteractEventListener implements Listener {
-	public static DynamicDungeon plugin;
-	
+public class PlayerInteractEventListener implements Listener
+{
 	public PlayerInteractEventListener() {
-	}
-	
-	public void EventListener() {
+		db.log("Listening on PlayerInteractEvent");
 	}
 	
 	@EventHandler
 	public void callsWhenPlayerInteract(PlayerInteractEvent e) {
-		if (e.getPlayer().getLocation().getWorld().getName().equalsIgnoreCase("dungeonworld"))
+		if (e.getPlayer().getLocation().getWorld().getName()
+				.equalsIgnoreCase(gb.dgWorldName))
 		{
+			// player is in DungeonWorld
+			// get the playing session
+			DungeonSession dg = gb.getDungeonSessionByPlayer(e.getPlayer());
+			if (dg != null)
+			{
+				// is playing
+				dg.getInteractTriggers().forEach(v -> v.condition(e));
+			}
+			
 			if(e.getHand() == null)
 			{
 				Location tLoc = e.getPlayer().getLocation();
@@ -37,7 +44,7 @@ public class PlayerInteractEventListener implements Listener {
 				{
 					Sign sign = (Sign)tLoc.getBlock();
 					int tSessionID;
-					if(sign.getLine(0).toLowerCase().equals("[dg_checkpoint]")
+					if(sign.getLine(0).equalsIgnoreCase("[dg_checkpoint]")
 							&& (tSessionID = gb.dungeonPlaying.getOrDefault(e.getPlayer(), -1)) > -1)
 					{
 						DungeonSession tSession = gb.dungeons.get(tSessionID);
@@ -125,9 +132,5 @@ public class PlayerInteractEventListener implements Listener {
 				}
 			}
 		}
-	}
-	
-	static {
-		plugin = DynamicDungeon.plugin;
 	}
 }

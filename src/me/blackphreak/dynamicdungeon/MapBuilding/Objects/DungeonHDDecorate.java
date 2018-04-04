@@ -11,13 +11,13 @@ public class DungeonHDDecorate extends DungeonObject {
         super("hddec", x, y, z);
     }
 
-    private String name;
+    private String holoName;
     private double offset;
 
     private static List<AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>>> operationList = new ArrayList<>();
 
     static {
-        operationList.add(new AbstractMap.SimpleEntry<>("Hologram Name", (dobj, input) -> ((DungeonHDDecorate) dobj).name = (String) input));
+        operationList.add(new AbstractMap.SimpleEntry<>("Hologram Name", (dobj, input) -> ((DungeonHDDecorate) dobj).holoName = (String) input));
         operationList.add(new AbstractMap.SimpleEntry<>("Height Offset [Double]", (dobj, input) -> ((DungeonHDDecorate) dobj).offset = Double.parseDouble((String) input)));
     }
     
@@ -30,8 +30,8 @@ public class DungeonHDDecorate extends DungeonObject {
         return null;
     }
 
-    public String getName() {
-        return name;
+    public String getHoloName() {
+        return holoName;
     }
 
     public double getOffset() {
@@ -41,7 +41,7 @@ public class DungeonHDDecorate extends DungeonObject {
     @Override
     public String toString() {
         String r = "DungeonHDDecorate:\n" + super.toString();
-        r += "Hologram: " + name + "\n";
+        r += "Hologram: " + holoName + "\n";
         r += "Height Offset: " + offset + "\n";
         return r;
     }

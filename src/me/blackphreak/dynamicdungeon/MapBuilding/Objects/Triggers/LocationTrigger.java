@@ -1,9 +1,11 @@
-package me.blackphreak.dynamicdungeon.MapBuilding.Objects.Trigger;
+package me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObject;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.cLocation;
+import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -15,16 +17,22 @@ public class LocationTrigger extends DungeonTrigger
 	private cLocation loc;
 	private int range;
 	
-	public LocationTrigger(String name,
-	                       long delay,
-	                       int repeat,
-	                       List<TriggerAction> actionList) {
-		super(name, "loctri", delay, repeat, actionList);
+	public LocationTrigger() {
+		super(null, "loctri", 0, 0);
+	}
+	
+	public LocationTrigger(String name, long delay, int repeat) {
+		super(name, "loctri", delay, repeat);
+	}
+	
+	@Override
+	public void condition(PlayerMoveEvent e) {
+	
 	}
 	
 	public void action()
 	{
-	
+		db.log("action.");
 	}
 	
 	public void setRange(int range)
@@ -50,8 +58,11 @@ public class LocationTrigger extends DungeonTrigger
 	private static List<AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>>> operationList = new ArrayList<>();
 	
 	static {
-		operationList.add(new AbstractMap.SimpleEntry<>("Range", (dobj, input) -> ((LocationTrigger) dobj).range = Integer.parseInt((String) input)));
-		operationList.add(new AbstractMap.SimpleEntry<>("Location", (dobj, input) ->
+		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Name [String]", (dobj, input) -> ((LocationTrigger) dobj).setTriggerName((String) input)));
+		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Delay [1000 = 1sec]", (dobj, input) -> ((LocationTrigger) dobj).setDelay(Long.parseLong((String) input))));
+		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Repeat [Integer]", (dobj, input) -> ((LocationTrigger) dobj).setRepeat(Integer.parseInt((String) input))));
+		operationList.add(new AbstractMap.SimpleEntry<>("Range [Integer]", (dobj, input) -> ((LocationTrigger) dobj).setRange(Integer.parseInt((String) input))));
+		operationList.add(new AbstractMap.SimpleEntry<>("Location [Type \"ok\" when you are there]", (dobj, input) ->
 		{
 			if (input instanceof Location) {
 				LocationTrigger obj = (LocationTrigger) dobj;

@@ -11,6 +11,10 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.*;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.DungeonTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.MobKillTrigger;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
@@ -81,7 +85,7 @@ public class BuilderV3 {
                 World world = loc.getWorld();
 
                 for (DungeonObject dungeonObject : objs) {
-//                    db.log(dungeonObject.toString());
+                    db.log(dungeonObject.toString());
                     switch (dungeonObject.getType()) {
                         case "exit":
                             //Unimplemented
@@ -98,7 +102,7 @@ public class BuilderV3 {
                             if (gb.hd != null)
                             {
                                 DungeonHDDecorate dghd = (DungeonHDDecorate) dungeonObject;
-                                cHologram chg = cHologramManager.getOrRegister(dghd.getName()).clone();
+                                cHologram chg = cHologramManager.getOrRegister(dghd.getHoloName()).clone();
                                 dg.addHologram(chg);
                                 chg.teleport(new Location(world, dghd.getX(), dghd.getY(), dghd.getZ()).add(loc).add(0, dghd.getOffset(), 0));
                             }
@@ -107,6 +111,22 @@ public class BuilderV3 {
                             /*DungeonSchematicDecorate dgsd = (DungeonSchematicDecorate) dungeonObject;
                             dgsd.loadSchematic();*/
                             db.log("schematic decoration here.");
+                            break;
+                        case "trigger":
+                            DungeonTrigger dt = (DungeonTrigger) dungeonObject;
+                            switch (dt.getTriggerType())
+                            {
+                                case "loctri":
+                                    dg.addLocationTrigger((LocationTrigger) dt);
+                                    break;
+                                case "inttri":
+                                    dg.addInteractTrigger((InteractTrigger) dt);
+                                    break;
+                                case "mktri":
+                                    db.log("mktri registered");
+                                    dg.addMobKillTrigger((MobKillTrigger) dt);
+                                    break;
+                            }
                             break;
                     }
                 }

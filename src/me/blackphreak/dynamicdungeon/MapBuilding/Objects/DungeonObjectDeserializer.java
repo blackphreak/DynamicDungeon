@@ -1,7 +1,9 @@
 package me.blackphreak.dynamicdungeon.MapBuilding.Objects;
 
 import com.google.gson.*;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Trigger.DungeonTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.MobKillTrigger;
 
 import java.lang.reflect.Type;
 
@@ -23,12 +25,14 @@ public class DungeonObjectDeserializer implements JsonDeserializer<DungeonObject
         break;
         */
         switch (jsonObject.get("type").getAsString()) {
+            case "checkpoint":
+                return gson.fromJson(jsonElement, DungeonCheckPoint.class);
             case "mobspawner":
                 return gson.fromJson(jsonElement, DungeonMobSpawner.class);
             case "spawn":
                 return gson.fromJson(jsonElement, DungeonSpawn.class);
             case "exit":
-                DungeonExit r = gson.fromJson(jsonElement, DungeonExit.class);
+                DungeonLocation r = gson.fromJson(jsonElement, DungeonLocation.class);
                 r.setLoc(gson.fromJson(jsonObject.get("loc"), cLocation.class));
                 return r;
             case "hddec":
@@ -36,7 +40,21 @@ public class DungeonObjectDeserializer implements JsonDeserializer<DungeonObject
             case "schemdec":
                 return gson.fromJson(jsonElement, DungeonSchematicDecorate.class);
             case "trigger":
-                return gson.fromJson(jsonElement, DungeonTrigger.class);
+            {
+                switch (jsonObject.get("triggerType").getAsString())
+                {
+                    case "loctri":
+                        LocationTrigger lt = gson.fromJson(jsonElement, LocationTrigger.class);
+                        lt.setLoc(gson.fromJson(jsonObject.get("loc"), cLocation.class));
+                        return lt;
+                    case "inttri":
+                        InteractTrigger it = gson.fromJson(jsonElement, InteractTrigger.class);
+                        it.setLoc(gson.fromJson(jsonObject.get("loc"), cLocation.class));
+                        return it;
+                    case "mktri":
+                        return gson.fromJson(jsonElement, MobKillTrigger.class);
+                }
+            }
         }
         return null;
     }

@@ -7,6 +7,9 @@ import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitWorld;
 import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.MobKillTrigger;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
 import me.blackphreak.dynamicdungeon.gb;
@@ -16,9 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DungeonSession {
@@ -38,6 +39,9 @@ public class DungeonSession {
     private UUID uuid = UUID.randomUUID();
     private List<cHologram> holograms = new ArrayList<>(); // store all the cHologram for later remove.
     private List<EditSession> schematics = new ArrayList<>(); // decoration -> schematic, store the editsession for later remove.
+    private List<InteractTrigger> interactTriggers = new ArrayList<>();
+    private List<LocationTrigger> locationTriggers = new ArrayList<>();
+    private HashMap<String, MobKillTrigger> mobKillTriggers = new HashMap<>();
 
     public DungeonSession(Player p_caller, Region p_region, EditSession p_session, Location playerSpawnLocation, Location min, Location max) {
         this.sessionOwner = p_caller;
@@ -68,6 +72,12 @@ public class DungeonSession {
 
     public void setDungeonID(int _id) {
         this.dungeonID = _id;
+    }
+    
+    public void updateMobKillTrigger(MobKillTrigger mkt)
+    {
+        db.log(mkt.getName() + " : " + mkt.readCounter());
+        mobKillTriggers.put(mkt.getName(), mkt);
     }
 
     public Location getDungeonMin() {
@@ -105,6 +115,22 @@ public class DungeonSession {
     public List<Player> getWhoPlaying() {
         return this.whoPlaying;
     }
+    
+    public List<InteractTrigger> getInteractTriggers()
+    {
+        return interactTriggers;
+    }
+    
+    public List<LocationTrigger> getLocationTriggers()
+    {
+        return locationTriggers;
+    }
+    
+    public Collection<MobKillTrigger> getMobKillTriggers()
+    {
+        return mobKillTriggers.values();
+    }
+    
 
     public void enter(Player p) {
         this.whoPlaying.add(p);
@@ -225,9 +251,20 @@ public class DungeonSession {
         tLst.add(spawner);
         this.spawnerTable.put(targetChunk, tLst);
     }
-
-    public void addExitPoint(Location signLoc, String targetLocation) {
-        // checking
+    
+    public void addInteractTrigger(InteractTrigger it)
+    {
+        interactTriggers.add(it);
+    }
+    
+    public void addLocationTrigger(LocationTrigger lt)
+    {
+        locationTriggers.add(lt);
+    }
+    
+    public void addMobKillTrigger(MobKillTrigger mkt)
+    {
+        mobKillTriggers.put(mkt.getName(), mkt);
     }
 
     public void removeSpawnersByChunk(Chunk targetChunk) {
@@ -252,7 +289,7 @@ public class DungeonSession {
             return;
         }
 
-//		p.sendMessage("Joining Dungeon Session [#" + sessionID + "] | Owner: " + sessionOwner.getName());
+//		p.sendMessage("Joining Dungeon Session [#" + sessionID + "] | Owner: " + sessionOwner.getHoloName());
 
         //make a delayed teleport
         new BukkitRunnable() {

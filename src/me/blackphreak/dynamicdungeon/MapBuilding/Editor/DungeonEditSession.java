@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.*;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.MobKillTrigger;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.gb;
@@ -47,7 +50,7 @@ public class DungeonEditSession {
         x -= minPoint.getBlockX();
         y -= minPoint.getBlockY();
         z -= minPoint.getBlockZ();
-        lastEdit = new DungeonExit(x, y, z);
+        lastEdit = new DungeonLocation(x, y, z);
         updateOperation();
     }
 
@@ -99,7 +102,27 @@ public class DungeonEditSession {
         z -= minPoint.getBlockZ();
         lastEdit = new DungeonSchematicDecorate(x, y, z);
     }
-
+    
+    public void createTrigger()
+    {
+        lastEdit = new DungeonPlaceholderObject();
+        valueOperation = new AbstractMap.SimpleEntry<>("Trigger Type", (dobj, input) -> {
+            String type = (String) input;
+            switch (type.toLowerCase()) {
+                case "location":
+                    lastEdit = new LocationTrigger();
+                    break;
+                case "mobkill":
+                    lastEdit = new MobKillTrigger();
+                    break;
+                case "interact":
+                    lastEdit = new InteractTrigger();
+                    break;
+            }
+        });
+        msg.send(player,"&6=== Trigger Setup ===");
+        msg.send(player,"&7+-> &aTrigger Type &7[&eInteract &7| &eMobKill &7| &eLocation&7]");
+    }
 
     public void updateOperation() {
         valueOperation = lastEdit.getOperation();

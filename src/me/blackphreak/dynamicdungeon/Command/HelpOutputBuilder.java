@@ -38,6 +38,7 @@ public class HelpOutputBuilder {
         } else {
             event = new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd);
         }
+//        TODO: pls fix this!!
         layout.append(new ComponentBuilder(cmd).event(event).create()).append(" - ").color(ChatColor.GOLD).append(res.getDescription()).color(ChatColor.YELLOW).append("\n").reset();
         return this;
     }

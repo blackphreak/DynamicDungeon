@@ -44,7 +44,7 @@ public class SaveDungeon {
             while (iter.hasNext()) {
                 blockLoc = iter.next();
                 BaseBlock block = world.getBlock(blockLoc);
-                if (block.getType() == BlockID.WALL_SIGN || block.getType() == BlockID.SIGN_POST) {
+                if (block.getTriggerType() == BlockID.WALL_SIGN || block.getTriggerType() == BlockID.SIGN_POST) {
                     signPlace.add(new cLocation(blockLoc.getBlockX() - min.getBlockX(), blockLoc.getBlockY() - min.getBlockY(), blockLoc.getBlockZ() - min.getBlockZ()));
                 }
             }
