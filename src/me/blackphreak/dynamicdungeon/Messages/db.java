@@ -1,9 +1,9 @@
 package me.blackphreak.dynamicdungeon.Messages;
 
-import java.util.Arrays;
-import java.util.function.Consumer;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Bukkit;
+
+import java.util.Arrays;
 
 public class db {
 	public db() {
