@@ -39,22 +39,17 @@ public class DungeonObjectDeserializer implements JsonDeserializer<DungeonObject
                 return gson.fromJson(jsonElement, DungeonHDDecorate.class);
             case "schemdec":
                 return gson.fromJson(jsonElement, DungeonSchematicDecorate.class);
-            case "trigger":
-            {
-                switch (jsonObject.get("triggerType").getAsString())
-                {
-                    case "loctri":
-                        LocationTrigger lt = gson.fromJson(jsonElement, LocationTrigger.class);
-                        lt.setLoc(gson.fromJson(jsonObject.get("loc"), cLocation.class));
-                        return lt;
-                    case "inttri":
-                        InteractTrigger it = gson.fromJson(jsonElement, InteractTrigger.class);
-                        it.setLoc(gson.fromJson(jsonObject.get("loc"), cLocation.class));
-                        return it;
-                    case "mktri":
-                        return gson.fromJson(jsonElement, MobKillTrigger.class);
-                }
-            }
+
+            //trigger
+            case "loc_trigger":
+                LocationTrigger lt = gson.fromJson(jsonElement, LocationTrigger.class);
+                return lt;
+            case "int_trigger":
+                InteractTrigger it = gson.fromJson(jsonElement, InteractTrigger.class);
+                it.setLoc(gson.fromJson(jsonObject.get("loc"), cLocation.class));
+                return it;
+            case "mk_trigger":
+                return gson.fromJson(jsonElement, MobKillTrigger.class);
         }
         return null;
     }

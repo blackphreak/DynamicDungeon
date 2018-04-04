@@ -99,8 +99,7 @@ public class BuilderV3 {
                             dg.addSpawnerOnChunk(dgmobspawner.getSpawner(), new Location(world, dgmobspawner.getX(), dgmobspawner.getY(), dgmobspawner.getZ()).add(loc));
                             break;
                         case "hddec":
-                            if (gb.hd != null)
-                            {
+                            if (gb.hd != null) {
                                 DungeonHDDecorate dghd = (DungeonHDDecorate) dungeonObject;
                                 cHologram chg = cHologramManager.getOrRegister(dghd.getHoloName()).clone();
                                 dg.addHologram(chg);
@@ -112,21 +111,10 @@ public class BuilderV3 {
                             dgsd.loadSchematic();*/
                             db.log("schematic decoration here.");
                             break;
-                        case "trigger":
-                            DungeonTrigger dt = (DungeonTrigger) dungeonObject;
-                            switch (dt.getTriggerType())
-                            {
-                                case "loctri":
-                                    dg.addLocationTrigger((LocationTrigger) dt);
-                                    break;
-                                case "inttri":
-                                    dg.addInteractTrigger((InteractTrigger) dt);
-                                    break;
-                                case "mktri":
-                                    db.log("mktri registered");
-                                    dg.addMobKillTrigger((MobKillTrigger) dt);
-                                    break;
-                            }
+                        case "loc_trigger":
+                        case "int_trigger":
+                        case "mk_trigger":
+                            dg.addTrigger((DungeonTrigger) dungeonObject);
                             break;
                     }
                 }

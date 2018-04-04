@@ -7,6 +7,7 @@ import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitWorld;
 import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.MobKillTrigger;
@@ -39,9 +40,7 @@ public class DungeonSession {
     private UUID uuid = UUID.randomUUID();
     private List<cHologram> holograms = new ArrayList<>(); // store all the cHologram for later remove.
     private List<EditSession> schematics = new ArrayList<>(); // decoration -> schematic, store the editsession for later remove.
-    private List<InteractTrigger> interactTriggers = new ArrayList<>();
-    private List<LocationTrigger> locationTriggers = new ArrayList<>();
-    private HashMap<String, MobKillTrigger> mobKillTriggers = new HashMap<>();
+    private List<DungeonTrigger> triggers = new ArrayList<>();
 
     public DungeonSession(Player p_caller, Region p_region, EditSession p_session, Location playerSpawnLocation, Location min, Location max) {
         this.sessionOwner = p_caller;
@@ -73,12 +72,13 @@ public class DungeonSession {
     public void setDungeonID(int _id) {
         this.dungeonID = _id;
     }
-    
-    public void updateMobKillTrigger(MobKillTrigger mkt)
-    {
+
+    /*
+    public void updateMobKillTrigger(MobKillTrigger mkt) {
         db.log(mkt.getName() + " : " + mkt.readCounter());
         mobKillTriggers.put(mkt.getName(), mkt);
     }
+    */
 
     public Location getDungeonMin() {
         return dungeonLocation[0];
@@ -115,22 +115,11 @@ public class DungeonSession {
     public List<Player> getWhoPlaying() {
         return this.whoPlaying;
     }
-    
-    public List<InteractTrigger> getInteractTriggers()
-    {
-        return interactTriggers;
+
+    public List<DungeonTrigger> getTriggers() {
+        return triggers;
     }
-    
-    public List<LocationTrigger> getLocationTriggers()
-    {
-        return locationTriggers;
-    }
-    
-    public Collection<MobKillTrigger> getMobKillTriggers()
-    {
-        return mobKillTriggers.values();
-    }
-    
+
 
     public void enter(Player p) {
         this.whoPlaying.add(p);
@@ -251,20 +240,9 @@ public class DungeonSession {
         tLst.add(spawner);
         this.spawnerTable.put(targetChunk, tLst);
     }
-    
-    public void addInteractTrigger(InteractTrigger it)
-    {
-        interactTriggers.add(it);
-    }
-    
-    public void addLocationTrigger(LocationTrigger lt)
-    {
-        locationTriggers.add(lt);
-    }
-    
-    public void addMobKillTrigger(MobKillTrigger mkt)
-    {
-        mobKillTriggers.put(mkt.getName(), mkt);
+
+    public void addTrigger(DungeonTrigger it) {
+        triggers.add(it);
     }
 
     public void removeSpawnersByChunk(Chunk targetChunk) {

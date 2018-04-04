@@ -85,8 +85,8 @@ public class DungeonEditSession {
                     break;
             }
         });
-        msg.send(player,"&6Decoration Setup");
-        msg.send(player,"&7+-> &aDecoration Type &7[&ehd &7| &eschematic&7]");
+        msg.send(player, "&6Decoration Setup");
+        msg.send(player, "&7+-> &aDecoration Type &7[&ehd &7| &eschematic&7]");
     }
 
     public void createDungeonHDDecoration(int x, int y, int z) {
@@ -95,33 +95,35 @@ public class DungeonEditSession {
         z -= minPoint.getBlockZ();
         lastEdit = new DungeonHDDecorate(x, y, z);
     }
-    
+
     public void createDungeonSchematicDecoration(int x, int y, int z) {
         x -= minPoint.getBlockX();
         y -= minPoint.getBlockY();
         z -= minPoint.getBlockZ();
         lastEdit = new DungeonSchematicDecorate(x, y, z);
     }
-    
-    public void createTrigger()
-    {
+
+    public void createTrigger(int nx, int ny, int nz) {
+        final int x = nx - minPoint.getBlockX();
+        final int y = ny - minPoint.getBlockY();
+        final int z = nz - minPoint.getBlockZ();
         lastEdit = new DungeonPlaceholderObject();
         valueOperation = new AbstractMap.SimpleEntry<>("Trigger Type", (dobj, input) -> {
             String type = (String) input;
             switch (type.toLowerCase()) {
                 case "location":
-                    lastEdit = new LocationTrigger();
+                    lastEdit = new LocationTrigger(x, y, z);
                     break;
                 case "mobkill":
-                    lastEdit = new MobKillTrigger();
+                    lastEdit = new MobKillTrigger(x, y, z);
                     break;
                 case "interact":
-                    lastEdit = new InteractTrigger();
+                    lastEdit = new InteractTrigger(x, y, z);
                     break;
             }
         });
-        msg.send(player,"&6=== Trigger Setup ===");
-        msg.send(player,"&7+-> &aTrigger Type &7[&eInteract &7| &eMobKill &7| &eLocation&7]");
+        msg.send(player, "&6=== Trigger Setup ===");
+        msg.send(player, "&7+-> &aTrigger Type &7[&eInteract &7| &eMobKill &7| &eLocation&7]");
     }
 
     public void updateOperation() {
@@ -150,8 +152,8 @@ public class DungeonEditSession {
             valueOperation.getValue().accept(lastEdit, value);
             updateOperation();
         } catch (Exception e) {
-            msg.send(player, "ERROR while setting ["+lastEdit.getOperation().getKey()+"]!");
-            db.log("ERROR IN INPUT -- Who[" + player.getName()+"]");
+            msg.send(player, "ERROR while setting [" + lastEdit.getOperation().getKey() + "]!");
+            db.log("ERROR IN INPUT -- Who[" + player.getName() + "]");
             e.printStackTrace();
         }
     }
