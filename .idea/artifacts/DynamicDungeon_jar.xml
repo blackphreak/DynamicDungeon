@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="DynamicDungeon:jar">
-    <output-path>$PROJECT_DIR$/</output-path>
-    <root id="archive" name="DynamicDungeon.jar">
-      <element id="module-output" name="DynamicDungeon" />
-      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
-    </root>
-  </artifact>
-</component>
