@@ -1,25 +1,26 @@
-package me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers;
+package me.blackphreak.dynamicdungeon.Objects.Triggers;
 
+import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSession;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObject;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.cLocation;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Objects.DungeonObject;
+import me.blackphreak.dynamicdungeon.Objects.cLocation;
 import me.blackphreak.dynamicdungeon.gb;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class InteractTrigger extends DungeonTrigger {
     private cLocation loc; // offset location
     private String material;
     private String state;
 
-    public InteractTrigger(int x, int y, int z) {
-        super("int_trigger", x, y, z);
+    public InteractTrigger() {
+        super("int_trigger");
     }
 
     @Override
@@ -59,13 +60,13 @@ public class InteractTrigger extends DungeonTrigger {
         return state;
     }
 
-    private static List<AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>>> operationList = new ArrayList<>();
+    private static List<AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>>> operationList = new ArrayList<>();
 
     static {
-        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Name [String]", (dobj, input) -> ((InteractTrigger) dobj).setTriggerName((String) input)));
-        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Delay [1000 = 1sec]", (dobj, input) -> ((InteractTrigger) dobj).setDelay(Long.parseLong((String) input))));
-        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Repeat [Integer]", (dobj, input) -> ((InteractTrigger) dobj).setRepeat(Integer.parseInt((String) input))));
-        operationList.add(new AbstractMap.SimpleEntry<>("Click The Block!", (dobj, input) ->
+        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Name [String]", (es, dobj, input) -> ((InteractTrigger) dobj).setTriggerName((String) input)));
+        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Delay [1000 = 1sec]", (es, dobj, input) -> ((InteractTrigger) dobj).setDelay(Long.parseLong((String) input))));
+        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Repeat [Integer]", (es, dobj, input) -> ((InteractTrigger) dobj).setRepeat(Integer.parseInt((String) input))));
+        operationList.add(new AbstractMap.SimpleEntry<>("Click The Block!", (es, dobj, input) ->
         {
             if (input instanceof PlayerInteractEvent) {
                 InteractTrigger obj = (InteractTrigger) dobj;
@@ -84,7 +85,7 @@ public class InteractTrigger extends DungeonTrigger {
     private transient int operationIndex = 0;
 
     @Override
-    public AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation() {
+    public AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>> getOperation() {
         if (operationIndex < operationList.size()) {
             return operationList.get(operationIndex++);
         }

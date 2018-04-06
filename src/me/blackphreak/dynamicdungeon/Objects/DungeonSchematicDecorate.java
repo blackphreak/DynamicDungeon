@@ -1,11 +1,13 @@
-package me.blackphreak.dynamicdungeon.MapBuilding.Objects;
+package me.blackphreak.dynamicdungeon.Objects;
+
+import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSession;
+import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
-public class DungeonSchematicDecorate extends DungeonObject {
+public class DungeonSchematicDecorate extends LocationObject {
 
     public DungeonSchematicDecorate(int x, int y, int z) {
         // this x, y, z is the centre point of schematic!!
@@ -14,15 +16,15 @@ public class DungeonSchematicDecorate extends DungeonObject {
 
     private String schematicName;
 
-    private static List<AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>>> operationList = new ArrayList<>();
+    private static List<AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>>> operationList = new ArrayList<>();
 
     static {
-        operationList.add(new AbstractMap.SimpleEntry<>("Schematic Name (Without file extension)", (dobj, input) -> ((DungeonSchematicDecorate) dobj).schematicName = (String) input));
+        operationList.add(new AbstractMap.SimpleEntry<>("Schematic Name (Without file extension)", (es, dobj, input) -> ((DungeonSchematicDecorate) dobj).schematicName = (String) input));
     }
 
     private transient int operationIndex = 0;
 
-    public AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation() {
+    public AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>> getOperation() {
         if (operationIndex < operationList.size()) {
             return operationList.get(operationIndex++);
         }

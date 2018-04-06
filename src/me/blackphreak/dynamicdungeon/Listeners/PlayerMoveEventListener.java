@@ -1,11 +1,9 @@
 package me.blackphreak.dynamicdungeon.Listeners;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Objects.Triggers.LocationTrigger;
 import me.blackphreak.dynamicdungeon.gb;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

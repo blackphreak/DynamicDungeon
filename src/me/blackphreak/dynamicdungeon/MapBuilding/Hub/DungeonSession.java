@@ -7,8 +7,9 @@ import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitWorld;
 import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Messages.msg;
+import me.blackphreak.dynamicdungeon.Objects.Triggers.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Chunk;
@@ -168,6 +169,7 @@ public class DungeonSession {
 
     public void updateCheckPoint(Location location) {
         this.latestCheckPoint = location;
+        whoPlaying.forEach(p -> msg.send(p, "Dungeon CheckPoint updated."));
     }
 
     public Location getLatestCheckPoint() {
@@ -240,10 +242,19 @@ public class DungeonSession {
         this.spawnerTable.put(targetChunk, tLst);
     }
 
-    public void addTrigger(DungeonTrigger it) {
-        triggers.add(it);
+    public void addTrigger(DungeonTrigger dt) {
+        triggers.add(dt);
     }
-
+    
+    /**
+     * Calls when a trigger has done its job(s).
+     * @param dt: the target DungeonTrigger that wants to be removed.
+     */
+    public void removeTrigger(DungeonTrigger dt)
+    {
+        triggers.remove(dt);
+    }
+    
     public void removeSpawnersByChunk(Chunk targetChunk) {
         this.spawnerTable.remove(targetChunk);
     }
