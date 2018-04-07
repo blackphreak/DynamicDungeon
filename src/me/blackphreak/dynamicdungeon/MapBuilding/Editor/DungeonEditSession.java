@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.*;
+import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
 import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.MobKillTrigger;
@@ -69,7 +70,6 @@ public class DungeonEditSession {
         lastEdit = new DungeonMobSpawner(x, y, z);
         updateOperation();
     }
-
 
     public void createDungeonDecoration(int x, int y, int z) {
         lastEdit = new DungeonPlaceholderObject();
