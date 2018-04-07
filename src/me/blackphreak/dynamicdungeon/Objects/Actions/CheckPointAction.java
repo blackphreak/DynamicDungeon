@@ -77,4 +77,10 @@ public class CheckPointAction extends TriggerAction {
 		}
 		return null;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "{\"type\": \"cp_action\", \"x\": "+x+", \"y\": "+y+", \"z\": "+z+"}";
+	}
 }

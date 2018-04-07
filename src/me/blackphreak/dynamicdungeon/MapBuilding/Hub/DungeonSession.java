@@ -41,6 +41,7 @@ public class DungeonSession {
     private List<cHologram> holograms = new ArrayList<>(); // store all the cHologram for later remove.
     private List<EditSession> schematics = new ArrayList<>(); // decoration -> schematic, store the editsession for later remove.
     private List<DungeonTrigger> triggers = new ArrayList<>();
+    private List<DungeonTrigger> rm_queue = new ArrayList<>();
 
     public DungeonSession(Player p_caller, Region p_region, EditSession p_session, Location playerSpawnLocation, Location min, Location max) {
         this.sessionOwner = p_caller;
@@ -248,11 +249,22 @@ public class DungeonSession {
     
     /**
      * Calls when a trigger has done its job(s).
+     * The trigger will be removed after all condition are done.
+     * See: DungeonSession.removeTriggersInQueue()
      * @param dt: the target DungeonTrigger that wants to be removed.
      */
-    public void removeTrigger(DungeonTrigger dt)
+    public void addToTriggerRemoveQueue(DungeonTrigger dt)
     {
-        triggers.remove(dt);
+        rm_queue.add(dt);
+    }
+    
+    /**
+     * Calls when all condition & action are done.
+     */
+    public void removeTriggersInQueue()
+    {
+        triggers.removeAll(rm_queue);
+        rm_queue.clear();
     }
     
     public void removeSpawnersByChunk(Chunk targetChunk) {

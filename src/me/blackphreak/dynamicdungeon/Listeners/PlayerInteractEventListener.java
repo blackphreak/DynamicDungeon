@@ -36,6 +36,7 @@ public class PlayerInteractEventListener implements Listener {
                             }
                         }
                 );
+                dg.removeTriggersInQueue();
             }
 
             if (e.getHand() == null) {

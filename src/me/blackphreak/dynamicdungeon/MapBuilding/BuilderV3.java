@@ -65,7 +65,10 @@ public class BuilderV3 {
                 session.flushQueue();
 
 
-                Gson gson = new GsonBuilder().registerTypeAdapter(DungeonObject.class, new DungeonObjectDeserializer()).registerTypeAdapter(TriggerAction.class, new DungeonObjectDeserializer()).create();
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(TriggerAction.class, new DungeonObjectDeserializer())
+                        .registerTypeAdapter(DungeonObject.class, new DungeonObjectDeserializer())
+                        .create();
                 File dungeonFile = new File(gb.dataPath + fileNameWithoutExtension + ".json");
 
                 DungeonObject[] objs;
@@ -112,7 +115,9 @@ public class BuilderV3 {
                         case "loc_trigger":
                         case "int_trigger":
                         case "mk_trigger":
+                            ((DungeonTrigger) dungeonObject).setTrigger((DungeonTrigger) dungeonObject);
                             dg.addTrigger((DungeonTrigger) dungeonObject);
+                            
                             break;
                     }
                 }

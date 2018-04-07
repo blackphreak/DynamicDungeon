@@ -2,6 +2,7 @@ package me.blackphreak.dynamicdungeon.Objects.Triggers;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSession;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.Objects.Actions.CheckPointAction;
 import me.blackphreak.dynamicdungeon.Objects.DungeonObject;
 import me.blackphreak.dynamicdungeon.gb;
@@ -29,9 +30,9 @@ public class LocationTrigger extends DungeonTrigger {
 	}
 	
 	@Override
-	public boolean condition(DungeonSession d, Event e) {
+	public boolean condition(DungeonSession dg, Event e) {
 		PlayerMoveEvent moveEvent = (PlayerMoveEvent) e;
-		return moveEvent.getTo().distance(new Location(Bukkit.getWorld(gb.dgWorldName), x, y, z).add(d.getDungeonMin())) <= range;
+		return moveEvent.getTo().distance(new Location(Bukkit.getWorld(gb.dgWorldName), x, y, z).add(dg.getDungeonMin())) <= range;
 	}
 	
 	public void setRange(int range) {
@@ -46,16 +47,29 @@ public class LocationTrigger extends DungeonTrigger {
 	private transient List<AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>>> operationList = new ArrayList<>();
 	
 	{
-		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Name [String]", (es, dobj, input) -> ((LocationTrigger) dobj).setTriggerName((String) input)));
-		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Delay [1000 = 1sec]", (es, dobj, input) -> ((LocationTrigger) dobj).setDelay(Long.parseLong((String) input))));
-		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Repeat [Integer]", (es, dobj, input) -> ((LocationTrigger) dobj).setRepeat(Integer.parseInt((String) input))));
-		operationList.add(new AbstractMap.SimpleEntry<>("Range [Integer]", (es, dobj, input) -> ((LocationTrigger) dobj).setRange(Integer.parseInt((String) input))));
-		operationList.add(new AbstractMap.SimpleEntry<>("Action [CheckPoint | CancelTrigger]", (es, dobj, input) -> {
+		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Name &7[&eString&7]", (es, dobj, input) -> ((LocationTrigger) dobj).setTriggerName((String) input)));
+		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Delay &7[&e20 &7= &e1sec&7]", (es, dobj, input) -> ((LocationTrigger) dobj).setDelay(Long.parseLong((String) input))));
+		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Repeat &7[&eInteger&7]", (es, dobj, input) -> {
+			((LocationTrigger) dobj).setRepeat(Integer.parseInt((String) input));
+			
+			if (((LocationTrigger) dobj).getRepeat() < 0)
+			{
+				((LocationTrigger) dobj).setOperationIndex(
+						((LocationTrigger) dobj).getOperationIndex() + 1 // skipping "Trigger Period'
+				);
+				((LocationTrigger) dobj).setPeriod(0);
+			}
+		}));
+		operationList.add(new AbstractMap.SimpleEntry<>("Trigger Period &7[&e20 &7= &e1sec&7]", (es, dobj, input) -> ((LocationTrigger) dobj).setPeriod(Long.parseLong((String) input))));
+		operationList.add(new AbstractMap.SimpleEntry<>("Acceptable Trigger Range &7[&eInteger&7]", (es, dobj, input) -> ((LocationTrigger) dobj).setRange(Integer.parseInt((String) input))));
+		operationList.add(new AbstractMap.SimpleEntry<>("Action &7[&eCheckPoint &7| &eCancelTrigger&7]", (es, dobj, input) -> {
 			switch (((String) input).toLowerCase()) {
 				case "checkpoint":
 				case "ck":
 				case "cp":
 					es.updateLastEdit(new CheckPointAction((DungeonTrigger) dobj));
+					msg.send(es.getPlayer(), "   &7[ &b"+es.getLastEdit().getType()+" Setup &7]");
+					es.setPrefix("   ");
 					break;
 				case "canceltrigger":
 				case "ct":
@@ -63,26 +77,12 @@ public class LocationTrigger extends DungeonTrigger {
 					break;
 			}
 		}));
-		operationList.add(new AbstractMap.SimpleEntry<>("+ ?", (es, dobj, input) -> {
-			if (!input.equals("no"))
+		operationList.add(new AbstractMap.SimpleEntry<>("Want to add more action? &7[&eyes&7(&ey&7) &7| &eno&7(&en&7)]", (es, dobj, input) -> {
+			es.setPrefix("");
+			if (!input.equals("no")
+					&& !input.equals("n"))
 				((LocationTrigger) dobj).setOperationIndex(((LocationTrigger) dobj).getOperationIndex() - 2);
 		}));
-	    /*
-        operationList.add(new AbstractMap.SimpleEntry<>("Location [Type \"ok\" when you are there]", (dobj, input) ->
-        {
-            if (input instanceof Location) {
-                LocationTrigger obj = (LocationTrigger) dobj;
-                obj.setLoc(
-                        new cLocation(
-                                gb.dgWorldName,
-                                ((Location) input).getBlockX(),
-                                ((Location) input).getBlockY(),
-                                ((Location) input).getBlockZ()
-                        )
-                );
-            }
-        }));
-        */
 	}
 	
 	private transient int operationIndex = 0;

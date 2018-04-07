@@ -31,6 +31,7 @@ public class MythicMobDeadthEventListener implements Listener {
                                 }
                             }
                     );
+                    dg.removeTriggersInQueue();
                 }
             }
         }

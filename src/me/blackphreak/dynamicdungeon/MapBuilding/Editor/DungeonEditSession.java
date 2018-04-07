@@ -29,6 +29,7 @@ public class DungeonEditSession {
 	private Player player;
 	private String dungeonName;
 	private Region region;
+	private String prefix = "";
 	public final Vector minPoint;
 	
 	public DungeonEditSession(Player player, String dungeonName, Region region) {
@@ -123,7 +124,7 @@ public class DungeonEditSession {
 					break;
 			}
 		});
-		msg.send(player, "&6=== Trigger Setup ===");
+		msg.send(player, "&7[ &6"+lastEdit.getType()+" Setup &7]");
 		msg.send(player, "&7+-> &aTrigger Type &7[&eInteract &7| &eMobKill &7| &eLocation&7]");
 	}
 	
@@ -131,10 +132,15 @@ public class DungeonEditSession {
 		lastEdit = dobj;
 	}
 	
+	public void setPrefix(String prefix)
+	{
+		this.prefix = prefix;
+	}
+	
 	public void updateOperation() {
 		valueOperation = lastEdit.getOperation();
 		if (valueOperation == null) {
-			msg.send(player, "&7-- &cFinished setup for this.");
+			msg.send(player, "&7-- &cFinished setup for &6"+lastEdit.getName()+"&7[&6"+lastEdit.getType()+"&7].");
 			if (lastEdit instanceof TriggerAction) {
 				lastEdit = ((TriggerAction) lastEdit).getParent();
 			} else if (!(lastEdit instanceof DungeonPlaceholderObject)) {
@@ -143,8 +149,18 @@ public class DungeonEditSession {
 				lastEdit = null;
 			}
 		} else {
-			msg.send(player, "&7+-> &a" + valueOperation.getKey());
+			msg.send(player, prefix + "&7+-> &a" + valueOperation.getKey());
 		}
+	}
+	
+	public Player getPlayer()
+	{
+		return player;
+	}
+	
+	public DungeonObject getLastEdit()
+	{
+		return lastEdit;
 	}
 	
 	public String getInputValue() {
@@ -159,7 +175,7 @@ public class DungeonEditSession {
 			valueOperation.getValue().accept(this, lastEdit, value);
 			updateOperation();
 		} catch (Exception e) {
-			msg.send(player, "ERROR while setting [" + valueOperation.getKey() + "]!");
+			msg.send(player, "ERROR while setting &7[&6" + valueOperation.getKey() + "&7]!");
 			db.log("ERROR IN INPUT -- Who[" + player.getName() + "]");
 			e.printStackTrace();
 		}

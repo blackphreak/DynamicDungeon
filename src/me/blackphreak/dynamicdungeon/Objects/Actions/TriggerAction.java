@@ -8,10 +8,6 @@ public abstract class TriggerAction extends DungeonObject {
 	private String actionType;
 	private transient DungeonTrigger dt;
 	
-	public TriggerAction() {
-		super("", "");
-	}
-	
 	public TriggerAction(String type, DungeonTrigger parent) {
 		super(type, "");
 		this.actionType = type;

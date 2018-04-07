@@ -31,6 +31,7 @@ public class PlayerMoveEventListener implements Listener {
                             }
                         }
                 );
+                dg.removeTriggersInQueue();
             }
         }
     }
