@@ -1,7 +1,6 @@
-package com.caxerx.mc.dynamicdungeon.object;
+package com.caxerx.mc.dynamicdungeon.dungeonobject;
 
 import lombok.Data;
-import org.bukkit.Location;
 
 @Data
 public class GlobalLocation {

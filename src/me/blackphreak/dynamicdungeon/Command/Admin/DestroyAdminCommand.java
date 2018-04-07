@@ -1,6 +1,6 @@
 package me.blackphreak.dynamicdungeon.Command.Admin;
 
-import me.blackphreak.dynamicdungeon.Command.CommandNode;
+import com.caxerx.mc.dynamicdungeon.command.CommandNode;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;

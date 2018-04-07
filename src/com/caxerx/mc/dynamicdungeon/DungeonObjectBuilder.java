@@ -2,20 +2,19 @@ package com.caxerx.mc.dynamicdungeon;
 
 import com.caxerx.mc.dynamicdungeon.exception.ArgumentNotMatchException;
 import com.caxerx.mc.dynamicdungeon.exception.DungeonObjectInstantiateFailException;
-import com.caxerx.mc.dynamicdungeon.object.DDField;
-import com.caxerx.mc.dynamicdungeon.object.DungeonLocation;
-import com.caxerx.mc.dynamicdungeon.object.DungeonObject;
-import com.caxerx.mc.lib.userinput.ChatInput;
+import com.caxerx.mc.dynamicdungeon.dungeonobject.DDField;
+import com.caxerx.mc.dynamicdungeon.dungeonobject.DungeonLocation;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class DungeonObjectBuilder {
 
-    public static void fromUser() {
-        HashMap<String, Class<Object>> a = new HashMap<>();
-
+    /*
+    public static void fromUserInput(Player player, HashMap<String, Class<Object>> cons) {
+        new ChatInput(player, cons, t -> t.get(3));
     }
+    */
 
     public static <T> T getDungeonObject(Class<T> type, String[] args) {
         try {

@@ -1,4 +1,4 @@
-package com.caxerx.mc.dynamicdungeon.object;
+package com.caxerx.mc.dynamicdungeon.dungeonobject;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

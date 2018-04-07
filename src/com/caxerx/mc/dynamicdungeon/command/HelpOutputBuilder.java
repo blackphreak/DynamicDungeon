@@ -1,4 +1,4 @@
-package me.blackphreak.dynamicdungeon.Command;
+package com.caxerx.mc.dynamicdungeon.command;
 
 import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;

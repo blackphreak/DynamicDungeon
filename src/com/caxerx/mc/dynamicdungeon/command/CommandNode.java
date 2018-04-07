@@ -1,4 +1,4 @@
-package me.blackphreak.dynamicdungeon.Command;
+package com.caxerx.mc.dynamicdungeon.command;
 
 import lombok.Getter;
 import lombok.NonNull;

@@ -1,7 +1,7 @@
 package me.blackphreak.dynamicdungeon.Command.Admin;
 
-import me.blackphreak.dynamicdungeon.Command.CommandNode;
-import me.blackphreak.dynamicdungeon.Command.DefaultCommand;
+import com.caxerx.mc.dynamicdungeon.command.CommandNode;
+import com.caxerx.mc.dynamicdungeon.command.DefaultCommand;
 
 public class DefaultAdminCommand extends DefaultCommand {
     public DefaultAdminCommand(CommandNode parent) {

@@ -1,8 +1,8 @@
 package me.blackphreak.dynamicdungeon.Command.Admin;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.Command.CommandArgumentException;
-import me.blackphreak.dynamicdungeon.Command.CommandNode;
+import com.caxerx.mc.dynamicdungeon.command.CommandArgumentException;
+import com.caxerx.mc.dynamicdungeon.command.CommandNode;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.command.CommandSender;
 

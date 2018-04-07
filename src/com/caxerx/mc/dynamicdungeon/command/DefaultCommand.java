@@ -1,4 +1,4 @@
-package me.blackphreak.dynamicdungeon.Command;
+package com.caxerx.mc.dynamicdungeon.command;
 
 import org.bukkit.command.CommandSender;
 

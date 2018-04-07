@@ -1,4 +1,4 @@
-package me.blackphreak.dynamicdungeon.Command;
+package com.caxerx.mc.dynamicdungeon.command;
 
 import com.google.common.collect.Lists;
 import lombok.NonNull;

@@ -1,6 +1,6 @@
 package me.blackphreak.dynamicdungeon;
 
-import me.blackphreak.dynamicdungeon.Command.CommandHandler;
+import com.caxerx.mc.dynamicdungeon.command.CommandHandler;
 import me.blackphreak.dynamicdungeon.Command.Core.DefaultCoreCommand;
 import me.blackphreak.dynamicdungeon.Listeners.MythicMobDeadthEventListener;
 import me.blackphreak.dynamicdungeon.Listeners.PlayerInteractEventListener;

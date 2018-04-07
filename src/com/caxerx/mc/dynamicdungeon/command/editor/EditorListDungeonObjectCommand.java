@@ -1,4 +1,4 @@
 package com.caxerx.mc.dynamicdungeon.command.editor;
 
-public class EditorSelectDungeonCommand {
+public class EditorListDungeonObjectCommand {
 }

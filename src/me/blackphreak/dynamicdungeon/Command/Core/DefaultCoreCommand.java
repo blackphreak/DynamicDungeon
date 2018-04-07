@@ -1,7 +1,7 @@
 package me.blackphreak.dynamicdungeon.Command.Core;
 
 import me.blackphreak.dynamicdungeon.Command.Admin.DefaultAdminCommand;
-import me.blackphreak.dynamicdungeon.Command.DefaultCommand;
+import com.caxerx.mc.dynamicdungeon.command.DefaultCommand;
 
 public class DefaultCoreCommand extends DefaultCommand {
     public DefaultCoreCommand() {

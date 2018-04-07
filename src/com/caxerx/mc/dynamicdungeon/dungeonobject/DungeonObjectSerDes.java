@@ -1,4 +1,4 @@
-package com.caxerx.mc.dynamicdungeon.object;
+package com.caxerx.mc.dynamicdungeon.dungeonobject;
 
 import com.google.gson.*;
 

@@ -1,4 +1,4 @@
-package me.blackphreak.dynamicdungeon.Command;
+package com.caxerx.mc.dynamicdungeon.command;
 
 public class CommandArgumentException extends RuntimeException {
     public CommandArgumentException(String msg) {
