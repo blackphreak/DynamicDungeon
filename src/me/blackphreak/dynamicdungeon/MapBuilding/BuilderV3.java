@@ -10,13 +10,11 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.*;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.DungeonTrigger;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.MobKillTrigger;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
+import me.blackphreak.dynamicdungeon.Objects.Actions.TriggerAction;
+import me.blackphreak.dynamicdungeon.Objects.*;
+import me.blackphreak.dynamicdungeon.Objects.Triggers.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologramManager;
 import me.blackphreak.dynamicdungeon.gb;
@@ -67,7 +65,10 @@ public class BuilderV3 {
                 session.flushQueue();
 
 
-                Gson gson = new GsonBuilder().registerTypeAdapter(DungeonObject.class, new DungeonObjectDeserializer()).create();
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(TriggerAction.class, new DungeonObjectDeserializer())
+                        .registerTypeAdapter(DungeonObject.class, new DungeonObjectDeserializer())
+                        .create();
                 File dungeonFile = new File(gb.dataPath + fileNameWithoutExtension + ".json");
 
                 DungeonObject[] objs;
@@ -114,7 +115,9 @@ public class BuilderV3 {
                         case "loc_trigger":
                         case "int_trigger":
                         case "mk_trigger":
+                            ((DungeonTrigger) dungeonObject).setTrigger((DungeonTrigger) dungeonObject);
                             dg.addTrigger((DungeonTrigger) dungeonObject);
+                            
                             break;
                     }
                 }

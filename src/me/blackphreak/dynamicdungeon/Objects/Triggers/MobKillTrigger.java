@@ -1,38 +1,39 @@
-package me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers;
+package me.blackphreak.dynamicdungeon.Objects.Triggers;
 
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
+import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSession;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.DungeonObject;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Objects.DungeonObject;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.event.Event;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class MobKillTrigger extends DungeonTrigger {
     private String mobName; // the name of mob
     private int amount;
     private transient int killedAmount;
 
-    public MobKillTrigger(int x, int y, int z) {
-        super("mk_trigger", x, y, z);
+    public MobKillTrigger() {
+        super("mk_trigger");
     }
 
-    private static List<AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>>> operationList = new ArrayList<>();
+    private static List<AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>>> operationList = new ArrayList<>();
 
     static {
-        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Name [String]", (dobj, input) -> ((MobKillTrigger) dobj).setTriggerName((String) input)));
-        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Delay [1000 = 1sec]", (dobj, input) -> ((MobKillTrigger) dobj).setDelay(Long.parseLong((String) input))));
-        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Repeat [Integer]", (dobj, input) -> ((MobKillTrigger) dobj).setRepeat(Integer.parseInt((String) input))));
-        operationList.add(new AbstractMap.SimpleEntry<>("Mob Name", (dobj, input) -> ((MobKillTrigger) dobj).mobName = (String) input));
-        operationList.add(new AbstractMap.SimpleEntry<>("Amount", (dobj, input) -> ((MobKillTrigger) dobj).amount = Integer.parseInt((String) input)));
+        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Name [String]", (es, dobj, input) -> ((MobKillTrigger) dobj).setTriggerName((String) input)));
+        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Delay [1000 = 1sec]", (es, dobj, input) -> ((MobKillTrigger) dobj).setDelay(Long.parseLong((String) input))));
+        operationList.add(new AbstractMap.SimpleEntry<>("Trigger Repeat [Integer]", (es, dobj, input) -> ((MobKillTrigger) dobj).setRepeat(Integer.parseInt((String) input))));
+        operationList.add(new AbstractMap.SimpleEntry<>("Mob Name", (es, dobj, input) -> ((MobKillTrigger) dobj).mobName = (String) input));
+        operationList.add(new AbstractMap.SimpleEntry<>("Amount", (es, dobj, input) -> ((MobKillTrigger) dobj).amount = Integer.parseInt((String) input)));
     }
 
     private transient int operationIndex = 0;
 
-    public AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation() {
+    public AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>> getOperation() {
         if (operationIndex < operationList.size()) {
             return operationList.get(operationIndex++);
         }

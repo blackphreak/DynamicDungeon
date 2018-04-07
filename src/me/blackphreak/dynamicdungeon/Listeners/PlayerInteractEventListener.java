@@ -2,10 +2,9 @@ package me.blackphreak.dynamicdungeon.Listeners;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV3;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
+import me.blackphreak.dynamicdungeon.Objects.Triggers.InteractTrigger;
 import me.blackphreak.dynamicdungeon.gb;
 import me.blackphreak.dynamicdungeon.math;
 import org.bukkit.Location;
@@ -37,6 +36,7 @@ public class PlayerInteractEventListener implements Listener {
                             }
                         }
                 );
+                dg.removeTriggersInQueue();
             }
 
             if (e.getHand() == null) {

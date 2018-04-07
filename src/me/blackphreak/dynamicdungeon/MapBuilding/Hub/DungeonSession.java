@@ -7,11 +7,9 @@ import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitWorld;
 import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.DungeonTrigger;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.InteractTrigger;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.LocationTrigger;
-import me.blackphreak.dynamicdungeon.MapBuilding.Objects.Triggers.MobKillTrigger;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Messages.msg;
+import me.blackphreak.dynamicdungeon.Objects.Triggers.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Chunk;
@@ -20,7 +18,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DungeonSession {
@@ -41,6 +41,7 @@ public class DungeonSession {
     private List<cHologram> holograms = new ArrayList<>(); // store all the cHologram for later remove.
     private List<EditSession> schematics = new ArrayList<>(); // decoration -> schematic, store the editsession for later remove.
     private List<DungeonTrigger> triggers = new ArrayList<>();
+    private List<DungeonTrigger> rm_queue = new ArrayList<>();
 
     public DungeonSession(Player p_caller, Region p_region, EditSession p_session, Location playerSpawnLocation, Location min, Location max) {
         this.sessionOwner = p_caller;
@@ -169,6 +170,7 @@ public class DungeonSession {
 
     public void updateCheckPoint(Location location) {
         this.latestCheckPoint = location;
+        whoPlaying.forEach(p -> msg.send(p, "Dungeon CheckPoint updated."));
     }
 
     public Location getLatestCheckPoint() {
@@ -241,10 +243,30 @@ public class DungeonSession {
         this.spawnerTable.put(targetChunk, tLst);
     }
 
-    public void addTrigger(DungeonTrigger it) {
-        triggers.add(it);
+    public void addTrigger(DungeonTrigger dt) {
+        triggers.add(dt);
     }
-
+    
+    /**
+     * Calls when a trigger has done its job(s).
+     * The trigger will be removed after all condition are done.
+     * See: DungeonSession.removeTriggersInQueue()
+     * @param dt: the target DungeonTrigger that wants to be removed.
+     */
+    public void addToTriggerRemoveQueue(DungeonTrigger dt)
+    {
+        rm_queue.add(dt);
+    }
+    
+    /**
+     * Calls when all condition & action are done.
+     */
+    public void removeTriggersInQueue()
+    {
+        triggers.removeAll(rm_queue);
+        rm_queue.clear();
+    }
+    
     public void removeSpawnersByChunk(Chunk targetChunk) {
         this.spawnerTable.remove(targetChunk);
     }

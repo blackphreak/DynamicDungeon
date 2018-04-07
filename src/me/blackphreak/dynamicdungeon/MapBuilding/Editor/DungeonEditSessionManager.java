@@ -98,7 +98,7 @@ public class DungeonEditSessionManager implements Listener {
                 && session.getInputValue() != null) {
             e.setCancelled(true);
 
-            // for DungeonLocation only.
+            // for DungeonLocation & LocationTrigger only.
             if (session.getInputValue()
                     .equalsIgnoreCase("Location [Type \"ok\" when you are there]")
                     && e.getMessage().equalsIgnoreCase("ok")

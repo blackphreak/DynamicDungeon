@@ -1,11 +1,12 @@
-package me.blackphreak.dynamicdungeon.MapBuilding.Objects;
+package me.blackphreak.dynamicdungeon.Objects;
 
+import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSession;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Location;
 
 import java.util.AbstractMap;
-import java.util.function.BiConsumer;
 
-public class DungeonLocation extends DungeonObject {
+public class DungeonLocation extends LocationObject {
     private cLocation loc; //target location
 
     public DungeonLocation(int x, int y, int z) {
@@ -14,7 +15,7 @@ public class DungeonLocation extends DungeonObject {
 
 
     private boolean received = false;
-    private static AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> operation = new AbstractMap.SimpleEntry<>("Location", (dobj, input) -> {
+    private static AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>> operation = new AbstractMap.SimpleEntry<>("Location", (es ,dobj, input) -> {
         if (input instanceof Location) {
             DungeonLocation obj = (DungeonLocation) dobj;
             obj.setLoc(
@@ -28,7 +29,7 @@ public class DungeonLocation extends DungeonObject {
         }
     });
 
-    public AbstractMap.SimpleEntry<String, BiConsumer<DungeonObject, Object>> getOperation() {
+    public AbstractMap.SimpleEntry<String, TriConsumer<DungeonEditSession, DungeonObject, Object>> getOperation() {
         if (received) {
             return null;
         }

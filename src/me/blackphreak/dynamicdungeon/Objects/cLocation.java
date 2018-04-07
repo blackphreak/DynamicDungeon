@@ -1,4 +1,4 @@
-package me.blackphreak.dynamicdungeon.MapBuilding.Objects;
+package me.blackphreak.dynamicdungeon.Objects;
 
 public class cLocation {
     private String world;
