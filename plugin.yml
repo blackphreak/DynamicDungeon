@@ -8,6 +8,10 @@ commands:
   dynamicdungeon:
     description: Plugin commands + Admin commands
     aliases: [dd]
+  dynamicdungeoneditor:
+    description: editor command
+    aliases: [dde]
+
 permissions:
   dynamicdungeon.admin:
     description: Allow to use admin commands

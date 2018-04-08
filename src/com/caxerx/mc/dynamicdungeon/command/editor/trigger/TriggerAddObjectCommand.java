@@ -1,4 +1,4 @@
-package com.caxerx.mc.dynamicdungeon.command.editor;
+package com.caxerx.mc.dynamicdungeon.command.editor.trigger;
 
 import com.caxerx.mc.dynamicdungeon.DungeonObjectBuilder;
 import com.caxerx.mc.dynamicdungeon.command.CommandArgumentException;
@@ -8,6 +8,7 @@ import com.caxerx.mc.dynamicdungeon.command.manager.DungeonManager;
 import com.caxerx.mc.dynamicdungeon.command.manager.DungeonSelectManager;
 import com.caxerx.mc.dynamicdungeon.dungeonobject.DDField;
 import com.caxerx.mc.dynamicdungeon.dungeonobject.DungeonObject;
+import com.caxerx.mc.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import com.caxerx.mc.lib.userinput.ChatInput;
 import kotlin.Pair;
 import org.bukkit.command.CommandSender;
@@ -18,11 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class EditorAddObjectCommand extends CommandNode {
-    private Class<? extends DungeonObject> clz;
+public class TriggerAddObjectCommand extends CommandNode {
+    private Class<? extends DungeonTrigger> clz;
 
-    public EditorAddObjectCommand(CommandNode parent, String command, Class<? extends DungeonObject> clz) {
-        super(parent, command, "dynamicdungeon.admin", "Add a " + command + " object to selected dungeon", null);
+    public TriggerAddObjectCommand(CommandNode parent, String command, Class<? extends DungeonTrigger> clz) {
+        super(parent, command, "dynamicdungeon.admin", "Add a " + command + " trigger object to selected dungeon", null);
         this.clz = clz;
     }
 
@@ -36,6 +37,7 @@ public class EditorAddObjectCommand extends CommandNode {
             return true;
         }
         HashMap<Integer, String> preInputArgs;
+
         try {
             preInputArgs = new HashMap<>();
             for (String arg : args) {
@@ -50,13 +52,13 @@ public class EditorAddObjectCommand extends CommandNode {
         DungeonObjectBuilder.getAllField(clz).forEach(field -> inputConstraint.add(new Pair<>(field.getAnnotation(DDField.class).name(), field.getType())));
         preInputArgs.keySet().forEach(idx -> inputConstraint.remove((int) idx));
         new ChatInput((Player) sender, inputConstraint, input -> {
-            //Location location = ((Player) sender).getLocation();
-            //input.add(0, DungeonLocation.createFromBukkitLocation(location).subtract(DungeonLocation.createFromWorldEditVector(DungeonSelectManager.INSTANCE.getSelectedDungeon((Player) sender).getSecond().getMinimumPoint())).toString());
             preInputArgs.forEach(input::add);
             String dungeon = DungeonSelectManager.INSTANCE.getSelectedDungeon((Player) sender).getFirst();
-            DungeonManager.INSTANCE.getDungeon(dungeon).add(DungeonObjectBuilder.getDungeonObject(clz, input));
+            DungeonTrigger obj = DungeonObjectBuilder.getDungeonObject(clz, input);
+            DungeonManager.INSTANCE.getDungeon(dungeon).add(obj);
             DungeonManager.INSTANCE.saveToFile();
-            sender.sendMessage(clz.getSimpleName() + " Object Created");
+            DungeonSelectManager.INSTANCE.selectTrigger((Player) sender, obj.getTriggerName());
+            sender.sendMessage(clz.getSimpleName() + " Trigger Created and Selected");
         });
         return true;
     }

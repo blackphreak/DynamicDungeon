@@ -16,25 +16,25 @@ public class DungeonObjectBuilder {
     }
     */
 
-    public static <T> T getDungeonObject(Class<T> type, String[] args) {
+    public static <T> T getDungeonObject(Class<T> type, List<String> args) {
         try {
             T dungeonObject = type.newInstance();
             List<Field> fields = getAllField(type);
-            if (fields.size() == args.length) {
+            if (fields.size() == args.size()) {
                 for (int i = 0; i < fields.size(); i++) {
                     Field field = fields.get(i);
                     field.setAccessible(true);
                     Class<?> fieldType = field.getType();
                     if (fieldType == String.class) {
-                        field.set(dungeonObject, args[i]);
+                        field.set(dungeonObject, args.get(i));
                     } else if (fieldType == int.class) {
-                        field.set(dungeonObject, Integer.parseInt(args[i]));
+                        field.set(dungeonObject, Integer.parseInt(args.get(i)));
                     } else if (fieldType == double.class) {
-                        field.set(dungeonObject, Double.parseDouble(args[i]));
+                        field.set(dungeonObject, Double.parseDouble(args.get(i)));
                     } else if (fieldType == boolean.class) {
-                        field.set(dungeonObject, Boolean.parseBoolean(args[i]));
+                        field.set(dungeonObject, Boolean.parseBoolean(args.get(i)));
                     } else if (fieldType == DungeonLocation.class) {
-                        field.set(dungeonObject, DungeonLocation.createFromString(args[i]));
+                        field.set(dungeonObject, DungeonLocation.createFromString(args.get(i)));
                     }
                 }
                 return dungeonObject;

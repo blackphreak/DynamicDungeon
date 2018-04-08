@@ -1,4 +1,4 @@
-package com.caxerx.mc.dynamicdungeon.command.editor;
+package com.caxerx.mc.dynamicdungeon.command.editor.trigger.action;
 
 import com.caxerx.mc.dynamicdungeon.DungeonObjectBuilder;
 import com.caxerx.mc.dynamicdungeon.command.CommandArgumentException;
@@ -7,7 +7,8 @@ import com.caxerx.mc.dynamicdungeon.command.CommandSenderException;
 import com.caxerx.mc.dynamicdungeon.command.manager.DungeonManager;
 import com.caxerx.mc.dynamicdungeon.command.manager.DungeonSelectManager;
 import com.caxerx.mc.dynamicdungeon.dungeonobject.DDField;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.DungeonObject;
+import com.caxerx.mc.dynamicdungeon.dungeonobject.action.DungeonAction;
+import com.caxerx.mc.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import com.caxerx.mc.lib.userinput.ChatInput;
 import kotlin.Pair;
 import org.bukkit.command.CommandSender;
@@ -18,11 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class EditorAddObjectCommand extends CommandNode {
-    private Class<? extends DungeonObject> clz;
+public class ActionAddObjectCommand extends CommandNode {
+    private Class<? extends DungeonAction> clz;
 
-    public EditorAddObjectCommand(CommandNode parent, String command, Class<? extends DungeonObject> clz) {
-        super(parent, command, "dynamicdungeon.admin", "Add a " + command + " object to selected dungeon", null);
+    public ActionAddObjectCommand(CommandNode parent, String command, Class<? extends DungeonAction> clz) {
+        super(parent, command, "dynamicdungeon.admin", "Add a " + command + " action to trigger", null);
         this.clz = clz;
     }
 
@@ -40,7 +41,8 @@ public class EditorAddObjectCommand extends CommandNode {
             preInputArgs = new HashMap<>();
             for (String arg : args) {
                 String[] preinput = arg.split(":");
-                preInputArgs.put(Integer.parseInt(preinput[0]), preinput[1]);
+                int idx = Integer.parseInt(preinput[0]);
+                preInputArgs.put(idx, preinput[1]);
             }
         } catch (Exception e) {
             throw new CommandArgumentException("Pre-input arguments format");
@@ -50,13 +52,12 @@ public class EditorAddObjectCommand extends CommandNode {
         DungeonObjectBuilder.getAllField(clz).forEach(field -> inputConstraint.add(new Pair<>(field.getAnnotation(DDField.class).name(), field.getType())));
         preInputArgs.keySet().forEach(idx -> inputConstraint.remove((int) idx));
         new ChatInput((Player) sender, inputConstraint, input -> {
-            //Location location = ((Player) sender).getLocation();
-            //input.add(0, DungeonLocation.createFromBukkitLocation(location).subtract(DungeonLocation.createFromWorldEditVector(DungeonSelectManager.INSTANCE.getSelectedDungeon((Player) sender).getSecond().getMinimumPoint())).toString());
             preInputArgs.forEach(input::add);
             String dungeon = DungeonSelectManager.INSTANCE.getSelectedDungeon((Player) sender).getFirst();
-            DungeonManager.INSTANCE.getDungeon(dungeon).add(DungeonObjectBuilder.getDungeonObject(clz, input));
+            DungeonAction obj = DungeonObjectBuilder.getDungeonObject(clz, input);
+            DungeonManager.INSTANCE.getDungeon(dungeon).add(obj);
             DungeonManager.INSTANCE.saveToFile();
-            sender.sendMessage(clz.getSimpleName() + " Object Created");
+            sender.sendMessage(clz.getSimpleName() + " Action Created");
         });
         return true;
     }
