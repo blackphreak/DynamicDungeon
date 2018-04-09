@@ -1,8 +1,8 @@
-package com.caxerx.mc.dynamicdungeon.dungeonobject;
+package me.blackphreak.dynamicdungeon.dungeonobject;
 
 import com.sk89q.worldedit.Vector;
 import lombok.Data;
-import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
 
 @Data
@@ -10,6 +10,7 @@ public class DungeonLocation {
     private double x;
     private double y;
     private double z;
+    private Location bkLoc;
 
     public DungeonLocation(double x, double y, double z) {
         this.x = x;
@@ -37,7 +38,14 @@ public class DungeonLocation {
     public static DungeonLocation createFromWorldEditVector(Vector loc) {
         return new DungeonLocation(loc.getX(), loc.getY(), loc.getZ());
     }
-
+    
+    public DungeonLocation subtract(Location loc) {
+        this.x -= loc.getX();
+        this.y -= loc.getY();
+        this.z -= loc.getZ();
+        return this;
+    }
+    
     public DungeonLocation subtract(DungeonLocation loc) {
         this.x -= loc.getX();
         this.y -= loc.getY();
@@ -58,14 +66,29 @@ public class DungeonLocation {
         this.z += z;
         return this;
     }
-
+    
     public DungeonLocation add(DungeonLocation loc) {
         this.x += loc.getX();
         this.y += loc.getY();
         this.z += loc.getZ();
         return this;
     }
-
+    
+    public DungeonLocation add(Location loc) {
+        this.x += loc.getX();
+        this.y += loc.getY();
+        this.z += loc.getZ();
+        return this;
+    }
+    
+    public Location toBukkitLoc()
+    {
+        if (bkLoc == null)
+            bkLoc = new Location(gb.dgWorld, x, y, z);
+        
+        return bkLoc;
+    }
+    
     @Override
     public String toString() {
         return x + "," + y + "," + z;

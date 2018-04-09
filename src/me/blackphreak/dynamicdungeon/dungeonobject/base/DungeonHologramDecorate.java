@@ -1,8 +1,8 @@
-package com.caxerx.mc.dynamicdungeon.dungeonobject.base;
+package me.blackphreak.dynamicdungeon.dungeonobject.base;
 
-import com.caxerx.mc.dynamicdungeon.dungeonobject.DDField;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.LocationDungeonObject;
 import lombok.Data;
+import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
+import me.blackphreak.dynamicdungeon.dungeonobject.LocationDungeonObject;
 
 @Data
 public class DungeonHologramDecorate extends LocationDungeonObject {

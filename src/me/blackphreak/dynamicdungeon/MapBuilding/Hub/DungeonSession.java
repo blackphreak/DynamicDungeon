@@ -9,8 +9,8 @@ import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
-import me.blackphreak.dynamicdungeon.Objects.Triggers.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
+import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -81,11 +81,11 @@ public class DungeonSession {
     }
     */
 
-    public Location getDungeonMin() {
+    public Location getDgMinPt() {
         return dungeonLocation[0];
     }
 
-    public Location getDungeonMax() {
+    public Location getDgMaxPt() {
         return dungeonLocation[1];
     }
 

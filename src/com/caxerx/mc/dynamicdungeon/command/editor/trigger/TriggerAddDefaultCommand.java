@@ -2,9 +2,9 @@ package com.caxerx.mc.dynamicdungeon.command.editor.trigger;
 
 import com.caxerx.mc.dynamicdungeon.command.CommandNode;
 import com.caxerx.mc.dynamicdungeon.command.DefaultCommand;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.trigger.InteractTrigger;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.trigger.LocationTrigger;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.trigger.MobKillTrigger;
+import me.blackphreak.dynamicdungeon.dungeonobject.trigger.InteractTrigger;
+import me.blackphreak.dynamicdungeon.dungeonobject.trigger.LocationTrigger;
+import me.blackphreak.dynamicdungeon.dungeonobject.trigger.MobKillTrigger;
 
 
 public class TriggerAddDefaultCommand extends DefaultCommand {

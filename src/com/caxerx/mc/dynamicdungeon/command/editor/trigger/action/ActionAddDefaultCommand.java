@@ -2,7 +2,7 @@ package com.caxerx.mc.dynamicdungeon.command.editor.trigger.action;
 
 import com.caxerx.mc.dynamicdungeon.command.CommandNode;
 import com.caxerx.mc.dynamicdungeon.command.DefaultCommand;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.action.CheckPointAction;
+import me.blackphreak.dynamicdungeon.dungeonobject.action.CheckPointAction;
 
 public class ActionAddDefaultCommand extends DefaultCommand {
 

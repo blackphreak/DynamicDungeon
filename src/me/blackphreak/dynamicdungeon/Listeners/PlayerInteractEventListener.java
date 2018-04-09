@@ -4,7 +4,7 @@ import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV3;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
-import me.blackphreak.dynamicdungeon.Objects.Triggers.InteractTrigger;
+import me.blackphreak.dynamicdungeon.dungeonobject.trigger.InteractTrigger;
 import me.blackphreak.dynamicdungeon.gb;
 import me.blackphreak.dynamicdungeon.math;
 import org.bukkit.Location;

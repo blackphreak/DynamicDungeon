@@ -1,4 +1,4 @@
-package com.caxerx.mc.dynamicdungeon.dungeonobject;
+package me.blackphreak.dynamicdungeon.dungeonobject;
 
 import lombok.Data;
 

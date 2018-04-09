@@ -4,12 +4,7 @@ import com.google.gson.Gson;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.Messages.db;
-import me.blackphreak.dynamicdungeon.Messages.msg;
-import me.blackphreak.dynamicdungeon.Objects.Actions.TriggerAction;
-import me.blackphreak.dynamicdungeon.Objects.*;
-import me.blackphreak.dynamicdungeon.Objects.Triggers.InteractTrigger;
-import me.blackphreak.dynamicdungeon.Objects.Triggers.LocationTrigger;
-import me.blackphreak.dynamicdungeon.Objects.Triggers.MobKillTrigger;
+import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObject;
 import me.blackphreak.dynamicdungeon.gb;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -48,7 +43,7 @@ public class DungeonEditSession {
 		}
 	}
 	
-	public void createDungeonExit(int x, int y, int z) {
+	/*public void createDungeonExit(double x, double y, double z) {
 		x -= minPoint.getBlockX();
 		y -= minPoint.getBlockY();
 		z -= minPoint.getBlockZ();
@@ -56,7 +51,7 @@ public class DungeonEditSession {
 		updateOperation();
 	}
 	
-	public void createDungeonSpawn(int x, int y, int z) {
+	public void createDungeonSpawn(double x, double y, double z) {
 		x -= minPoint.getBlockX();
 		y -= minPoint.getBlockY();
 		z -= minPoint.getBlockZ();
@@ -64,16 +59,16 @@ public class DungeonEditSession {
 		updateOperation();
 	}
 	
-	public void createDungeonMob(int x, int y, int z) {
+	public void createDungeonMob(double x, double y, double z) {
 		x -= minPoint.getBlockX();
 		y -= minPoint.getBlockY();
 		z -= minPoint.getBlockZ();
 		lastEdit = new DungeonMobSpawner(x, y, z);
 		updateOperation();
-	}
+	}*/
 	
-	
-	public void createDungeonDecoration(int x, int y, int z) {
+	/*
+	public void createDungeonDecoration(double x, double y, double z) {
 		lastEdit = new DungeonPlaceholderObject();
 		valueOperation = new AbstractMap.SimpleEntry<>("Decoration Type", (es, dobj, type) -> {
 			String strType = (String) type;
@@ -89,26 +84,30 @@ public class DungeonEditSession {
 		});
 		msg.send(player, "&6Decoration Setup");
 		msg.send(player, "&7+-> &aDecoration Type &7[&ehd &7| &eschematic&7]");
-	}
+	}*/
 	
-	public void createDungeonHDDecoration(int x, int y, int z) {
-		x -= minPoint.getBlockX();
-		y -= minPoint.getBlockY();
-		z -= minPoint.getBlockZ();
-		lastEdit = new DungeonHDDecorate(x, y, z);
-	}
+//	public void createDungeonHDDecoration(double x, double y, double z) {
+//		x -= minPoint.getBlockX();
+//		y -= minPoint.getBlockY();
+//		z -= minPoint.getBlockZ();
+//		DungeonHologramDecorate obj = new DungeonHologramDecorate();
+//		obj.setLocation(new DungeonLocation(x, y, z));
+//		lastEdit = obj;
+//	}
+//
+//	public void createDungeonSchematicDecoration(double x, double y, double z) {
+//		x -= minPoint.getBlockX();
+//		y -= minPoint.getBlockY();
+//		z -= minPoint.getBlockZ();
+//		DungeonSchematicDecorate obj = new DungeonSchematicDecorate();
+//		obj.setLocation(new DungeonLocation(x, y, z));
+//		lastEdit = obj;
+//	}
 	
-	public void createDungeonSchematicDecoration(int x, int y, int z) {
-		x -= minPoint.getBlockX();
-		y -= minPoint.getBlockY();
-		z -= minPoint.getBlockZ();
-		lastEdit = new DungeonSchematicDecorate(x, y, z);
-	}
-	
-	public void createTrigger(int nx, int ny, int nz) {
-		final int x = nx - minPoint.getBlockX();
-		final int y = ny - minPoint.getBlockY();
-		final int z = nz - minPoint.getBlockZ();
+	/*public void createTrigger(double nx, double ny, double nz) {
+		final double x = nx - minPoint.getBlockX();
+		final double y = ny - minPoint.getBlockY();
+		final double z = nz - minPoint.getBlockZ();
 		lastEdit = new DungeonPlaceholderObject();
 		valueOperation = new AbstractMap.SimpleEntry<>("Trigger Type", (es, dobj, input) -> {
 			String type = (String) input;
@@ -126,9 +125,9 @@ public class DungeonEditSession {
 		});
 		msg.send(player, "&7[ &6"+lastEdit.getType()+" Setup &7]");
 		msg.send(player, "&7+-> &aTrigger Type &7[&eInteract &7| &eMobKill &7| &eLocation&7]");
-	}
+	}*/
 	
-	public void updateLastEdit(DungeonObject dobj) {
+	/*public void updateLastEdit(DungeonObject dobj) {
 		lastEdit = dobj;
 	}
 	
@@ -151,14 +150,14 @@ public class DungeonEditSession {
 		} else {
 			msg.send(player, prefix + "&7+-> &a" + valueOperation.getKey());
 		}
-	}
+	}*/
 	
 	public Player getPlayer()
 	{
 		return player;
 	}
 	
-	public DungeonObject getLastEdit()
+	/*public DungeonObject getLastEdit()
 	{
 		return lastEdit;
 	}
@@ -168,9 +167,9 @@ public class DungeonEditSession {
 			return null;
 		}
 		return valueOperation.getKey();
-	}
+	}*/
 	
-	public void inputValue(Object value) {
+	/*public void inputValue(Object value) {
 		try {
 			valueOperation.getValue().accept(this, lastEdit, value);
 			updateOperation();
@@ -179,9 +178,9 @@ public class DungeonEditSession {
 			db.log("ERROR IN INPUT -- Who[" + player.getName() + "]");
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
-	public String getDungeonName() {
-		return dungeonName;
-	}
+//	public String getDungeonName() {
+//		return dungeonName;
+//	}
 }

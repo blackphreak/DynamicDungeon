@@ -1,11 +1,11 @@
 package com.caxerx.mc.lib.userinput
 
-import com.caxerx.mc.dynamicdungeon.dungeonobject.DungeonLocation
-import com.caxerx.mc.dynamicdungeon.dungeonobject.GlobalLocation
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.experimental.launch
 import me.blackphreak.dynamicdungeon.DynamicDungeon
+import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation
+import me.blackphreak.dynamicdungeon.dungeonobject.GlobalLocation
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.function.Consumer

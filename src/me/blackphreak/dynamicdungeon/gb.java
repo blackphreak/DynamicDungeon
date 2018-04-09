@@ -1,8 +1,12 @@
 package me.blackphreak.dynamicdungeon;
 
+import com.caxerx.mc.dynamicdungeon.command.manager.DungeonManager;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObject;
+import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObjectSerDes;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -20,6 +24,8 @@ public class gb {
     public static final World dgWorld = Bukkit.getWorld(dgWorldName);
     public static final int gap = 100; // indicates the gap between different dungeons. // TODO: change in config.yml
     public static final String dataPath = "plugins/DynamicDungeon/savedDungeons/";
+    
+    private static Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(DungeonObject.class, new DungeonObjectSerDes()).create();
     
     
     public static boolean isDebugging = true; // TODO: change in config.yml
@@ -42,14 +48,18 @@ public class gb {
             }
         }.runTaskLater(DynamicDungeon.plugin, 40L);
     }
-
+    
+    public static DungeonObject[] cloneDungeon(String dungeon){
+        return gson.fromJson(gson.toJson(DungeonManager.INSTANCE.getDungeon(dungeon)),DungeonObject[].class);
+    }
+    
     public static void listOutSessions(CommandSender p) {
         p.sendMessage("Here's the existing DungeonSessions:");
         p.sendMessage(" ");
         dungeons.forEach((k, v) -> {
             p.sendMessage("sessionID: " + k + " | dgID: " + v.getDungeonID() + " | sessionOwner: " + (v.getSessionOwner() == null ? "==NULL==" : v.getSessionOwner().getName()));
-            p.sendMessage("      posFrom: " + math.round(v.getDungeonMin().getX()) + ", " + math.round(v.getDungeonMin().getY()) + ", " + math.round(v.getDungeonMin().getZ()));
-            p.sendMessage("      posTo  : " + math.round(v.getDungeonMax().getX()) + ", " + math.round(v.getDungeonMax().getY()) + ", " + math.round(v.getDungeonMax().getZ()));
+            p.sendMessage("      posFrom: " + math.round(v.getDgMinPt().getX()) + ", " + math.round(v.getDgMinPt().getY()) + ", " + math.round(v.getDgMinPt().getZ()));
+            p.sendMessage("      posTo  : " + math.round(v.getDgMaxPt().getX()) + ", " + math.round(v.getDgMaxPt().getY()) + ", " + math.round(v.getDgMaxPt().getZ()));
             p.sendMessage(" ============================= ");
         });
     }
@@ -62,8 +72,6 @@ public class gb {
     public static int getPlayingIDbyPlayer(Player p) {
         return gb.dungeonPlaying.getOrDefault(p, -1);
     }
-
-    static Gson gson = new Gson();
 
     public static String toGsonString(Object o) {
         return gson.toJson(o);

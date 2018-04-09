@@ -2,10 +2,10 @@ package com.caxerx.mc.dynamicdungeon.command.editor;
 
 import com.caxerx.mc.dynamicdungeon.command.CommandNode;
 import com.caxerx.mc.dynamicdungeon.command.DefaultCommand;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.base.DungeonHologramDecorate;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.base.DungeonMobSpawner;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.base.DungeonSchematicDecorate;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.base.DungeonSpawn;
+import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonHologramDecorate;
+import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonMobSpawner;
+import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonSchematicDecorate;
+import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonSpawn;
 
 public class EditorAddDefaultCommand extends DefaultCommand {
     public EditorAddDefaultCommand(CommandNode parent) {

@@ -1,11 +1,11 @@
 package com.caxerx.mc.dynamicdungeon.command.manager;
 
-import com.caxerx.mc.dynamicdungeon.dungeonobject.DungeonLocation;
 import com.caxerx.mc.lib.userinput.ChatInput;
 import com.sk89q.worldedit.regions.Region;
 import kotlin.Pair;
 import me.blackphreak.dynamicdungeon.ItemBuilder;
-import me.blackphreak.dynamicdungeon.Messages.msg;
+import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -14,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -177,6 +176,7 @@ public class DungeonEditingManager implements Listener {
                 ipconstraint.add(new Pair<>("Trigger Type", String.class));
                 new ChatInput(e.getPlayer(), ipconstraint, input -> {
                     String tri = DungeonSelectManager.INSTANCE.getSelectedTrigger(e.getPlayer());
+                    db.log("tri: " + tri + " | inp: " + input.get(0));
                     switch (input.get(0).toLowerCase()) {
                         case "location":
                             e.getPlayer().performCommand("dde trigger add location");

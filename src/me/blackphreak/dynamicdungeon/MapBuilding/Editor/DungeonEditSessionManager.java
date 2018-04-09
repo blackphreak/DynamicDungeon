@@ -1,25 +1,16 @@
 package me.blackphreak.dynamicdungeon.MapBuilding.Editor;
 
 import com.sk89q.worldedit.regions.Region;
-import me.blackphreak.dynamicdungeon.ItemBuilder;
 import me.blackphreak.dynamicdungeon.Messages.msg;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
 public class DungeonEditSessionManager implements Listener {
     private static DungeonEditSessionManager instance;
     private HashMap<Player, DungeonEditSession> sessionMap = new HashMap<>();
-    private HashMap<Player, HashMap<Integer, ItemStack>> backpack = new HashMap<>();
+    /*private HashMap<Player, HashMap<Integer, ItemStack>> backpack = new HashMap<>();
     private HashMap<Integer, ItemStack> editItemSet = new HashMap<Integer, ItemStack>() {{
         put(1, ItemBuilder.setItemNameAndLore(
                 new ItemStack(Material.BED, 1),
@@ -58,7 +49,7 @@ public class DungeonEditSessionManager implements Listener {
                 "&6Right-Click to exit."
                 )
         );
-    }};
+    }};*/
 
     public static DungeonEditSessionManager getInstance() {
         if (instance == null) {
@@ -78,12 +69,12 @@ public class DungeonEditSessionManager implements Listener {
         msg.send(player, "-- Hint: Hold & Right-Click \"COMPASS\" to finish exit Editing Mode.");
 
         // change the inventory to our item
-        HashMap<Integer, ItemStack> map = new HashMap<>();
+        /*HashMap<Integer, ItemStack> map = new HashMap<>();
         editItemSet.forEach((k, v) -> {
             map.put(k, player.getInventory().getItem(k));
             player.getInventory().setItem(k, v);
         });
-        backpack.put(player, map);
+        backpack.put(player, map);*/
         return session;
     }
 
@@ -91,7 +82,7 @@ public class DungeonEditSessionManager implements Listener {
         return sessionMap.get(player);
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
         DungeonEditSession session;
         if ((session = sessionMap.get(e.getPlayer())) != null
@@ -105,7 +96,7 @@ public class DungeonEditSessionManager implements Listener {
                     ) {
                 session.inputValue(e.getPlayer().getLocation());
             }
-			/*else if (session.getInputValue()
+			*//*else if (session.getInputValue()
 					.equalsIgnoreCase("Trigger Type")
 				)
 			{
@@ -121,7 +112,7 @@ public class DungeonEditSessionManager implements Listener {
 						session.inputValue(e.getPlayer().getLocation());
 						break;
 				}
-			}*/
+			}*//*
             else {
                 session.inputValue(e.getMessage());
             }
@@ -193,13 +184,13 @@ public class DungeonEditSessionManager implements Listener {
                 editItemSet.forEach((k, v) -> e.getPlayer().getInventory().setItem(k, backpack.get(e.getPlayer()).get(k)));
                 backpack.remove(e.getPlayer());
             }
-	        /*
+	        *//*
                 String next = session.getInputValue();
                 if (next != null) {
                     e.getPlayer().sendMessage(next);
                 }
-             */
+             *//*
         }
-    }
+    }*/
 
 }

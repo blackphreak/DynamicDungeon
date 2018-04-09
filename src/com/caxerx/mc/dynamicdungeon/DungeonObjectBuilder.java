@@ -2,11 +2,14 @@ package com.caxerx.mc.dynamicdungeon;
 
 import com.caxerx.mc.dynamicdungeon.exception.ArgumentNotMatchException;
 import com.caxerx.mc.dynamicdungeon.exception.DungeonObjectInstantiateFailException;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.DDField;
-import com.caxerx.mc.dynamicdungeon.dungeonobject.DungeonLocation;
+import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
+import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class DungeonObjectBuilder {
 
