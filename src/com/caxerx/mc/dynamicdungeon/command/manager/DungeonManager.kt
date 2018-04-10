@@ -3,6 +3,7 @@ package com.caxerx.mc.dynamicdungeon.command.manager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.experimental.async
+import me.blackphreak.dynamicdungeon.dungeonobject.CharSequenceDeserializer
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObject
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObjectSerDes
 import me.blackphreak.dynamicdungeon.gb
@@ -12,7 +13,7 @@ import java.nio.charset.Charset
 
 object DungeonManager {
     private lateinit var dungeonMap: HashMap<String, List<DungeonObject>>
-    private val gson: Gson = GsonBuilder().registerTypeHierarchyAdapter(DungeonObject::class.java, DungeonObjectSerDes()).create()
+    private val gson: Gson = GsonBuilder().registerTypeHierarchyAdapter(DungeonObject::class.java, DungeonObjectSerDes()).registerTypeAdapter(CharSequence::class.java, CharSequenceDeserializer()).create()
 
 
     init {

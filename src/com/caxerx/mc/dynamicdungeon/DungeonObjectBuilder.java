@@ -3,7 +3,7 @@ package com.caxerx.mc.dynamicdungeon;
 import com.caxerx.mc.dynamicdungeon.exception.ArgumentNotMatchException;
 import com.caxerx.mc.dynamicdungeon.exception.DungeonObjectInstantiateFailException;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
-import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation;
+import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class DungeonObjectBuilder {
     }
     */
 
-    public static <T> T getDungeonObject(Class<T> type, List<String> args) {
+    public static <T> T getDungeonObject(Class<T> type, List<Object> args) {
         try {
             T dungeonObject = type.newInstance();
             List<Field> fields = getAllField(type);
@@ -27,18 +27,7 @@ public class DungeonObjectBuilder {
                 for (int i = 0; i < fields.size(); i++) {
                     Field field = fields.get(i);
                     field.setAccessible(true);
-                    Class<?> fieldType = field.getType();
-                    if (fieldType == String.class) {
-                        field.set(dungeonObject, args.get(i));
-                    } else if (fieldType == int.class) {
-                        field.set(dungeonObject, Integer.parseInt(args.get(i)));
-                    } else if (fieldType == double.class) {
-                        field.set(dungeonObject, Double.parseDouble(args.get(i)));
-                    } else if (fieldType == boolean.class) {
-                        field.set(dungeonObject, Boolean.parseBoolean(args.get(i)));
-                    } else if (fieldType == DungeonLocation.class) {
-                        field.set(dungeonObject, DungeonLocation.createFromString(args.get(i)));
-                    }
+                    field.set(dungeonObject, args.get(i));
                 }
                 return dungeonObject;
             } else {

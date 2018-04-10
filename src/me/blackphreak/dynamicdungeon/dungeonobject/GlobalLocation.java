@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 @Data
-public class GlobalLocation {
+public class GlobalLocation extends DungeonLocation{
     private String world;
     private double x;
     private double y;

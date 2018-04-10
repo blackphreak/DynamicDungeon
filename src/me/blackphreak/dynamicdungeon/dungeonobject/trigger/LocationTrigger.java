@@ -2,13 +2,13 @@ package me.blackphreak.dynamicdungeon.dungeonobject.trigger;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
-import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation;
+import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class LocationTrigger extends DungeonTrigger {
     @DDField(name = "§a+- §eLocation")
-    private DungeonLocation location;
+    private OffsetLocation location;
     
     @DDField(name = "§a+- §eRange")
     private double range;
