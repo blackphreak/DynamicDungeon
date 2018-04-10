@@ -3,7 +3,7 @@ package me.blackphreak.dynamicdungeon.dungeonobject.trigger;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import lombok.Getter;
 import lombok.Setter;
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
 import org.bukkit.event.Event;
 
@@ -31,5 +31,11 @@ public class MobKillTrigger extends DungeonTrigger {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("[Tri-MobKill] MobName: %s | Amount: %d", mobName, amount);
 	}
 }

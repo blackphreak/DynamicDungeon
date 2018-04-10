@@ -1,12 +1,11 @@
 package me.blackphreak.dynamicdungeon.Command.Admin;
 
 import com.boydti.fawe.object.FawePlayer;
-import com.sk89q.worldedit.regions.Region;
-import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSessionManager;
-import me.blackphreak.dynamicdungeon.Messages.msg;
 import com.caxerx.mc.dynamicdungeon.command.CommandArgumentException;
 import com.caxerx.mc.dynamicdungeon.command.CommandNode;
 import com.caxerx.mc.dynamicdungeon.command.CommandSenderException;
+import com.sk89q.worldedit.regions.Region;
+import me.blackphreak.dynamicdungeon.Messages.msg;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -36,8 +35,8 @@ public class EditAdminCommand extends CommandNode {
             msg.send(p, "You must select an area with AXE first!!");
             return true;
         }
-
-        DungeonEditSessionManager.getInstance().newSession(p, args.get(0), r);
+        
+        p.performCommand("dde sd " + args.get(0));
         return true;
     }
 

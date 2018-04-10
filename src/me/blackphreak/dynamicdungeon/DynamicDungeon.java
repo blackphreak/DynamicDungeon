@@ -9,7 +9,6 @@ import me.blackphreak.dynamicdungeon.Command.Core.DefaultCoreCommand;
 import me.blackphreak.dynamicdungeon.Listeners.MythicMobDeadthEventListener;
 import me.blackphreak.dynamicdungeon.Listeners.PlayerInteractEventListener;
 import me.blackphreak.dynamicdungeon.Listeners.PlayerMoveEventListener;
-import me.blackphreak.dynamicdungeon.MapBuilding.Editor.DungeonEditSessionManager;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,7 +41,6 @@ public class DynamicDungeon extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerInteractEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new MythicMobDeadthEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerMoveEventListener(), this);
-        Bukkit.getPluginManager().registerEvents(DungeonEditSessionManager.getInstance(), this);
         Bukkit.getPluginManager().registerEvents(InputManager.INSTANCE, this);
         Bukkit.getPluginManager().registerEvents(DungeonEditingManager.getInstnace(), this);
 

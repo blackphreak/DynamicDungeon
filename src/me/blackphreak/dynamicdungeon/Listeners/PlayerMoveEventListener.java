@@ -1,6 +1,6 @@
 package me.blackphreak.dynamicdungeon.Listeners;
 
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.LocationTrigger;
 import me.blackphreak.dynamicdungeon.gb;

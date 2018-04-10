@@ -1,6 +1,6 @@
 package me.blackphreak.dynamicdungeon.Command.Admin;
 
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.SaveDungeon;
+import me.blackphreak.dynamicdungeon.MapBuilding.SaveDungeon;
 import com.caxerx.mc.dynamicdungeon.command.CommandArgumentException;
 import com.caxerx.mc.dynamicdungeon.command.CommandNode;
 import com.caxerx.mc.dynamicdungeon.command.CommandSenderException;

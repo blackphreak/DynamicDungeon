@@ -7,12 +7,12 @@ import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Region;
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologramManager;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObject;
+import me.blackphreak.dynamicdungeon.dungeonobject.action.DungeonAction;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonHologramDecorate;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonMobSpawner;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonSchematicDecorate;
@@ -82,6 +82,9 @@ public class BuilderV3 {
 					} else if (obj instanceof DungeonTrigger) {
 						((DungeonTrigger) obj).setTrigger((DungeonTrigger) obj);
 						dg.addTrigger((DungeonTrigger) obj);
+					} else if (obj instanceof DungeonAction) {
+						DungeonAction actionObj = (DungeonAction) obj;
+						dg.getTriggerByName(actionObj.getTriggerBy()).addAction(actionObj);
 					}
 				}
 				

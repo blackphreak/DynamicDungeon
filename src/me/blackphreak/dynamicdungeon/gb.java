@@ -3,7 +3,7 @@ package me.blackphreak.dynamicdungeon;
 import com.caxerx.mc.dynamicdungeon.command.manager.DungeonManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObject;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObjectSerDes;

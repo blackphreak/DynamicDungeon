@@ -1,6 +1,8 @@
 package me.blackphreak.dynamicdungeon.dungeonobject;
 
 import lombok.Data;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 @Data
 public class GlobalLocation {
@@ -14,6 +16,16 @@ public class GlobalLocation {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    
+    public Location toBukkitLoc()
+    {
+        return new Location(Bukkit.getWorld(world), x, y, z);
+    }
+    
+    public static GlobalLocation fromBukkitLoc(Location loc)
+    {
+        return new GlobalLocation(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ());
     }
 
     public static GlobalLocation createFromString(String location) {

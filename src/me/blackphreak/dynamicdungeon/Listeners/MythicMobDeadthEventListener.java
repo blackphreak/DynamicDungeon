@@ -1,7 +1,7 @@
 package me.blackphreak.dynamicdungeon.Listeners;
 
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.MobKillTrigger;
 import me.blackphreak.dynamicdungeon.gb;

@@ -1,6 +1,6 @@
 package me.blackphreak.dynamicdungeon.dungeonobject.action;
 
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation;
 
@@ -11,5 +11,11 @@ public class CheckPointAction extends DungeonAction {
     @Override
     public void action(DungeonSession dg) {
         dg.updateCheckPoint(location.add(dg.getDgMinPt()).toBukkitLoc());
+    }
+    
+    @Override
+    public String toString()
+    {
+        return String.format("[Ac-CheckPoint] loc: %s", location.toString());
     }
 }

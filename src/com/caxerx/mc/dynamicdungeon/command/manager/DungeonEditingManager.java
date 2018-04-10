@@ -5,6 +5,7 @@ import com.sk89q.worldedit.regions.Region;
 import kotlin.Pair;
 import me.blackphreak.dynamicdungeon.ItemBuilder;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,36 +39,30 @@ public class DungeonEditingManager implements Listener {
                 )
         );
         put(3, ItemBuilder.setItemNameAndLore(
-                new ItemStack(Material.LEATHER_BOOTS, 1),
-                "&bSet Exit Point",
-                "&6Right-Click a block to set the Exit Location"
-                )
-        );
-        put(4, ItemBuilder.setItemNameAndLore(
                 new ItemStack(Material.PAINTING, 1),
                 "&bSet Decoration",
                 "&6Right-Click a block to set the Decoration"
                 )
         );
-        put(5, ItemBuilder.setItemNameAndLore(
+        put(4, ItemBuilder.setItemNameAndLore(
                 new ItemStack(Material.REDSTONE_TORCH_ON, 1),
                 "&bSet Triggers",
                 "&6Right-Click to set the Trigger."
                 )
         );
-        put(6, ItemBuilder.setItemNameAndLore(
-                new ItemStack(Material.BONE, 1),
-                "&bSet Triggers Action",
-                "&6Right-Click to set the Action."
-                )
-        );
-        put(7, ItemBuilder.setItemNameAndLore(
+        put(5, ItemBuilder.setItemNameAndLore(
                 new ItemStack(Material.STICK, 1),
                 "&bInput a Location",
                 "&6Right-Click to input the Location."
                 )
         );
-        put(8, ItemBuilder.setItemNameAndLore(
+        put(6, ItemBuilder.setItemNameAndLore(
+                new ItemStack(Material.BONE, 1),
+                "&bAdd Action to Trigger",
+                "&6Right-Click to add the Action."
+                )
+        );
+        put(7, ItemBuilder.setItemNameAndLore(
                 new ItemStack(Material.FEATHER, 1),
                 "&cExit Dungeon Editing Mode",
                 "&6Right-Click to exit."
@@ -90,6 +85,10 @@ public class DungeonEditingManager implements Listener {
             save.put(idx, player.getInventory().getItem(idx));
             player.getInventory().setItem(idx, editItemSet.get(idx));
         });
+    
+        msg.send(player, "Edit Session Created.");
+        msg.send(player, "Dungeon Editing Mode Enabled. [Pls use items in your hand to add object.]");
+        msg.send(player, "&7-- &6Hint&7: &fHold &7& Right-Click &b\"FEATHER\" &fto finish exit Editing Mode.");
     }
 
 
@@ -109,21 +108,16 @@ public class DungeonEditingManager implements Listener {
             e.setCancelled(true);
             Block loc = e.getClickedBlock();
 
-            //EXIT
-            if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.LEATHER_BOOTS) {
-                //exit unimplemented
-            }
-
             //MOB SPAWNER
-            else if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.EGG) {
+            if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.EGG) {
                 Pair<String, Region> dun = DungeonSelectManager.INSTANCE.getSelectedDungeon(e.getPlayer());
-                e.getPlayer().performCommand("dde add mobspawner 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0, 1, 0).toString());
+                e.getPlayer().performCommand("dde add mobspawner 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
             }
 
             //SPAWN
             else if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.BED) {
                 Pair<String, Region> dun = DungeonSelectManager.INSTANCE.getSelectedDungeon(e.getPlayer());
-                e.getPlayer().performCommand("dde add spawn 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0, 1, 0).toString());
+                e.getPlayer().performCommand("dde add spawn 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
             }
 
             //DECORATION
@@ -133,9 +127,14 @@ public class DungeonEditingManager implements Listener {
                 new ChatInput(e.getPlayer(), ipconstraint, input -> {
                     Pair<String, Region> dun = DungeonSelectManager.INSTANCE.getSelectedDungeon(e.getPlayer());
                     switch (input.get(0).toLowerCase()) {
+                        case "holodisplay":
+                        case "holographic":
+                        case "hologram":
+                        case "hg":
                         case "hd":
-                            e.getPlayer().performCommand("dde add hologram 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0, 1, 0).toString());
+                            e.getPlayer().performCommand("dde add hologram 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
                             break;
+                        case "schematic":
                         case "schem":
                             e.getPlayer().performCommand("dde add schematic 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0, 1, 0).toString());
                             break;
@@ -161,11 +160,20 @@ public class DungeonEditingManager implements Listener {
                 new ChatInput(e.getPlayer(), ipconstraint, input -> {
                     String tri = DungeonSelectManager.INSTANCE.getSelectedTrigger(e.getPlayer());
                     switch (input.get(0).toLowerCase()) {
+                        case "checkpoint":
+                        case "ckpt":
                         case "cp":
                             e.getPlayer().performCommand("dde trigger action checkpoint 0:" + tri);
                             break;
+                        case "damage":
+                            e.getPlayer().performCommand("dde trigger action damage 0:" + tri);
+                            break;
+                        case "message":
+                        case "msg":
+                            e.getPlayer().performCommand("dde trigger action message 0:" + tri);
+                            break;
                         default:
-                            e.getPlayer().sendMessage("Unknown type");
+                            e.getPlayer().sendMessage("Unknown type of action.");
                     }
                 });
             }
@@ -175,21 +183,23 @@ public class DungeonEditingManager implements Listener {
                 List<Pair<String, Class<?>>> ipconstraint = new ArrayList<>();
                 ipconstraint.add(new Pair<>("Trigger Type", String.class));
                 new ChatInput(e.getPlayer(), ipconstraint, input -> {
-                    String tri = DungeonSelectManager.INSTANCE.getSelectedTrigger(e.getPlayer());
-                    db.log("tri: " + tri + " | inp: " + input.get(0));
+                    //String tri = DungeonSelectManager.INSTANCE.getSelectedTrigger(e.getPlayer());
+                    //db.log("tri: " + tri + " | inp: " + input.get(0)); //out: tri: null | inp: location
                     switch (input.get(0).toLowerCase()) {
                         case "location":
+                        case "loc":
                             e.getPlayer().performCommand("dde trigger add location");
                             break;
                         case "mobkill":
+                        case "mk":
                             e.getPlayer().performCommand("dde trigger add mobkill");
                             break;
                         case "interact":
+                        case "int":
                             e.getPlayer().performCommand("dde trigger add interact");
                             break;
-
                         default:
-                            e.getPlayer().sendMessage("Unknown type");
+                            e.getPlayer().sendMessage("Unknown trigger type, pls add again.");
                     }
                 });
             }

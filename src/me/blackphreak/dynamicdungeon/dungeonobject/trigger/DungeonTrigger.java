@@ -2,7 +2,7 @@ package me.blackphreak.dynamicdungeon.dungeonobject.trigger;
 
 import lombok.Data;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
-import me.blackphreak.dynamicdungeon.MapBuilding.Hub.DungeonSession;
+import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObject;
@@ -18,17 +18,32 @@ public abstract class DungeonTrigger extends DungeonObject {
     @DDField(name = "Trigger Name")
     private String triggerName;
     
-    @DDField(name = "Delay")
+    @DDField(name = "§a+- §eDelay")
     private long delay;
     
-    @DDField(name = "Period")
-    private long period;
-    
-    @DDField(name = "Repeat")
+    /**
+     * int repeat:
+     * acceptable values: {int x: -1, 0, 1, ..., intMaxValue}
+     * when value is -1, means this action has no repeat limit.
+     */
+    @DDField(name = "§a+- §eRepeat")
     private int repeat;
     
-    private List<DungeonAction> actionList = new ArrayList<>();
-    private DungeonTrigger trigger;
+    @DDField(name = "§a+- §ePeriod")
+    private long period;
+    
+    private transient List<DungeonAction> actionList = new ArrayList<>();
+    private transient DungeonTrigger trigger;
+    
+    public void addAction(DungeonAction actionObj)
+    {
+        actionList.add(actionObj);
+    }
+    
+    public void removeAction(DungeonAction actionObj)
+    {
+        actionList.remove(actionObj);
+    }
     
     public void setTrigger(DungeonTrigger trigger) {
         this.trigger = trigger;
@@ -39,7 +54,7 @@ public abstract class DungeonTrigger extends DungeonObject {
     
     public void action(DungeonSession dg) {
         
-        if (getRepeat() <= 0 && getDelay() <= 0)
+        if (getRepeat() == 0 && getDelay() <= 0)
         {
             getActionList().forEach(v -> v.action(dg));
             dg.addToTriggerRemoveQueue(trigger);
@@ -60,7 +75,7 @@ public abstract class DungeonTrigger extends DungeonObject {
                     
                     if (getRepeat() > 0)
                         setRepeat(getRepeat() - 1);
-                    else
+                    else if (getRepeat() == 0)
                     {
                         dg.addToTriggerRemoveQueue(trigger);
                         db.tlog("DungeonTrigger["+triggerName+"] has been removed due to it reached the repeat limit.");

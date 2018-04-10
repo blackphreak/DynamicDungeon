@@ -1,4 +1,4 @@
-package me.blackphreak.dynamicdungeon.MapBuilding.Hub;
+package me.blackphreak.dynamicdungeon.MapBuilding;
 
 import com.boydti.fawe.object.FawePlayer;
 import com.boydti.fawe.object.schematic.Schematic;
