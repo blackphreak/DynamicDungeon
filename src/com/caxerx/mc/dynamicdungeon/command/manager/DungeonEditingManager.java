@@ -4,7 +4,6 @@ import com.caxerx.mc.lib.userinput.ChatInput;
 import com.sk89q.worldedit.regions.Region;
 import kotlin.Pair;
 import me.blackphreak.dynamicdungeon.ItemBuilder;
-import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation;
 import org.bukkit.Material;
@@ -143,7 +142,7 @@ public class DungeonEditingManager implements Listener {
                     }
                 });
             }
-
+            
             //LOCATION INPUT
             else if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.STICK) {
                 Pair<String, Region> dun = DungeonSelectManager.INSTANCE.getSelectedDungeon(e.getPlayer());
