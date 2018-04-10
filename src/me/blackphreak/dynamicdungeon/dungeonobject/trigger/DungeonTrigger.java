@@ -17,10 +17,10 @@ import java.util.List;
 public abstract class DungeonTrigger extends DungeonObject {
     @DDField(name = "Trigger Name")
     private String triggerName;
-    
+
     @DDField(name = "§a+- §eDelay")
     private long delay;
-    
+
     /**
      * int repeat:
      * acceptable values: {int x: -1, 0, 1, ..., intMaxValue}
@@ -28,57 +28,47 @@ public abstract class DungeonTrigger extends DungeonObject {
      */
     @DDField(name = "§a+- §eRepeat")
     private int repeat;
-    
+
     @DDField(name = "§a+- §ePeriod")
     private long period;
-    
+
     private transient List<DungeonAction> actionList = new ArrayList<>();
-    private transient DungeonTrigger trigger;
-    
-    public void addAction(DungeonAction actionObj)
-    {
+
+    public void addAction(DungeonAction actionObj) {
         actionList.add(actionObj);
     }
-    
-    public void removeAction(DungeonAction actionObj)
-    {
+
+    public void removeAction(DungeonAction actionObj) {
         actionList.remove(actionObj);
     }
-    
-    public void setTrigger(DungeonTrigger trigger) {
-        this.trigger = trigger;
-    }
-    
+
     // condition for Interact Triggers
     public abstract boolean condition(DungeonSession dg, Event e);
-    
+
     public void action(DungeonSession dg) {
-        
-        if (getRepeat() == 0 && getDelay() <= 0)
-        {
+
+        if (getRepeat() == 0 && getDelay() <= 0) {
             getActionList().forEach(v -> v.action(dg));
-            dg.addToTriggerRemoveQueue(trigger);
-            db.tlog("DungeonTrigger["+triggerName+"] has been removed due to it reached the repeat limit.");
-        }
-        else
-        {
+            dg.addToTriggerRemoveQueue(this);
+            db.tlog("DungeonTrigger[" + triggerName + "] has been removed due to it reached the repeat limit.");
+        } else {
             if (getDelay() < 0) // negative delay?? u know the future?? wtf??
                 setDelay(Math.abs(getDelay()));
-            
+
             if (getPeriod() < 0) // negative period?? really???
                 setDelay(Math.abs(getPeriod()));
-            
+
+            DungeonTrigger trigger = this;
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     getActionList().forEach(v -> v.action(dg));
-                    
+
                     if (getRepeat() > 0)
                         setRepeat(getRepeat() - 1);
-                    else if (getRepeat() == 0)
-                    {
+                    else if (getRepeat() == 0) {
                         dg.addToTriggerRemoveQueue(trigger);
-                        db.tlog("DungeonTrigger["+triggerName+"] has been removed due to it reached the repeat limit.");
+                        db.tlog("DungeonTrigger[" + triggerName + "] has been removed due to it reached the repeat limit.");
                         cancel();
                     }
                 }

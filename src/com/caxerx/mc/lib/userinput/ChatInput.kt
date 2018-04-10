@@ -26,6 +26,7 @@ class ChatInput(val player: Player, val constraint: List<Pair<String, Class<*>>>
                 Int::class.java -> input.toInt()
                 Double::class.java -> input.toDouble()
                 Boolean::class.java -> input.toBoolean()
+                Long::class.java -> input.toLong()
                 OffsetLocation::class.java -> {
                     var region = DungeonSelectManager.getSelectedDungeon(player)?.second!!
                     if (input == "ok") {
@@ -115,9 +116,9 @@ class ChatInput(val player: Player, val constraint: List<Pair<String, Class<*>>>
                                     magicList.add(ChatColor.translateAlternateColorCodes('&', input))
                                 }
                             }
-                            else -> inputList += parseObject(clz, input, player)
+                            else -> inputList.add(parseObject(clz, input, player))
                         }
-                        if (clz != Array<String>::class.java) {
+                        if (clz != Array<String>::class.java && clz != Array<CharSequence>::class.java) {
                             break
                         }
                     } catch (e: ClosedReceiveChannelException) {

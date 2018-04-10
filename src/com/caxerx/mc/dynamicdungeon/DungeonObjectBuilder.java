@@ -3,7 +3,6 @@ package com.caxerx.mc.dynamicdungeon;
 import com.caxerx.mc.dynamicdungeon.exception.ArgumentNotMatchException;
 import com.caxerx.mc.dynamicdungeon.exception.DungeonObjectInstantiateFailException;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
-import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

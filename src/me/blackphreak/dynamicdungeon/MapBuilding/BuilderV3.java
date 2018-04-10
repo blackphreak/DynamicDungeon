@@ -80,7 +80,7 @@ public class BuilderV3 {
 //	                    dgsd.loadSchematic();
 						db.log("schematic decoration here @ [" + dgsd.getLocation().toString() + "]");
 					} else if (obj instanceof DungeonTrigger) {
-						((DungeonTrigger) obj).setTrigger((DungeonTrigger) obj);
+						//((DungeonTrigger) obj).setTrigger((DungeonTrigger) obj);
 						dg.addTrigger((DungeonTrigger) obj);
 					} else if (obj instanceof DungeonAction) {
 						DungeonAction actionObj = (DungeonAction) obj;

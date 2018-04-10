@@ -38,21 +38,22 @@ public class ActionAddObjectCommand extends CommandNode {
             sender.sendMessage("Select dungeon first");
             return true;
         }
-        HashMap<Integer, String> preInputArgs;
+        List<Pair<String, Class<?>>> inputConstraint = new ArrayList<>();
+        DungeonObjectBuilder.getAllField(clz).forEach(field -> inputConstraint.add(new Pair<>(field.getAnnotation(DDField.class).name(), field.getType())));
+
+        HashMap<Integer, Object> preInputArgs;
         try {
             preInputArgs = new HashMap<>();
             for (String arg : args) {
                 String[] preInput = arg.split(":");
                 int idx = Integer.parseInt(preInput[0]);
                 String input = URLDecoder.decode(preInput[1], "UTF-8");
-                preInputArgs.put(idx, input);
+                preInputArgs.put(idx, ChatInput.parseObject(inputConstraint.get(idx).getSecond(),preInput[1], (Player) sender));
             }
         } catch (Exception e) {
             throw new CommandArgumentException("Pre-input arguments format");
         }
 
-        List<Pair<String, Class<?>>> inputConstraint = new ArrayList<>();
-        DungeonObjectBuilder.getAllField(clz).forEach(field -> inputConstraint.add(new Pair<>(field.getAnnotation(DDField.class).name(), field.getType())));
         preInputArgs.keySet().forEach(idx -> inputConstraint.remove((int) idx));
         new ChatInput((Player) sender, inputConstraint, input -> {
             preInputArgs.forEach(input::add);
