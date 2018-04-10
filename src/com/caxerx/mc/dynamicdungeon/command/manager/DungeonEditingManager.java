@@ -4,9 +4,8 @@ import com.caxerx.mc.lib.userinput.ChatInput;
 import com.sk89q.worldedit.regions.Region;
 import kotlin.Pair;
 import me.blackphreak.dynamicdungeon.ItemBuilder;
-import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Messages.msg;
-import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation;
+import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -17,6 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +86,7 @@ public class DungeonEditingManager implements Listener {
             save.put(idx, player.getInventory().getItem(idx));
             player.getInventory().setItem(idx, editItemSet.get(idx));
         });
-    
+
         msg.send(player, "Edit Session Created.");
         msg.send(player, "Dungeon Editing Mode Enabled. [Pls use items in your hand to add object.]");
         msg.send(player, "&7-- &6Hint&7: &fHold &7& Right-Click &b\"FEATHER\" &fto finish exit Editing Mode.");
@@ -111,13 +112,13 @@ public class DungeonEditingManager implements Listener {
             //MOB SPAWNER
             if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.EGG) {
                 Pair<String, Region> dun = DungeonSelectManager.INSTANCE.getSelectedDungeon(e.getPlayer());
-                e.getPlayer().performCommand("dde add mobspawner 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
+                e.getPlayer().performCommand("dde add mobspawner 0:" + OffsetLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(OffsetLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
             }
 
             //SPAWN
             else if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.BED) {
                 Pair<String, Region> dun = DungeonSelectManager.INSTANCE.getSelectedDungeon(e.getPlayer());
-                e.getPlayer().performCommand("dde add spawn 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
+                e.getPlayer().performCommand("dde add spawn 0:" + OffsetLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(OffsetLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
             }
 
             //DECORATION
@@ -126,17 +127,18 @@ public class DungeonEditingManager implements Listener {
                 ipconstraint.add(new Pair<>("Decoration Type", String.class));
                 new ChatInput(e.getPlayer(), ipconstraint, input -> {
                     Pair<String, Region> dun = DungeonSelectManager.INSTANCE.getSelectedDungeon(e.getPlayer());
-                    switch (input.get(0).toLowerCase()) {
+                    String in = (String) input.get(0);
+                    switch (in.toLowerCase()) {
                         case "holodisplay":
                         case "holographic":
                         case "hologram":
                         case "hg":
                         case "hd":
-                            e.getPlayer().performCommand("dde add hologram 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
+                            e.getPlayer().performCommand("dde add hologram 0:" + OffsetLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(OffsetLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0.5, 1, 0.5).toString());
                             break;
                         case "schematic":
                         case "schem":
-                            e.getPlayer().performCommand("dde add schematic 0:" + DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0, 1, 0).toString());
+                            e.getPlayer().performCommand("dde add schematic 0:" + OffsetLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(OffsetLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0, 1, 0).toString());
                             break;
                         default:
                             e.getPlayer().sendMessage("Unknown type");
@@ -147,7 +149,7 @@ public class DungeonEditingManager implements Listener {
             //LOCATION INPUT
             else if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.STICK) {
                 Pair<String, Region> dun = DungeonSelectManager.INSTANCE.getSelectedDungeon(e.getPlayer());
-                e.getPlayer().chat(DungeonLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(DungeonLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0, 1, 0).toString());
+                e.getPlayer().chat(OffsetLocation.createFromBukkitLocation(e.getClickedBlock().getLocation()).subtract(OffsetLocation.createFromWorldEditVector(dun.getSecond().getMinimumPoint())).add(0, 1, 0).toString());
             }
 
             //ACTION
@@ -159,7 +161,13 @@ public class DungeonEditingManager implements Listener {
                 ipconstraint.add(new Pair<>("Action Type", String.class));
                 new ChatInput(e.getPlayer(), ipconstraint, input -> {
                     String tri = DungeonSelectManager.INSTANCE.getSelectedTrigger(e.getPlayer());
-                    switch (input.get(0).toLowerCase()) {
+                    String in = (String) input.get(0);
+                    try {
+                        tri = URLEncoder.encode(tri, "UTF-8");
+                    }catch (UnsupportedEncodingException ignore) {
+                    }
+
+                    switch (in.toLowerCase()) {
                         case "checkpoint":
                         case "ckpt":
                         case "cp":
@@ -185,7 +193,8 @@ public class DungeonEditingManager implements Listener {
                 new ChatInput(e.getPlayer(), ipconstraint, input -> {
                     //String tri = DungeonSelectManager.INSTANCE.getSelectedTrigger(e.getPlayer());
                     //db.log("tri: " + tri + " | inp: " + input.get(0)); //out: tri: null | inp: location
-                    switch (input.get(0).toLowerCase()) {
+                    String in = (String) input.get(0);
+                    switch (in.toLowerCase()) {
                         case "location":
                         case "loc":
                             e.getPlayer().performCommand("dde trigger add location");

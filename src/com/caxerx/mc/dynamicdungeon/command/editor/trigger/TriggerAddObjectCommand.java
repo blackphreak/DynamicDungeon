@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +41,10 @@ public class TriggerAddObjectCommand extends CommandNode {
         try {
             preInputArgs = new HashMap<>();
             for (String arg : args) {
-                String[] preinput = arg.split(":");
-                preInputArgs.put(Integer.parseInt(preinput[0]), preinput[1]);
+                String[] preInput = arg.split(":");
+                int idx = Integer.parseInt(preInput[0]);
+                String input = URLDecoder.decode(preInput[1], "UTF-8");
+                preInputArgs.put(idx, input);
             }
         } catch (Exception e) {
             throw new CommandArgumentException("Pre-input arguments format");

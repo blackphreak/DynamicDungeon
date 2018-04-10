@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public abstract class LocationDungeonObject extends DungeonObject {
     @DDField(name = "Location")
-    private DungeonLocation location;
+    private OffsetLocation location;
 }

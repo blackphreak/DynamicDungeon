@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,8 +40,10 @@ public class EditorAddObjectCommand extends CommandNode {
         try {
             preInputArgs = new HashMap<>();
             for (String arg : args) {
-                String[] preinput = arg.split(":");
-                preInputArgs.put(Integer.parseInt(preinput[0]), preinput[1]);
+                String[] preInput = arg.split(":");
+                int idx = Integer.parseInt(preInput[0]);
+                String input = URLDecoder.decode(preInput[1], "UTF-8");
+                preInputArgs.put(idx, input);
             }
         } catch (Exception e) {
             throw new CommandArgumentException("Pre-input arguments format");
@@ -50,8 +53,6 @@ public class EditorAddObjectCommand extends CommandNode {
         DungeonObjectBuilder.getAllField(clz).forEach(field -> inputConstraint.add(new Pair<>(field.getAnnotation(DDField.class).name(), field.getType())));
         preInputArgs.keySet().forEach(idx -> inputConstraint.remove((int) idx));
         new ChatInput((Player) sender, inputConstraint, input -> {
-            //Location location = ((Player) sender).getLocation();
-            //input.add(0, DungeonLocation.createFromBukkitLocation(location).subtract(DungeonLocation.createFromWorldEditVector(DungeonSelectManager.INSTANCE.getSelectedDungeon((Player) sender).getSecond().getMinimumPoint())).toString());
             preInputArgs.forEach(input::add);
             String dungeon = DungeonSelectManager.INSTANCE.getSelectedDungeon((Player) sender).getFirst();
             DungeonManager.INSTANCE.getDungeon(dungeon).add(DungeonObjectBuilder.getDungeonObject(clz, input));

@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.CharSequenceDeserializer;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObject;
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObjectSerDes;
 import org.bukkit.Bukkit;
@@ -24,16 +25,16 @@ public class gb {
     public static final World dgWorld = Bukkit.getWorld(dgWorldName);
     public static final int gap = 100; // indicates the gap between different dungeons. // TODO: change in config.yml
     public static final String dataPath = "plugins/DynamicDungeon/savedDungeons/";
-    
-    private static Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(DungeonObject.class, new DungeonObjectSerDes()).create();
-    
-    
+
+    private static Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(DungeonObject.class, new DungeonObjectSerDes()).registerTypeAdapter(CharSequence.class, new CharSequenceDeserializer()).create();
+
+
     public static boolean isDebugging = true; // TODO: change in config.yml
     public static ConcurrentHashMap<Integer, DungeonSession> dungeons = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<Player, Integer> dungeonPlaying = new ConcurrentHashMap<>();
     public static List</*SessionID*/ Integer> dungeonCreating = new ArrayList<>();
     public static Location nextDungeonLocation = new Location(dgWorld, 50, 90, 50);
-    
+
 
     public static Plugin hd = null;
 
@@ -48,11 +49,11 @@ public class gb {
             }
         }.runTaskLater(DynamicDungeon.plugin, 40L);
     }
-    
-    public static DungeonObject[] cloneDungeon(String dungeon){
-        return gson.fromJson(gson.toJson(DungeonManager.INSTANCE.getDungeon(dungeon)),DungeonObject[].class);
+
+    public static DungeonObject[] cloneDungeon(String dungeon) {
+        return gson.fromJson(gson.toJson(DungeonManager.INSTANCE.getDungeon(dungeon)), DungeonObject[].class);
     }
-    
+
     public static void listOutSessions(CommandSender p) {
         p.sendMessage("Here's the existing DungeonSessions:");
         p.sendMessage(" ");
