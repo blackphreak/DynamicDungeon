@@ -56,11 +56,11 @@ public class SchematicAction extends LocationActionObject {
 				dg.fireTheTrigger(triggerName);
 			});
 		} catch (IncompleteRegionException e) {
-			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/pulls :");
+			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/issues :");
 			e.printStackTrace();
 		} catch (IOException e) {
 			db.log("This may due to schematic file not found in path: plugins/DynamicDungeon/decorations/");
-			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/pulls :");
+			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/issues :");
 			e.printStackTrace();
 		}
 	}
