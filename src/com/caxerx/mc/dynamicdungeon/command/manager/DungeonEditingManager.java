@@ -156,6 +156,7 @@ public class DungeonEditingManager implements Listener {
             else if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.BONE) {
                 if (!DungeonSelectManager.INSTANCE.isTriggerSelected(e.getPlayer())) {
                     e.getPlayer().sendMessage("Please select a trigger first");
+                    return;
                 }
                 List<Pair<String, Class<?>>> ipconstraint = new ArrayList<>();
                 ipconstraint.add(new Pair<>("Action Type", String.class));
@@ -164,7 +165,7 @@ public class DungeonEditingManager implements Listener {
                     String in = (String) input.get(0);
                     try {
                         tri = URLEncoder.encode(tri, "UTF-8");
-                    }catch (UnsupportedEncodingException ignore) {
+                    } catch (UnsupportedEncodingException ignore) {
                     }
 
                     switch (in.toLowerCase()) {

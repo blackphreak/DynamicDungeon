@@ -14,6 +14,9 @@ object InputManager : Listener {
     val playerMap = hashMapOf<Player, Channel<String>>()
 
     fun registerPlayer(player: Player): Channel<String> {
+        if (player in playerMap) {
+            destroyChannel(player)
+        }
         playerMap[player] = Channel()
         return playerMap[player]!!
     }
