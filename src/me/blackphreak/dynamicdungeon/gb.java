@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +26,7 @@ public class gb {
     public static final World dgWorld = Bukkit.getWorld(dgWorldName);
     public static final int gap = 100; // indicates the gap between different dungeons. // TODO: change in config.yml
     public static final String dataPath = "plugins/DynamicDungeon/savedDungeons/";
+    public static final String decorationPath = "plugins/DynamicDungeon/decorations/";
 
     private static Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(DungeonObject.class, new DungeonObjectSerDes()).registerTypeAdapter(CharSequence.class, new CharSequenceDeserializer()).create();
 
@@ -34,8 +36,7 @@ public class gb {
     public static ConcurrentHashMap<Player, Integer> dungeonPlaying = new ConcurrentHashMap<>();
     public static List</*SessionID*/ Integer> dungeonCreating = new ArrayList<>();
     public static Location nextDungeonLocation = new Location(dgWorld, 50, 90, 50);
-
-
+    
     public static Plugin hd = null;
 
     public gb() {
@@ -48,6 +49,14 @@ public class gb {
                     db.log("HolographicDisplays not found, the Supports has been disabled.");
             }
         }.runTaskLater(DynamicDungeon.plugin, 40L);
+    
+        File dp = new File(dataPath);
+        if (!dp.exists())
+            dp.mkdir();
+    
+        dp = new File(decorationPath);
+        if (!dp.exists())
+            dp.mkdir();
     }
 
     public static DungeonObject[] cloneDungeon(String dungeon) {

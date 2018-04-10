@@ -6,9 +6,6 @@ import me.blackphreak.dynamicdungeon.dungeonobject.GlobalLocation;
 //TODO
 public class TeleportAction extends DungeonAction
 {
-	@DDField(name = "Is Outside DungeonWorld")
-	private boolean outsideDGworld;
-	
 	@DDField(name = "Location")
 	private GlobalLocation location;
 	

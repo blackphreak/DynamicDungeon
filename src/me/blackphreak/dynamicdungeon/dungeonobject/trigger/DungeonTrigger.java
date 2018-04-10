@@ -31,6 +31,17 @@ public abstract class DungeonTrigger extends DungeonObject {
 
     @DDField(name = "§a+- §ePeriod")
     private long period;
+    
+    /**
+     * boolean isPassive:
+     * acceptable values: [true | false]
+     * indicates whether must trigger by others.
+     * true : must be triggered by others.
+     * false: always active.
+     * TODO: add to wiki & check passive
+     */
+    @DDField(name = "§a+- §eIs passive")
+    private boolean isPassive;
 
     private transient List<DungeonAction> actionList = new ArrayList<>();
 
