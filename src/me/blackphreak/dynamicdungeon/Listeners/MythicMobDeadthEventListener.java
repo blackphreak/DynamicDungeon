@@ -25,7 +25,7 @@ public class MythicMobDeadthEventListener implements Listener {
                 // get the playing session
                 DungeonSession dg = gb.getDungeonSessionByPlayer(p);
                 if (dg != null) {
-                    dg.getTriggers().stream().filter(t -> t instanceof MobKillTrigger).map(t -> (MobKillTrigger) t).forEach(v -> {
+                    dg.getTriggers().stream().filter(t -> !t.isActivated()).filter(t -> t instanceof MobKillTrigger).map(t -> (MobKillTrigger) t).forEach(v -> {
                                 if (v.condition(dg, e)) {
                                     v.action(dg);
                                 }

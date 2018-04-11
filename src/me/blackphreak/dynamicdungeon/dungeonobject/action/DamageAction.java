@@ -2,11 +2,13 @@ package me.blackphreak.dynamicdungeon.dungeonobject.action;
 
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
+import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
@@ -33,7 +35,9 @@ public class DamageAction extends LocationActionObject {
 	public void action(DungeonSession dg) {
 		Location loc = getLocation().add(dg.getDgMinPt()).toBukkitLoc();
 		Collection<Entity> entityList = gb.dgWorld.getNearbyEntities(loc, radius, radius, radius);
+		entityList.forEach(v -> db.log("v: " + v.toString() + " | isP: " + (v instanceof Player ? "y" : "n")));
 		entityList.removeIf(v -> !(v instanceof LivingEntity));
+		entityList.forEach(v -> db.log("v2: " + v.toString() + " | isP: " + (v instanceof Player ? "y" : "n") + " | dis: " + v.getLocation().distance(loc)));
 		
 		switch (target)
 		{
@@ -58,7 +62,9 @@ public class DamageAction extends LocationActionObject {
 					LivingEntity e = (LivingEntity) v;
 					if (e instanceof MythicMob)
 					{
-						if (e.getLocation().distance(loc) <= radius)
+						if (radius == -1)
+							e.damage(damage);
+						else if (e.getLocation().distance(loc) <= radius)
 							e.damage(damage);
 					}
 				});

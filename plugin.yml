@@ -1,6 +1,6 @@
 name: DynamicDungeon
 main: me.blackphreak.dynamicdungeon.DynamicDungeon
-version: 1.0.1.3-2302
+version: 1.0.1.4-1623
 authors: [BlackPhreak, caxerx]
 depend: [MythicMobs, FastAsyncWorldEdit, WorldEdit]
 softdepend: [HolographicDisplays]

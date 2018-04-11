@@ -7,8 +7,8 @@ import kotlinx.coroutines.experimental.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.experimental.launch
 import me.blackphreak.dynamicdungeon.DynamicDungeon
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation
-import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation
 import me.blackphreak.dynamicdungeon.dungeonobject.GlobalLocation
+import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -95,7 +95,7 @@ class ChatInput(val player: Player, val constraint: List<Pair<String, Class<*>>>
                                     magicObject = mutableListOf<String>()
                                 }
                                 var magicList = magicObject as MutableList<String>
-                                if (input == "ok") {
+                                if (input == ">ok<") {
                                     inputList.add(magicList.toTypedArray())
                                     magicObject = null
                                     break@loop
@@ -108,7 +108,7 @@ class ChatInput(val player: Player, val constraint: List<Pair<String, Class<*>>>
                                     magicObject = mutableListOf<String>()
                                 }
                                 var magicList = magicObject as MutableList<String>
-                                if (input == "ok") {
+                                if (input == ">ok<") {
                                     inputList.add(magicList.toTypedArray())
                                     magicObject = null
                                     break@loop

@@ -30,7 +30,7 @@ public class PlayerInteractEventListener implements Listener {
             DungeonSession dg = gb.getDungeonSessionByPlayer(e.getPlayer());
             if (dg != null) {
                 // is playing
-                dg.getTriggers().stream().filter(t -> t instanceof InteractTrigger).map(t -> (InteractTrigger) t).forEach(v -> {
+                dg.getTriggers().stream().filter(t -> !t.isActivated()).filter(t -> t instanceof InteractTrigger).map(t -> (InteractTrigger) t).forEach(v -> {
                             if (v.condition(dg, e)) {
                                 v.action(dg);
                             }

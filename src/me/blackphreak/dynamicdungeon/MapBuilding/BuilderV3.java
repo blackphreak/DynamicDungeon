@@ -24,12 +24,14 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URLDecoder;
 
 public class BuilderV3 {
 	public BuilderV3() {
 	}
 	
 	public static DungeonSession build(Player sessionOwner, String fileNameWithoutExtension) {
+		msg.send(sessionOwner, "&aPreparing your DungeonSession...");
 		try {
 			File schematic = new File(gb.dataPath + fileNameWithoutExtension + ".schematic");
 			Clipboard cp = FaweAPI.load(schematic).getClipboard();
@@ -60,35 +62,50 @@ public class BuilderV3 {
 				db.log("Loading DungeonObject for session...");
 				
 				for (DungeonObject obj : gb.cloneDungeon(fileNameWithoutExtension)) {
-					db.log(obj.toString());
+					db.tlog(obj.toString());
 					
-					if (obj instanceof DungeonSpawn) {
-						DungeonSpawn dgsp = ((DungeonSpawn) obj);
-						dg.setSpawnLocation(dgsp.getLocation().add(dg.getDgMinPt()).toBukkitLoc());
-					} else if (obj instanceof DungeonMobSpawner) {
-						DungeonMobSpawner dgmobspawner = ((DungeonMobSpawner) obj);
-						dg.addSpawnerOnChunk(dgmobspawner.getSpawnerName(), dgmobspawner.getLocation().add(dg.getDgMinPt()).toBukkitLoc());
-					} else if (obj instanceof DungeonHologramDecorate) {
-						if (gb.hd != null) {
-							DungeonHologramDecorate dghd = (DungeonHologramDecorate) obj;
-							cHologram chg = cHologramManager.getOrRegister(dghd.getHologramName()).clone();
-							dg.addHologram(chg);
-							chg.teleport(dghd.getLocation().add(loc).add(0, dghd.getYOffset(), 0).toBukkitLoc());
-						}
-					} else if (obj instanceof DungeonSchematicDecorate) {
-						DungeonSchematicDecorate dgsd = (DungeonSchematicDecorate) obj;
+					try
+					{
+						if (obj instanceof DungeonSpawn) {
+							DungeonSpawn dgsp = ((DungeonSpawn) obj);
+							dg.setSpawnLocation(dgsp.getLocation().add(dg.getDgMinPt()).toBukkitLoc());
+						} else if (obj instanceof DungeonMobSpawner) {
+							DungeonMobSpawner dgmobspawner = ((DungeonMobSpawner) obj);
+							dg.addSpawnerOnChunk(dgmobspawner.getSpawnerName(), dgmobspawner.getLocation().add(dg.getDgMinPt()).toBukkitLoc());
+						} else if (obj instanceof DungeonHologramDecorate) {
+							if (gb.hd != null) {
+								DungeonHologramDecorate dghd = (DungeonHologramDecorate) obj;
+								cHologram chg = cHologramManager.getOrRegister(dghd.getHologramName()).clone();
+								dg.addHologram(chg);
+								chg.teleport(dghd.getLocation().add(loc).add(0, dghd.getYOffset(), 0).toBukkitLoc());
+							}
+						} else if (obj instanceof DungeonSchematicDecorate) {
+							DungeonSchematicDecorate dgsd = (DungeonSchematicDecorate) obj;
 //	                    dgsd.loadSchematic();
-						db.log("schematic decoration here @ [" + dgsd.getLocation().toString() + "]");
-					} else if (obj instanceof DungeonTrigger) {
-						//((DungeonTrigger) obj).setTrigger((DungeonTrigger) obj);
-						dg.addTrigger((DungeonTrigger) obj);
-					} else if (obj instanceof DungeonAction) {
-						DungeonAction actionObj = (DungeonAction) obj;
-						dg.getTriggerByName(actionObj.getTriggerBy()).addAction(actionObj);
+							db.tlog("schematic decoration here @ [" + dgsd.getLocation().toString() + "]");
+						} else if (obj instanceof DungeonTrigger) {
+							//((DungeonTrigger) obj).setTrigger((DungeonTrigger) obj);
+							dg.addTrigger((DungeonTrigger) obj);
+						} else if (obj instanceof DungeonAction) {
+							DungeonAction actionObj = (DungeonAction) obj;
+							dg.getTriggerByName(URLDecoder.decode(actionObj.getTriggerBy(), "UTF-8")).addAction(actionObj);
+						}
+					}
+					catch (Exception e)
+					{
+						db.log("Unexpected Error Occurred [Obj], please post the message below to https://github.com/blackphreak/DynamicDungeon/issues");
+						e.printStackTrace();
+						msg.send(sessionOwner, "Please contact admin to fix this. [UEEO_OBJ]");
+						
+						msg.send(sessionOwner, "Killing Dungeon Session...");
+						dg.killSession();
+						
+						return; // no need to do the rest of dungeon session creation.
 					}
 				}
 				
 				db.log("Dungeon Session created.");
+				msg.send(sessionOwner, "&aYour DungeonSession is ready!");
 				msg.send(sessionOwner, "&eTeleporting to your DungeonSession...");
 				dg.join(sessionOwner);
 			});

@@ -98,6 +98,8 @@ public class DungeonEditingManager implements Listener {
             HashMap<Integer, ItemStack> saved = savedItem.get(player);
             saved.forEach((idx, itm) -> player.getInventory().setItem(idx, itm));
             savedItem.remove(player);
+	
+	        DungeonEditingHoloManager.clearHolos(player);
         }
     }
 
@@ -181,6 +183,25 @@ public class DungeonEditingManager implements Listener {
                         case "msg":
                             e.getPlayer().performCommand("dde trigger action message 0:" + tri);
                             break;
+                        case "holodisplay":
+                        case "hologram":
+                        case "holo":
+                        case "hd":
+                        case "hg":
+                            e.getPlayer().performCommand("dde trigger action hologram 0:" + tri);
+                            break;
+                        case "schematic":
+                        case "schem":
+                            e.getPlayer().performCommand("dde trigger action schematic 0:" + tri);
+                            break;
+                        case "teleport":
+                        case "tp":
+                            e.getPlayer().performCommand("dde trigger action teleport 0:" + tri);
+                            break;
+                        case "trigger":
+                        case "tri":
+                            e.getPlayer().performCommand("dde trigger action trigger 0:" + tri);
+                            break;
                         default:
                             e.getPlayer().sendMessage("Unknown type of action.");
                     }
@@ -207,6 +228,10 @@ public class DungeonEditingManager implements Listener {
                         case "interact":
                         case "int":
                             e.getPlayer().performCommand("dde trigger add interact");
+                            break;
+                        case "passive":
+                        case "pass":
+                            e.getPlayer().performCommand("dde trigger add passive");
                             break;
                         default:
                             e.getPlayer().sendMessage("Unknown trigger type, pls add again.");

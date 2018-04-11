@@ -27,15 +27,15 @@ public class gb {
     public static final int gap = 100; // indicates the gap between different dungeons. // TODO: change in config.yml
     public static final String dataPath = "plugins/DynamicDungeon/savedDungeons/";
     public static final String decorationPath = "plugins/DynamicDungeon/decorations/";
+	private static final double yOffset = 90; // TODO: change in config.yml
 
     private static Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(DungeonObject.class, new DungeonObjectSerDes()).registerTypeAdapter(CharSequence.class, new CharSequenceDeserializer()).create();
-
 
     public static boolean isDebugging = true; // TODO: change in config.yml
     public static ConcurrentHashMap<Integer, DungeonSession> dungeons = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<Player, Integer> dungeonPlaying = new ConcurrentHashMap<>();
     public static List</*SessionID*/ Integer> dungeonCreating = new ArrayList<>();
-    public static Location nextDungeonLocation = new Location(dgWorld, 50, 90, 50);
+    public static Location nextDungeonLocation = new Location(dgWorld, 50, yOffset, 50);
     
     public static Plugin hd = null;
 

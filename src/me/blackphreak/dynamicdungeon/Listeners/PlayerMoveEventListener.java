@@ -25,7 +25,7 @@ public class PlayerMoveEventListener implements Listener {
             DungeonSession dg = gb.getDungeonSessionByPlayer(p);
             if (dg != null) {
                 // is playing
-                dg.getTriggers().stream().filter(t -> t instanceof LocationTrigger).map(t -> (LocationTrigger) t).forEach(v -> {
+                dg.getTriggers().stream().filter(t -> !t.isActivated()).filter(t -> t instanceof LocationTrigger).map(t -> (LocationTrigger) t).forEach(v -> {
                             if (v.condition(dg, e)) {
                                 v.action(dg);
                             }

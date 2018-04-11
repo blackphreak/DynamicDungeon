@@ -21,8 +21,8 @@ public class SchematicAction extends LocationActionObject {
 	@DDField(name = "Schematic Name")
 	private String schematicName;
 	
-	@DDField(name = "Transform")
-	private String transform;
+	/*@DDField(name = "Transform")
+	private String transform;*/
 	
 	/**
 	 * String triggerName:
@@ -32,6 +32,7 @@ public class SchematicAction extends LocationActionObject {
 	 *      "" <-- this is the input of String empty
 	 * when the schematic paste is done, the trigger will be fired.
 	 * TODO: add to wiki
+	 * TODO: transform
 	 */
 	@DDField(name = "Trigger Name")
 	private String triggerName;
