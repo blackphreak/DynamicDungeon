@@ -7,11 +7,11 @@ import org.bukkit.Location;
 
 public class TeleportAction extends LocationActionObject
 {
-	@DDField(name = "Teleport to Location")
-	private GlobalLocation targetLocation;
-	
 	@DDField(name = "Range")
 	private double range;
+	
+	@DDField(name = "Teleport to Location")
+	private GlobalLocation targetLocation;
 	
 	//TODO: add to wiki
 	

@@ -5,6 +5,8 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.sk89q.worldedit.Vector;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
+import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.InteractTrigger;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.LocationTrigger;
@@ -28,9 +30,18 @@ public class DungeonEditingHoloManager
 		final Vector minPt = FaweAPI.wrapPlayer(p).getSelection().getMinimumPoint();
 		
 		if (dt instanceof InteractTrigger)
-			loc = ((InteractTrigger) dt).getLocation().add(minPt.getX(), minPt.getY(), minPt.getZ()).midPt().toBukkitLoc();
+		{
+			final OffsetLocation location = ((InteractTrigger) dt).getLocation();
+			loc = location.add(minPt.getX(), minPt.getY(), minPt.getZ()).midPt().toBukkitLoc();
+		}
 		else if (dt instanceof LocationTrigger)
-			loc = ((LocationTrigger) dt).getLocation().add(minPt.getX(), minPt.getY(), minPt.getZ()).midPt().toBukkitLoc();
+		{
+//			new OffsetLocation(location.getX(), location.getY(), location.getZ())
+			final OffsetLocation location = ((LocationTrigger) dt).getLocation().clone();
+			db.log("loc: " + location.toString());
+			loc = location.add(minPt.getX(), minPt.getY(), minPt.getZ()).midPt().toBukkitLoc();
+			db.log("loc: " + location.toString());
+		}
 		else
 			loc = p.getLocation();
 		

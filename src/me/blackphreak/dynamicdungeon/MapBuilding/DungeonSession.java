@@ -127,6 +127,10 @@ public class DungeonSession {
 			if (trigger.getTriggerName().equals(name))
 				return trigger;
 		}
+		for (DungeonTrigger trigger : passiveTriggers) {
+			if (trigger.getTriggerName().equals(name))
+				return trigger;
+		}
 		return null;
 	}
 	

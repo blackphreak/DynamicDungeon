@@ -46,7 +46,7 @@ public class ActionAddObjectCommand extends CommandNode {
 				String[] preInput = arg.split(":");
 				int idx = Integer.parseInt(preInput[0]);
 				String input = URLDecoder.decode(preInput[1], "UTF-8");
-				preInputArgs.put(idx, ChatInput.parseObject(inputConstraint.get(idx).getSecond(), preInput[1], (Player) sender));
+				preInputArgs.put(idx, ChatInput.parseObject(inputConstraint.get(idx).getSecond(), input, (Player) sender));
 			}
 		} catch (Exception e) {
 			throw new CommandArgumentException("Pre-input arguments format");
