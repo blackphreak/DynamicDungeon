@@ -5,7 +5,7 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 
 public class DungeonObjectSerDes implements JsonSerializer<DungeonObject>, JsonDeserializer<DungeonObject> {
-    Gson defaultGson = new Gson();
+    Gson defaultGson = new GsonBuilder().registerTypeAdapter(CharSequence.class, new CharSequenceDeserializer()).create();
 
     @Override
     public JsonElement serialize(DungeonObject dungeonObject, Type type, final JsonSerializationContext jsonSerializationContext) {
