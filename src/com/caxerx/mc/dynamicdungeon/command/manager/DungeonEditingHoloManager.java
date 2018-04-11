@@ -47,13 +47,17 @@ public class DungeonEditingHoloManager
 	// TODO: add this after removeTriggerCommand is added.
 	public static void removeHoloForTrigger(Player p, String triggerName)
 	{
-		_playerHoloList.get(p).get(triggerName).delete();
+		if (_playerHoloList.get(p) != null)
+			_playerHoloList.get(p).get(triggerName).delete();
+		
 		_playerHoloList.get(p).remove(triggerName);
 	}
 	
 	public static void clearHolos(Player p)
 	{
-		_playerHoloList.get(p).forEach((k, v) -> v.delete());
+		if (_playerHoloList.get(p) != null)
+			_playerHoloList.get(p).forEach((k, v) -> v.delete());
+		
 		_playerHoloList.remove(p);
 	}
 }
