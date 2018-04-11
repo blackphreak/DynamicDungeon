@@ -38,7 +38,6 @@ object InputManager : Listener {
             }
             launch {
                 val channel = playerMap[e.player]!!
-                channel.send(e.message.replace(Regex("[ /]"), ""))
             }
             e.isCancelled = true
         }
