@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +47,7 @@ public class TriggerAddObjectCommand extends CommandNode {
 			for (String arg : args) {
 				String[] preInput = arg.split(":");
 				int idx = Integer.parseInt(preInput[0]);
-				String input = URLEncoder.encode(preInput[1], "UTF-8");
+				String input = URLDecoder.decode(preInput[1], "UTF-8");
                 preInputArgs.put(idx, ChatInput.parseObject(inputConstraint.get(idx).getSecond(), input, (Player) sender));
 			}
 		} catch (Exception e) {
