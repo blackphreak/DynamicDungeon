@@ -19,11 +19,11 @@ public class OffsetLocation extends DungeonLocation {
 	}
 	
 	public static OffsetLocation createFromMinPoint(Location minPoint, double x, double y, double z) {
-		return new OffsetLocation(minPoint.getX() - x, minPoint.getY() - y, minPoint.getZ() - z);
+        return new OffsetLocation(x - minPoint.getX(), y - minPoint.getY(), z - minPoint.getZ());
 	}
 	
 	public static OffsetLocation createFromMinPoint(Vector minPoint, double x, double y, double z) {
-		return new OffsetLocation(minPoint.getX() - x, minPoint.getY() - y, minPoint.getZ() - z);
+        return new OffsetLocation(x - minPoint.getX(), y - minPoint.getY(), z - minPoint.getZ());
 	}
 	
 	public static OffsetLocation createToMinPoint(Location minPoint, double x, double y, double z) {
