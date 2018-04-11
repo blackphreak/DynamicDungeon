@@ -2,6 +2,7 @@ package me.blackphreak.dynamicdungeon.Listeners;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.LocationTrigger;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.entity.Player;
@@ -25,7 +26,10 @@ public class PlayerMoveEventListener implements Listener {
             DungeonSession dg = gb.getDungeonSessionByPlayer(p);
             if (dg != null) {
                 // is playing
-                dg.getTriggers().stream().filter(t -> !t.isActivated()).filter(t -> t instanceof LocationTrigger).map(t -> (LocationTrigger) t).forEach(v -> {
+                dg.getTriggers().stream()
+                        .filter(DungeonTrigger::isActivated)
+                        .filter(t -> t instanceof LocationTrigger)
+                        .map(t -> (LocationTrigger) t).forEach(v -> {
                             if (v.condition(dg, e)) {
                                 v.action(dg);
                             }

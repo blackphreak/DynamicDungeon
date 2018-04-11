@@ -25,6 +25,8 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BuilderV3 {
 	public BuilderV3() {
@@ -61,6 +63,8 @@ public class BuilderV3 {
 				
 				db.log("Loading DungeonObject for session...");
 				
+				List<DungeonAction> actionList = new ArrayList<>();
+				
 				for (DungeonObject obj : gb.cloneDungeon(fileNameWithoutExtension)) {
 					db.tlog(obj.toString());
 					
@@ -87,8 +91,7 @@ public class BuilderV3 {
 							//((DungeonTrigger) obj).setTrigger((DungeonTrigger) obj);
 							dg.addTrigger((DungeonTrigger) obj);
 						} else if (obj instanceof DungeonAction) {
-							DungeonAction actionObj = (DungeonAction) obj;
-							dg.getTriggerByName(URLDecoder.decode(actionObj.getTriggerBy(), "UTF-8")).addAction(actionObj);
+							actionList.add((DungeonAction) obj); //process this later
 						}
 					}
 					catch (Exception e)
@@ -101,6 +104,23 @@ public class BuilderV3 {
 						dg.killSession();
 						
 						return; // no need to do the rest of dungeon session creation.
+					}
+				}
+				
+				for (DungeonAction actionObj : actionList) {
+//					db.tlog(actionObj.toString());
+					
+					try {
+						dg.getTriggerByName(URLDecoder.decode(actionObj.getTriggerBy(), "UTF-8")).addAction(actionObj);
+					} catch (Exception e) {
+						db.log("Unexpected Error Occurred [Obj], please post the message below to https://github.com/blackphreak/DynamicDungeon/issues");
+						e.printStackTrace();
+						msg.send(sessionOwner, "Please contact admin to fix this. [UEEO_AOBJ]");
+						
+						msg.send(sessionOwner, "Killing Dungeon Session...");
+						dg.killSession();
+						
+						return;
 					}
 				}
 				

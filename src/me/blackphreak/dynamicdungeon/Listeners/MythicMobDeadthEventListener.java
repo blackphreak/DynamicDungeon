@@ -3,6 +3,7 @@ package me.blackphreak.dynamicdungeon.Listeners;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.MobKillTrigger;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.entity.Player;
@@ -25,7 +26,9 @@ public class MythicMobDeadthEventListener implements Listener {
                 // get the playing session
                 DungeonSession dg = gb.getDungeonSessionByPlayer(p);
                 if (dg != null) {
-                    dg.getTriggers().stream().filter(t -> !t.isActivated()).filter(t -> t instanceof MobKillTrigger).map(t -> (MobKillTrigger) t).forEach(v -> {
+                    dg.getTriggers().stream()
+                            .filter(DungeonTrigger::isActivated)
+                            .filter(t -> t instanceof MobKillTrigger).map(t -> (MobKillTrigger) t).forEach(v -> {
                                 if (v.condition(dg, e)) {
                                     v.action(dg);
                                 }

@@ -1,20 +1,13 @@
 package me.blackphreak.dynamicdungeon.Listeners;
 
-import me.blackphreak.dynamicdungeon.MapBuilding.BuilderV3;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
-import me.blackphreak.dynamicdungeon.Messages.msg;
+import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.InteractTrigger;
 import me.blackphreak.dynamicdungeon.gb;
-import me.blackphreak.dynamicdungeon.math;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 
 public class PlayerInteractEventListener implements Listener {
     public PlayerInteractEventListener() {
@@ -30,7 +23,9 @@ public class PlayerInteractEventListener implements Listener {
             DungeonSession dg = gb.getDungeonSessionByPlayer(e.getPlayer());
             if (dg != null) {
                 // is playing
-                dg.getTriggers().stream().filter(t -> !t.isActivated()).filter(t -> t instanceof InteractTrigger).map(t -> (InteractTrigger) t).forEach(v -> {
+                dg.getTriggers().stream()
+                        .filter(DungeonTrigger::isActivated)
+                        .filter(t -> t instanceof InteractTrigger).map(t -> (InteractTrigger) t).forEach(v -> {
                             if (v.condition(dg, e)) {
                                 v.action(dg);
                             }
@@ -39,7 +34,7 @@ public class PlayerInteractEventListener implements Listener {
                 dg.removeTriggersInQueue();
             }
 
-            if (e.getHand() == null) {
+            /*if (e.getHand() == null) {
                 Location tLoc = e.getPlayer().getLocation();
                 tLoc.add(0.0D, -2.0D, 0.0D);
                 if (tLoc.getBlock().getType().equals(Material.SIGN)
@@ -120,7 +115,7 @@ public class PlayerInteractEventListener implements Listener {
                         }
                         break;
                 }
-            }
+            }*/
         }
     }
 }

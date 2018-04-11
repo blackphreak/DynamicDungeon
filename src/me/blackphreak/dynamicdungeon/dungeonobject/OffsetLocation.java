@@ -6,7 +6,7 @@ import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
 
 @Data
-public class OffsetLocation extends DungeonLocation {
+public class OffsetLocation extends DungeonLocation implements Cloneable {
 	private double x;
 	private double y;
 	private double z;
@@ -107,5 +107,18 @@ public class OffsetLocation extends DungeonLocation {
 	@Override
 	public String toString() {
 		return x + "," + y + "," + z;
+	}
+	
+	public OffsetLocation clone()
+	{
+		try
+		{
+			return (OffsetLocation) super.clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

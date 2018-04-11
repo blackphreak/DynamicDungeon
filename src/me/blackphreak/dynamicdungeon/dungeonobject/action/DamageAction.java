@@ -34,6 +34,7 @@ public class DamageAction extends LocationActionObject {
 	@Override
 	public void action(DungeonSession dg) {
 		Location loc = getLocation().add(dg.getDgMinPt()).toBukkitLoc();
+		db.log("loc: " + loc.toString());
 		Collection<Entity> entityList = gb.dgWorld.getNearbyEntities(loc, radius, radius, radius);
 		entityList.forEach(v -> db.log("v: " + v.toString() + " | isP: " + (v instanceof Player ? "y" : "n")));
 		entityList.removeIf(v -> !(v instanceof LivingEntity));

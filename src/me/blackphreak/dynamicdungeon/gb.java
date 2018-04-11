@@ -29,7 +29,10 @@ public class gb {
     public static final String decorationPath = "plugins/DynamicDungeon/decorations/";
 	private static final double yOffset = 90; // TODO: change in config.yml
 
-    private static Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(DungeonObject.class, new DungeonObjectSerDes()).registerTypeAdapter(CharSequence.class, new CharSequenceDeserializer()).create();
+    private static Gson gson = new GsonBuilder()
+            .registerTypeHierarchyAdapter(DungeonObject.class, new DungeonObjectSerDes())
+            .registerTypeAdapter(CharSequence.class, new CharSequenceDeserializer())
+            .create();
 
     public static boolean isDebugging = true; // TODO: change in config.yml
     public static ConcurrentHashMap<Integer, DungeonSession> dungeons = new ConcurrentHashMap<>();
