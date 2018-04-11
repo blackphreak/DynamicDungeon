@@ -21,4 +21,5 @@ hs_err_pid*
 ./.idea/*
 ./DynamicDungeon/*
 *.iml
+*.xml
 HolographicDisplays.jar.disable_1.12Update
