@@ -83,7 +83,7 @@ public abstract class DungeonTrigger extends DungeonObject {
 						cancel();
 					}
 				}
-			}.runTaskTimerAsynchronously(DynamicDungeon.plugin, delay, period);
+			}.runTaskTimer(DynamicDungeon.plugin, delay, period);
 		}
 	}
 }

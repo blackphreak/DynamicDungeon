@@ -8,7 +8,6 @@ import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
@@ -36,9 +35,7 @@ public class DamageAction extends LocationActionObject {
 		Location loc = getLocation().add(dg.getDgMinPt()).toBukkitLoc();
 		db.log("loc: " + loc.toString());
 		Collection<Entity> entityList = gb.dgWorld.getNearbyEntities(loc, radius, radius, radius);
-		entityList.forEach(v -> db.log("v: " + v.toString() + " | isP: " + (v instanceof Player ? "y" : "n")));
 		entityList.removeIf(v -> !(v instanceof LivingEntity));
-		entityList.forEach(v -> db.log("v2: " + v.toString() + " | isP: " + (v instanceof Player ? "y" : "n") + " | dis: " + v.getLocation().distance(loc)));
 		
 		switch (target)
 		{
