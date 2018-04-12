@@ -1,6 +1,7 @@
 package me.blackphreak.dynamicdungeon.dungeonobject.trigger;
 
 import lombok.Data;
+import lombok.Getter;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
@@ -43,6 +44,12 @@ public abstract class DungeonTrigger extends DungeonObject {
 	@DDField(name = "§a+- §eIs Activated")
 	private boolean isActivated;
 	
+	/**
+	 * boolean isActionMade
+	 * used to prevent job repeats on delayed task.
+	 */
+	@Getter
+	private transient boolean isActionMade = true;
 	private transient List<DungeonAction> actionList = new ArrayList<>();
 	
 	public void addAction(DungeonAction actionObj) {
@@ -57,7 +64,6 @@ public abstract class DungeonTrigger extends DungeonObject {
 	public abstract boolean condition(DungeonSession dg, Event e);
 	
 	public void action(DungeonSession dg) {
-		
 		if (getRepeat() == 0 && getDelay() <= 0) {
 			getActionList().forEach(v -> v.action(dg));
 			dg.addToTriggerRemoveQueue(this);
@@ -68,6 +74,8 @@ public abstract class DungeonTrigger extends DungeonObject {
 			
 			if (getPeriod() < 0) // negative period?? really???
 				setDelay(Math.abs(getPeriod()));
+			
+			isActionMade = false;
 			
 			DungeonTrigger trigger = this;
 			new BukkitRunnable() {
@@ -82,6 +90,7 @@ public abstract class DungeonTrigger extends DungeonObject {
 						db.tlog("DungeonTrigger[" + triggerName + "] has been removed due to it reached the repeat limit.");
 						cancel();
 					}
+					isActionMade = true;
 				}
 			}.runTaskTimer(DynamicDungeon.plugin, delay, period);
 		}

@@ -2,14 +2,13 @@ package me.blackphreak.dynamicdungeon.dungeonobject.action;
 
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
-import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class DamageAction extends LocationActionObject {
 	@DDField(name = "  §a+- §eDamage")
@@ -33,39 +32,22 @@ public class DamageAction extends LocationActionObject {
 	@Override
 	public void action(DungeonSession dg) {
 		Location loc = getLocation().add(dg.getDgMinPt()).toBukkitLoc();
-		db.log("loc: " + loc.toString());
-		Collection<Entity> entityList = gb.dgWorld.getNearbyEntities(loc, radius, radius, radius);
-		entityList.removeIf(v -> !(v instanceof LivingEntity));
+		Collection<LivingEntity> entityList = gb.dgWorld.getLivingEntities().stream()
+				.filter(e -> (radius == -1 || e.getLocation().distance(loc) <= radius))
+				.collect(Collectors.toList());
 		
 		switch (target)
 		{
 			case "@p":
-				dg.getWhoPlaying().forEach(p -> {
-					if (radius == -1)
-						p.damage(damage);
-					else if (p.getLocation().distance(loc) <= radius)
-						p.damage(damage);
-				});
+				dg.getWhoPlaying().forEach(p -> p.damage(damage));
 				break;
 			case "@e":
-				entityList.forEach(v -> {
-					if (radius == -1)
-						((LivingEntity) v).damage(damage);
-					else if (v.getLocation().distance(loc) <= radius)
-						((LivingEntity) v).damage(damage);
-				});
+				entityList.forEach(v -> v.damage(damage));
 				break;
 			case "@m":
-				entityList.forEach(v -> {
-					LivingEntity e = (LivingEntity) v;
-					if (e instanceof MythicMob)
-					{
-						if (radius == -1)
-							e.damage(damage);
-						else if (e.getLocation().distance(loc) <= radius)
-							e.damage(damage);
-					}
-				});
+				entityList
+					.stream().filter(e -> e instanceof MythicMob)
+					.forEach(e -> e.damage(damage));
 				break;
 		}
 	}

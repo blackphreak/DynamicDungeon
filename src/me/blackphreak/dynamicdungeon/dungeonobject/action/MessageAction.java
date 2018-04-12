@@ -22,6 +22,6 @@ public class MessageAction extends LocationActionObject {
 
     @Override
     public String toString() {
-        return String.format("[Ac-Message] Radius: %.2f | Msg(line1): ", radius, message[0]);
+        return String.format("[Ac-Message] Radius: %.2f | Msg(line1): %s", radius, message[0]);
     }
 }

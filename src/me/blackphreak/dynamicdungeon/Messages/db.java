@@ -6,11 +6,10 @@ import org.bukkit.Bukkit;
 import java.util.Arrays;
 
 public class db {
-	public db() {
-	}
+	private static int offset = 2;
 	
 	public static void log(String msg) {
-		StackTraceElement t = Thread.currentThread().getStackTrace()[2];
+		StackTraceElement t = Thread.currentThread().getStackTrace()[offset];
 		int line = t.getLineNumber();
 		String caller = t.getClassName() + "§7->§e" + t.getMethodName() + "()§7-§cL" + line;
 		msg = msg.replaceAll(":", "§8:§7").replaceAll("\\|", "§8|§7").replaceAll(",", "§8,§7");
@@ -18,7 +17,7 @@ public class db {
 	}
 	
 	public static void log(String... msgs) {
-		StackTraceElement t = Thread.currentThread().getStackTrace()[2];
+		StackTraceElement t = Thread.currentThread().getStackTrace()[offset];
 		int line = t.getLineNumber();
 		String caller = t.getClassName() + "§7->§e" + t.getMethodName() + "()§7-§cL" + line;
 		Bukkit.getConsoleSender().sendMessage("§7[§bDynamicDungeon§7-§e" + caller + "§7] §7" + msgs[0]);
@@ -74,14 +73,18 @@ public class db {
 	
 	public static void tlog(String msg) {
 		if(gb.isDebugging) {
+			offset = 3;
 			log(msg);
+			offset = 2;
 		}
 		
 	}
 	
 	public static void tlog(String... msgs) {
 		if(gb.isDebugging) {
+			offset = 3;
 			log(msgs);
+			offset = 2;
 		}
 		
 	}

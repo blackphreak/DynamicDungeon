@@ -41,7 +41,7 @@ public class SchematicAction extends LocationActionObject {
 	public void action(DungeonSession dg) {
 		try {
 			Location loc = getLocation().add(dg.getDgMinPt()).toBukkitLoc();
-			File schematic = new File(gb.decorationPath + schematicName);
+			File schematic = new File(gb.decorationPath + schematicName + ".schematic");
 			Clipboard cp = FaweAPI.load(schematic).getClipboard();
 			final Vector maxVt = cp.getDimensions();
 			Region region = new CuboidSelection(gb.dgWorld, loc, getLocation().add(dg.getDgMinPt()).add(maxVt.getBlockX(), 0, maxVt.getBlockZ()).toBukkitLoc()).getRegionSelector().getRegion();
@@ -54,7 +54,8 @@ public class SchematicAction extends LocationActionObject {
 				//flushing the queue
 				session.flushQueue();
 				
-				dg.fireTheTrigger(triggerName);
+				if (!triggerName.isEmpty())
+					dg.fireTheTrigger(triggerName);
 			});
 		} catch (IncompleteRegionException e) {
 			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/issues :");

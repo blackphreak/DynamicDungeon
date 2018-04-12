@@ -24,12 +24,11 @@ public class PlayerInteractEventListener implements Listener {
             if (dg != null) {
                 // is playing
                 dg.getTriggers().stream()
+                        .filter(t -> t instanceof InteractTrigger)
                         .filter(DungeonTrigger::isActivated)
-                        .filter(t -> t instanceof InteractTrigger).map(t -> (InteractTrigger) t).forEach(v -> {
-                            if (v.condition(dg, e)) {
-                                v.action(dg);
-                            }
-                        }
+                        .filter(DungeonTrigger::isActionMade)
+                        .filter(t -> t.condition(dg, e))
+                        .forEach(t -> t.action(dg)
                 );
                 dg.removeTriggersInQueue();
             }
