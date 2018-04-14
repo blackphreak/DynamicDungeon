@@ -11,15 +11,19 @@ import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
+import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
 
 import java.io.File;
 import java.io.IOException;
 
-public class SchematicAction extends LocationActionObject {
+public class SchematicAction extends DungeonAction {
 	@DDField(name = "Schematic Name")
 	private String schematicName;
+	
+	@DDField(name = "[Location] Paste to")
+	private OffsetLocation loc;
 	
 	/*@DDField(name = "Transform")
 	private String transform;*/
@@ -27,9 +31,9 @@ public class SchematicAction extends LocationActionObject {
 	/**
 	 * String triggerName:
 	 * acceptable values:
-	 *      String, the name of an existing trigger.
-	 *      OR
-	 *      "" <-- this is the input of String empty
+	 * String, the name of an existing trigger.
+	 * OR
+	 * "" <-- this is the input of String empty
 	 * when the schematic paste is done, the trigger will be fired.
 	 * TODO: add to wiki
 	 * TODO: transform
@@ -37,15 +41,18 @@ public class SchematicAction extends LocationActionObject {
 	@DDField(name = "Trigger Name")
 	private String triggerName;
 	
+	@DDField(name = "Name for Undo")
+	private String undoName;
+	
 	@Override
-	public void action(DungeonSession dg) {
+	public void action(DungeonSession dg, OffsetLocation location) {
 		try {
-			Location loc = getLocation().add(dg.getDgMinPt()).toBukkitLoc();
+			Location minLoc = this.loc.clone().add(dg.getDgMinPt()).toBukkitLoc();
 			File schematic = new File(gb.decorationPath + schematicName + ".schematic");
 			Clipboard cp = FaweAPI.load(schematic).getClipboard();
 			final Vector maxVt = cp.getDimensions();
-			Region region = new CuboidSelection(gb.dgWorld, loc, getLocation().add(dg.getDgMinPt()).add(maxVt.getBlockX(), 0, maxVt.getBlockZ()).toBukkitLoc()).getRegionSelector().getRegion();
-			EditSession session = ClipboardFormat.SCHEMATIC.load(schematic).paste(region.getWorld(), new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), true, true, null);
+			Region region = new CuboidSelection(gb.dgWorld, minLoc, this.loc.clone().add(maxVt.getBlockX(), 0, maxVt.getBlockZ()).toBukkitLoc()).getRegionSelector().getRegion();
+			EditSession session = ClipboardFormat.SCHEMATIC.load(schematic).paste(region.getWorld(), new Vector(minLoc.getBlockX(), minLoc.getBlockY(), minLoc.getBlockZ()), true, true, null);
 			session.enableQueue();
 			
 			// when the action is done
@@ -53,6 +60,8 @@ public class SchematicAction extends LocationActionObject {
 			{
 				//flushing the queue
 				session.flushQueue();
+				
+				dg.putSchematicSession(undoName, session);
 				
 				if (!triggerName.isEmpty())
 					dg.fireTheTrigger(triggerName);
@@ -62,6 +71,9 @@ public class SchematicAction extends LocationActionObject {
 			e.printStackTrace();
 		} catch (IOException e) {
 			db.log("This may due to schematic file not found in path: plugins/DynamicDungeon/decorations/");
+			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/issues :");
+			e.printStackTrace();
+		} catch (Exception e) {
 			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/issues :");
 			e.printStackTrace();
 		}

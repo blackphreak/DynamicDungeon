@@ -202,6 +202,23 @@ public class DungeonEditingManager implements Listener {
                         case "tri":
                             e.getPlayer().performCommand("dde trigger action trigger 0:" + tri);
                             break;
+    
+                        case "deactivate":
+                            e.getPlayer().performCommand("dde trigger action deactivate 0:" + tri);
+                            break;
+                        case "potion":
+                            e.getPlayer().performCommand("dde trigger action potion 0:" + tri);
+                            break;
+                        case "spawnmob":
+                        case "sm":
+                            e.getPlayer().performCommand("dde trigger action spawnmob 0:" + tri);
+                            break;
+                        case "undoschematic":
+                        case "undoschem":
+                        case "uschem":
+                        case "undo":
+                            e.getPlayer().performCommand("dde trigger action undoschematic 0:" + tri);
+                            break;
                         default:
                             e.getPlayer().sendMessage("Unknown type of action.");
                     }

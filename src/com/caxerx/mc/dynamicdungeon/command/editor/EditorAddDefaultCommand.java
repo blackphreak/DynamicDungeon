@@ -4,7 +4,6 @@ import com.caxerx.mc.dynamicdungeon.command.CommandNode;
 import com.caxerx.mc.dynamicdungeon.command.DefaultCommand;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonHologramDecorate;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonMobSpawner;
-import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonSchematicDecorate;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonSpawn;
 
 public class EditorAddDefaultCommand extends DefaultCommand {
@@ -13,6 +12,5 @@ public class EditorAddDefaultCommand extends DefaultCommand {
         addSub(new EditorAddObjectCommand(this, "spawn", DungeonSpawn.class));
         addSub(new EditorAddObjectCommand(this, "mobspawner", DungeonMobSpawner.class));
         addSub(new EditorAddObjectCommand(this, "hologram", DungeonHologramDecorate.class));
-        addSub(new EditorAddObjectCommand(this, "schematic", DungeonSchematicDecorate.class));
     }
 }

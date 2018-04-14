@@ -15,5 +15,10 @@ public class ActionAddDefaultCommand extends DefaultCommand {
 		addSub(new ActionAddObjectCommand(this, "schematic", SchematicAction.class));
 		addSub(new ActionAddObjectCommand(this, "hologram", HologramAction.class));
 		addSub(new ActionAddObjectCommand(this, "teleport", TeleportAction.class));
+		
+		addSub(new ActionAddObjectCommand(this, "deactivate", DeactivateTriggerAction.class));
+		addSub(new ActionAddObjectCommand(this, "potion", PotionAction.class));
+		addSub(new ActionAddObjectCommand(this, "spawnmob", SpawnMobAction.class));
+		addSub(new ActionAddObjectCommand(this, "undoschematic", UndoSchematicAction.class));
 	}
 }

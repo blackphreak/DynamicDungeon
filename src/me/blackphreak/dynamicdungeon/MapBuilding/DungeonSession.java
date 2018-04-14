@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +40,7 @@ public class DungeonSession {
 	private ConcurrentHashMap<Chunk, List<MythicSpawner>> spawnerTable = new ConcurrentHashMap<>();
 	private UUID uuid = UUID.randomUUID();
 	private List<cHologram> holograms = new ArrayList<>(); // store all the cHologram for later remove.
-	private List<EditSession> schematics = new ArrayList<>(); // decoration -> schematic, store the editsession for later remove.
+	private HashMap</*undoName*/String, EditSession> schematics = new HashMap<>();
 	private List<DungeonTrigger> triggers = new ArrayList<>();
 	private List<DungeonTrigger> passiveTriggers = new ArrayList<>();
 	private List<DungeonTrigger> rm_queue = new ArrayList<>();
@@ -193,8 +194,16 @@ public class DungeonSession {
 		this.holograms.add(hg);
 	}
 	
-	public void addDecorationSchematic(EditSession es) {
-		schematics.add(es);
+	public void putSchematicSession(String undoName, EditSession es) {
+		schematics.put(undoName, es);
+	}
+	
+	public void removeSchematicSession(String undoName) {
+		schematics.remove(undoName);
+	}
+	
+	public EditSession getSchematicSession(String undoName) {
+		return schematics.get(undoName);
 	}
 	
 	public void addSpawnersOnChunk(Chunk targetChunk, Location spawnLocation, List<MythicSpawner> spawners) {
@@ -268,14 +277,14 @@ public class DungeonSession {
 		for (DungeonTrigger trigger : triggers) {
 			if (trigger.getTriggerName().equals(triggerName)
 					&& !trigger.isActivated()) {
-				trigger.setActivated(true); //TODO: check will this affect to clone object
+				trigger.setActivated(true);
 				return;
 			}
 		}
 		
 		for (DungeonTrigger tri : passiveTriggers) {
 			if (tri.getTriggerName().equals(triggerName)) {
-				tri.action(this);
+				tri.action(this, tri.getLocation());
 				return;
 			}
 		}

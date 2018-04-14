@@ -15,7 +15,6 @@ import me.blackphreak.dynamicdungeon.dungeonobject.DungeonObject;
 import me.blackphreak.dynamicdungeon.dungeonobject.action.DungeonAction;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonHologramDecorate;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonMobSpawner;
-import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonSchematicDecorate;
 import me.blackphreak.dynamicdungeon.dungeonobject.base.DungeonSpawn;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.gb;
@@ -83,12 +82,7 @@ public class BuilderV3 {
 								dg.addHologram(chg);
 								chg.teleport(dghd.getLocation().add(loc).add(0, dghd.getYOffset(), 0).toBukkitLoc());
 							}
-						} else if (obj instanceof DungeonSchematicDecorate) {
-							DungeonSchematicDecorate dgsd = (DungeonSchematicDecorate) obj;
-//	                    dgsd.loadSchematic();
-							db.tlog("schematic decoration here @ [" + dgsd.getLocation().toString() + "]");
 						} else if (obj instanceof DungeonTrigger) {
-							//((DungeonTrigger) obj).setTrigger((DungeonTrigger) obj);
 							dg.addTrigger((DungeonTrigger) obj);
 						} else if (obj instanceof DungeonAction) {
 							actionList.add((DungeonAction) obj); //process this later
@@ -108,7 +102,6 @@ public class BuilderV3 {
 				}
 				
 				for (DungeonAction actionObj : actionList) {
-//					db.tlog(actionObj.toString());
 					
 					try {
 						dg.getTriggerByName(URLDecoder.decode(actionObj.getTriggerBy(), "UTF-8")).addAction(actionObj);

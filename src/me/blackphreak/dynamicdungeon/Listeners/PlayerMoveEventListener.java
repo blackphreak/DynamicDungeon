@@ -31,7 +31,7 @@ public class PlayerMoveEventListener implements Listener {
                         .filter(DungeonTrigger::isActionMade)
                         .filter(DungeonTrigger::isActivated)
                         .filter(t -> t.condition(dg, e))
-                        .forEach(t -> t.action(dg)
+                        .forEach(t -> t.action(dg, t.getLocation())
                 );
                 dg.removeTriggersInQueue();
             }

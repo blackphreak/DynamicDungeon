@@ -28,7 +28,7 @@ public class PlayerInteractEventListener implements Listener {
                         .filter(DungeonTrigger::isActivated)
                         .filter(DungeonTrigger::isActionMade)
                         .filter(t -> t.condition(dg, e))
-                        .forEach(t -> t.action(dg)
+                        .forEach(t -> t.action(dg, t.getLocation())
                 );
                 dg.removeTriggersInQueue();
             }

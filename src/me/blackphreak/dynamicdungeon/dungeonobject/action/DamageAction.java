@@ -3,6 +3,7 @@ package me.blackphreak.dynamicdungeon.dungeonobject.action;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
+import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -10,7 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class DamageAction extends LocationActionObject {
+public class DamageAction extends DungeonAction {
 	@DDField(name = "  §a+- §eDamage")
 	private double damage;
 	
@@ -30,8 +31,8 @@ public class DamageAction extends LocationActionObject {
 	private double radius;
 	
 	@Override
-	public void action(DungeonSession dg) {
-		Location loc = getLocation().add(dg.getDgMinPt()).toBukkitLoc();
+	public void action(DungeonSession dg, OffsetLocation location) {
+		Location loc = location.add(dg.getDgMinPt()).toBukkitLoc();
 		Collection<LivingEntity> entityList = gb.dgWorld.getLivingEntities().stream()
 				.filter(e -> (radius == -1 || e.getLocation().distance(loc) <= radius))
 				.collect(Collectors.toList());

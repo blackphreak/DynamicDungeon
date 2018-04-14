@@ -9,8 +9,8 @@ public class CheckPointAction extends DungeonAction {
     private OffsetLocation location;
     
     @Override
-    public void action(DungeonSession dg) {
-        dg.updateCheckPoint(location.add(dg.getDgMinPt()).toBukkitLoc());
+    public void action(DungeonSession dg, OffsetLocation location) {
+        dg.updateCheckPoint(this.location.add(dg.getDgMinPt()).toBukkitLoc());
     }
     
     @Override
