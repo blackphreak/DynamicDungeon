@@ -42,7 +42,7 @@ public class SchematicAction extends DungeonAction {
 	 * when the schematic paste is done, the trigger will be fired.
 	 * TODO: add to wiki
 	 */
-	@DDField(name = "Trigger Name")
+	@DDField(name = "Trigger Name [After Paste]")
 	private String triggerName;
 	
 	@DDField(name = "Name for Undo")

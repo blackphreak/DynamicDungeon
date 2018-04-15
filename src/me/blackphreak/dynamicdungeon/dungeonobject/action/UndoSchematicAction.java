@@ -22,4 +22,3 @@ public class UndoSchematicAction extends DungeonAction {
 		dg.removeSchematicSession(undoName);
 	}
 }
-
