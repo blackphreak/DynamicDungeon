@@ -8,6 +8,7 @@ import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.experimental.launch
 import me.blackphreak.dynamicdungeon.DynamicDungeon
+import me.blackphreak.dynamicdungeon.Messages.db
 import me.blackphreak.dynamicdungeon.dungeonobject.DungeonLocation
 import me.blackphreak.dynamicdungeon.dungeonobject.GlobalLocation
 import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation
@@ -132,7 +133,7 @@ class ChatInput(val player: Player, val constraint: List<Pair<String, Class<*>>>
                             }
                             else -> inputList.add(parseObject(clz, input, player))
                         }
-                        if (clz != Array<String>::class.java && clz != Array<CharSequence>::class.java) {
+                        if (clz != Array<String>::class.java && clz != Array<CharSequence>::class.java && clz != AffineTransform::class.java) {
                             break
                         }
                     } catch (e: ClosedReceiveChannelException) {
@@ -147,6 +148,7 @@ class ChatInput(val player: Player, val constraint: List<Pair<String, Class<*>>>
 
             object : BukkitRunnable() {
                 override fun run() {
+                    db.log(inputList.toString())
                     callback.accept(inputList)
                 }
             }.runTask(DynamicDungeon.plugin)
