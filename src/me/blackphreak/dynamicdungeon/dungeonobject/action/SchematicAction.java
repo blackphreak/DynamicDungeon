@@ -7,6 +7,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
@@ -26,8 +27,11 @@ public class SchematicAction extends DungeonAction {
 	@DDField(name = "[Location] Paste to")
 	private OffsetLocation loc;
 	
-	/*@DDField(name = "Transform")
-	private String transform;*/
+	@DDField(name = "Transformation <scale|rotateX|rotateY|rotateZ> <(size)|(degree)>")
+	private AffineTransform transform;
+	
+	@DDField(name = "Ignore Air (True | False)")
+	private boolean ignoreAir;
 	
 	/**
 	 * String triggerName:
@@ -37,7 +41,6 @@ public class SchematicAction extends DungeonAction {
 	 * "" <-- this is the input of String empty
 	 * when the schematic paste is done, the trigger will be fired.
 	 * TODO: add to wiki
-	 * TODO: transform
 	 */
 	@DDField(name = "Trigger Name")
 	private String triggerName;
@@ -53,7 +56,7 @@ public class SchematicAction extends DungeonAction {
 			Clipboard cp = FaweAPI.load(schematic).getClipboard();
 			final Vector maxVt = cp.getDimensions();
 			Region region = new CuboidSelection(gb.dgWorld, minLoc, this.loc.clone().add(maxVt.getBlockX(), 0, maxVt.getBlockZ()).toBukkitLoc()).getRegionSelector().getRegion();
-			EditSession session = ClipboardFormat.SCHEMATIC.load(schematic).paste(region.getWorld(), new Vector(minLoc.getBlockX(), minLoc.getBlockY(), minLoc.getBlockZ()), true, true, null);
+			EditSession session = ClipboardFormat.SCHEMATIC.load(schematic).paste(region.getWorld(), new Vector(minLoc.getBlockX(), minLoc.getBlockY(), minLoc.getBlockZ()), true, !ignoreAir, transform);
 			session.enableQueue();
 			
 			// when the action is done
@@ -64,8 +67,8 @@ public class SchematicAction extends DungeonAction {
 				
 				dg.putSchematicSession(undoName, session);
 				
-				if (!triggerName.isEmpty())
-					dg.fireTheTrigger(triggerName, needed.setPreviousTrigger(this.getTriggerBy()));
+				if (!triggerName.equalsIgnoreCase("nope"))
+					dg.fireTheTrigger(triggerName, needed);
 			});
 		} catch (IncompleteRegionException e) {
 			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/issues :");
