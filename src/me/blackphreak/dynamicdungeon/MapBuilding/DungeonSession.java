@@ -9,6 +9,7 @@ import io.lumine.xikage.mythicmobs.spawning.spawners.MythicSpawner;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
 import me.blackphreak.dynamicdungeon.Messages.db;
 import me.blackphreak.dynamicdungeon.Supports.HolographicDisplays.cHologram;
+import me.blackphreak.dynamicdungeon.dungeonobject.ActionNeeded;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.PassiveTrigger;
 import me.blackphreak.dynamicdungeon.gb;
@@ -273,7 +274,7 @@ public class DungeonSession {
 	 *
 	 * @param triggerName
 	 */
-	public void fireTheTrigger(String triggerName) {
+	public void fireTheTrigger(String triggerName, ActionNeeded needed) {
 		for (DungeonTrigger trigger : triggers) {
 			if (trigger.getTriggerName().equals(triggerName)
 					&& !trigger.isActivated()) {
@@ -284,7 +285,7 @@ public class DungeonSession {
 		
 		for (DungeonTrigger tri : passiveTriggers) {
 			if (tri.getTriggerName().equals(triggerName)) {
-				tri.action(this, tri.getLocation());
+				tri.action(this, needed);
 				return;
 			}
 		}

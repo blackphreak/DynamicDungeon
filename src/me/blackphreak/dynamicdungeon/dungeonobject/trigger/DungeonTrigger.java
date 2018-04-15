@@ -5,9 +5,9 @@ import lombok.Getter;
 import me.blackphreak.dynamicdungeon.DynamicDungeon;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.ActionNeeded;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
 import me.blackphreak.dynamicdungeon.dungeonobject.LocationDungeonObject;
-import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import me.blackphreak.dynamicdungeon.dungeonobject.action.DungeonAction;
 import org.bukkit.event.Event;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -64,9 +64,9 @@ public abstract class DungeonTrigger extends LocationDungeonObject {
 	// condition for Interact Triggers
 	public abstract boolean condition(DungeonSession dg, Event e);
 	
-	public void action(DungeonSession dg, OffsetLocation location) {
+	public void action(DungeonSession dg, ActionNeeded needed) {
 		if (getRepeat() == 0 && getDelay() <= 0) {
-			getActionList().forEach(v -> v.action(dg, location.clone()));
+			getActionList().forEach(v -> v.action(dg, needed));
 			dg.addToTriggerRemoveQueue(this);
 			db.tlog("DungeonTrigger[" + triggerName + "] has been removed due to it reached the repeat limit.");
 		} else {
@@ -82,7 +82,7 @@ public abstract class DungeonTrigger extends LocationDungeonObject {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					getActionList().forEach(v -> v.action(dg, location.clone()));
+					getActionList().forEach(v -> v.action(dg, needed));
 					
 					if (getRepeat() > 0)
 						setRepeat(getRepeat() - 1);

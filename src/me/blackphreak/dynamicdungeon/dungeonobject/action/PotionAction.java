@@ -1,8 +1,8 @@
 package me.blackphreak.dynamicdungeon.dungeonobject.action;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
+import me.blackphreak.dynamicdungeon.dungeonobject.ActionNeeded;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
-import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import org.bukkit.Location;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -21,8 +21,8 @@ public class PotionAction extends DungeonAction {
 	private int range; /*-1 = all*/
 	
 	@Override
-	public void action(DungeonSession dg, OffsetLocation location) {
-		Location loc = location.add(dg.getDgMinPt()).toBukkitLoc();
+	public void action(DungeonSession dg, ActionNeeded needed) {
+		Location loc = needed.getLocation().add(dg.getDgMinPt()).toBukkitLoc();
 		
 		dg.getWhoPlaying().forEach(p -> {
 			if (range == -1 || loc.distance(p.getLocation()) <= range)

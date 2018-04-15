@@ -2,8 +2,8 @@ package me.blackphreak.dynamicdungeon.dungeonobject.action;
 
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
+import me.blackphreak.dynamicdungeon.dungeonobject.ActionNeeded;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
-import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import me.blackphreak.dynamicdungeon.gb;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -31,8 +31,8 @@ public class DamageAction extends DungeonAction {
 	private double radius;
 	
 	@Override
-	public void action(DungeonSession dg, OffsetLocation location) {
-		Location loc = location.add(dg.getDgMinPt()).toBukkitLoc();
+	public void action(DungeonSession dg, ActionNeeded needed) {
+		Location loc = needed.getLocation().add(dg.getDgMinPt()).toBukkitLoc();
 		Collection<LivingEntity> entityList = gb.dgWorld.getLivingEntities().stream()
 				.filter(e -> (radius == -1 || e.getLocation().distance(loc) <= radius))
 				.collect(Collectors.toList());

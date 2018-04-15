@@ -10,6 +10,7 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Region;
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.ActionNeeded;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
 import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import me.blackphreak.dynamicdungeon.gb;
@@ -45,7 +46,7 @@ public class SchematicAction extends DungeonAction {
 	private String undoName;
 	
 	@Override
-	public void action(DungeonSession dg, OffsetLocation location) {
+	public void action(DungeonSession dg, ActionNeeded needed) {
 		try {
 			Location minLoc = this.loc.clone().add(dg.getDgMinPt()).toBukkitLoc();
 			File schematic = new File(gb.decorationPath + schematicName + ".schematic");
@@ -64,7 +65,7 @@ public class SchematicAction extends DungeonAction {
 				dg.putSchematicSession(undoName, session);
 				
 				if (!triggerName.isEmpty())
-					dg.fireTheTrigger(triggerName);
+					dg.fireTheTrigger(triggerName, needed.setPreviousTrigger(this.getTriggerBy()));
 			});
 		} catch (IncompleteRegionException e) {
 			db.log("Error occurred when doing schematicAction, pls report to https://github.com/blackphreak/DynamicDungeon/issues :");

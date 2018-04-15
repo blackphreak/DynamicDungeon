@@ -1,8 +1,8 @@
 package me.blackphreak.dynamicdungeon.dungeonobject.action;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
+import me.blackphreak.dynamicdungeon.dungeonobject.ActionNeeded;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
-import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 
 public class DeactivateTriggerAction extends DungeonAction {
@@ -10,7 +10,7 @@ public class DeactivateTriggerAction extends DungeonAction {
 	private String targetTriggerName;
 	
 	@Override
-	public void action(DungeonSession dg, OffsetLocation location) {
+	public void action(DungeonSession dg, ActionNeeded needed) {
 		DungeonTrigger dt = dg.getTriggerByName(targetTriggerName);
 		if (dt != null)
 			dt.setActivated(false);

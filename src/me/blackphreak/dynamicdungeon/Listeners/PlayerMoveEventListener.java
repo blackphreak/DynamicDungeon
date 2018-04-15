@@ -2,6 +2,7 @@ package me.blackphreak.dynamicdungeon.Listeners;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
 import me.blackphreak.dynamicdungeon.Messages.db;
+import me.blackphreak.dynamicdungeon.dungeonobject.ActionNeeded;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.DungeonTrigger;
 import me.blackphreak.dynamicdungeon.dungeonobject.trigger.LocationTrigger;
 import me.blackphreak.dynamicdungeon.gb;
@@ -31,7 +32,7 @@ public class PlayerMoveEventListener implements Listener {
                         .filter(DungeonTrigger::isActionMade)
                         .filter(DungeonTrigger::isActivated)
                         .filter(t -> t.condition(dg, e))
-                        .forEach(t -> t.action(dg, t.getLocation())
+                        .forEach(t -> t.action(dg, new ActionNeeded(p, t.getLocation()))
                 );
                 dg.removeTriggersInQueue();
             }

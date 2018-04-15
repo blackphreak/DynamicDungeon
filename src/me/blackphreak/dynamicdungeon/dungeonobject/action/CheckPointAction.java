@@ -1,6 +1,7 @@
 package me.blackphreak.dynamicdungeon.dungeonobject.action;
 
 import me.blackphreak.dynamicdungeon.MapBuilding.DungeonSession;
+import me.blackphreak.dynamicdungeon.dungeonobject.ActionNeeded;
 import me.blackphreak.dynamicdungeon.dungeonobject.DDField;
 import me.blackphreak.dynamicdungeon.dungeonobject.OffsetLocation;
 
@@ -9,7 +10,7 @@ public class CheckPointAction extends DungeonAction {
     private OffsetLocation location;
     
     @Override
-    public void action(DungeonSession dg, OffsetLocation location) {
+    public void action(DungeonSession dg, ActionNeeded needed) {
         dg.updateCheckPoint(this.location.add(dg.getDgMinPt()).toBukkitLoc());
     }
     
