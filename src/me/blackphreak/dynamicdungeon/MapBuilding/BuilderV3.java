@@ -46,6 +46,7 @@ public class BuilderV3 {
 			db.tlog("maxLoc: [" + max.toString() + "]");
 			Region region = new CuboidSelection(gb.dgWorld, loc, max).getRegionSelector().getRegion();
 			EditSession session = ClipboardFormat.SCHEMATIC.load(schematic).paste(region.getWorld(), new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), true, true, null);
+
 			session.enableQueue();
 			
 			//update the next loc.

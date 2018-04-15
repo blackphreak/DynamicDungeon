@@ -1,7 +1,9 @@
 package com.caxerx.mc.lib.userinput
 
 import com.caxerx.mc.dynamicdungeon.command.manager.DungeonSelectManager
+import com.caxerx.mc.dynamicdungeon.command.parser.TransformingParser
 import com.sk89q.worldedit.Vector
+import com.sk89q.worldedit.math.transform.AffineTransform
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.experimental.launch
@@ -114,6 +116,18 @@ class ChatInput(val player: Player, val constraint: List<Pair<String, Class<*>>>
                                     break@loop
                                 } else {
                                     magicList.add(ChatColor.translateAlternateColorCodes('&', input))
+                                }
+                            }
+                            AffineTransform::class.java -> {
+                                if (magicObject == null) {
+                                    magicObject = AffineTransform()
+                                }
+                                if (input == ">ok<") {
+                                    inputList.add(magicObject)
+                                    magicObject = null
+                                    break@loop
+                                } else {
+                                    (magicObject as AffineTransform).combine(TransformingParser.parse(input))
                                 }
                             }
                             else -> inputList.add(parseObject(clz, input, player))
